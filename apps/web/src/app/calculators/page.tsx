@@ -15,6 +15,7 @@ import {
   Sparkles,
   ArrowRight,
   ShieldCheck,
+  ChevronDown,
 } from "lucide-react";
 import {
   calculateInvestmentReturn,
@@ -22,11 +23,75 @@ import {
   formatCurrencyINR,
 } from "@repo/utils";
 
+const PROJECT_PRESETS = [
+  {
+    id: "marina-crown",
+    title: "The Marina Crown (Luxury Apartment)",
+    initialInvestment: 24000000, // ₹2.4 Cr
+    sqft: 1800,
+    expectedAppreciationRate: 12,
+    holdingPeriodYears: 5,
+    monthlyRentalIncome: 110000,
+  },
+  {
+    id: "mayfair-exchange",
+    title: "Mayfair Exchange (Commercial Hub)",
+    initialInvestment: 50000000, // ₹5 Cr
+    sqft: 4500,
+    expectedAppreciationRate: 10,
+    holdingPeriodYears: 7,
+    monthlyRentalIncome: 280000,
+  },
+  {
+    id: "palm-estate",
+    title: "The Palm Estate (Premium Villa)",
+    initialInvestment: 85000000, // ₹8.5 Cr
+    sqft: 6200,
+    expectedAppreciationRate: 11,
+    holdingPeriodYears: 6,
+    monthlyRentalIncome: 350000,
+  },
+  {
+    id: "devanahalli-layout",
+    title: "Devanahalli Growth Layout (North Bengaluru Plots)",
+    initialInvestment: 12000000, // ₹1.2 Cr
+    sqft: 2400,
+    expectedAppreciationRate: 15,
+    holdingPeriodYears: 5,
+    monthlyRentalIncome: 35000,
+  },
+  {
+    id: "sarjapur-plots",
+    title: "Sarjapur Prime Corridor (Plotted Layout)",
+    initialInvestment: 7500000, // ₹75 L
+    sqft: 1500,
+    expectedAppreciationRate: 14,
+    holdingPeriodYears: 4,
+    monthlyRentalIncome: 25000,
+  },
+];
+
 export default function CalculatorsPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"investment" | "cost">(
     "investment"
   );
+
+  // Project Pre-fill State
+  const [selectedProject, setSelectedProject] = useState("");
+
+  const handleProjectSelect = (projectId: string) => {
+    setSelectedProject(projectId);
+    const found = PROJECT_PRESETS.find((p) => p.id === projectId);
+    if (found) {
+      setInitialInvestment(found.initialInvestment);
+      setSqft(found.sqft);
+      setExpectedAppreciationRate(found.expectedAppreciationRate);
+      setHoldingPeriodYears(found.holdingPeriodYears);
+      setMonthlyRentalIncome(found.monthlyRentalIncome);
+      setBasePrice(found.initialInvestment);
+    }
+  };
 
   // Investment Calculator Inputs State
   const [initialInvestment, setInitialInvestment] = useState(10000000); // 1 Cr
@@ -242,6 +307,28 @@ export default function CalculatorsPage() {
               <h2 className="font-serif text-xl font-bold text-[#0b4eb7]">
                 Investment Parameters
               </h2>
+
+              {/* Select Project (Optional) */}
+              <div className="space-y-2">
+                <label className="block text-xs font-bold text-slate-700">
+                  Select Project (Optional)
+                </label>
+                <div className="relative">
+                  <select
+                    value={selectedProject}
+                    onChange={(e) => handleProjectSelect(e.target.value)}
+                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-md text-sm text-slate-700 appearance-none focus:outline-none focus:border-[#0b4eb7] focus:ring-1 focus:ring-[#0b4eb7] transition pr-10 cursor-pointer"
+                  >
+                    <option value="">Choose a project to pre-fill...</option>
+                    {PROJECT_PRESETS.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.title}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+                </div>
+              </div>
 
               {/* Input 1: Initial Investment */}
               <div className="space-y-2">
@@ -460,6 +547,28 @@ export default function CalculatorsPage() {
               <h2 className="font-serif text-xl font-bold text-[#0b4eb7]">
                 Acquisition Cost Parameters
               </h2>
+
+              {/* Select Project (Optional) */}
+              <div className="space-y-2">
+                <label className="block text-xs font-bold text-slate-700">
+                  Select Project (Optional)
+                </label>
+                <div className="relative">
+                  <select
+                    value={selectedProject}
+                    onChange={(e) => handleProjectSelect(e.target.value)}
+                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-md text-sm text-slate-700 appearance-none focus:outline-none focus:border-[#0b4eb7] focus:ring-1 focus:ring-[#0b4eb7] transition pr-10 cursor-pointer"
+                  >
+                    <option value="">Choose a project to pre-fill...</option>
+                    {PROJECT_PRESETS.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.title}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+                </div>
+              </div>
 
               {/* Base Price Slider */}
               <div className="space-y-2">
