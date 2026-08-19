@@ -15,7 +15,11 @@ import {
   CheckCircle2,
   Mail,
   Share2,
+  ChevronRight,
+  User,
+  Calendar,
 } from "lucide-react";
+import { Footer } from "@/components/layout/footer";
 import { MOCK_BLOG_POSTS } from "@/lib/blog-data";
 import { BlogCategory } from "@repo/types";
 
@@ -512,89 +516,7 @@ export default function BlogsPage() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-slate-300 border-t border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <span className="font-serif text-2xl font-extrabold text-white tracking-tight">
-                1ASET
-              </span>
-              <p className="mt-3 text-xs text-slate-400 leading-relaxed">
-                Bengaluru's premier real estate investment platform for high-yield open plots, luxury projects, and verified land layout acquisitions.
-              </p>
-            </div>
-            <div>
-              <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-3">
-                Quick Links
-              </h4>
-              <ul className="space-y-2 text-xs">
-                <li>
-                  <Link href="/projects" className="hover:text-white transition">
-                    Featured Projects
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/calculators" className="hover:text-white transition">
-                    Investment Calculators
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/blogs" className="hover:text-white transition">
-                    Market Blog & Guides
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/about" className="hover:text-white transition">
-                    About 1ASET
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-3">
-                Top Categories
-              </h4>
-              <ul className="space-y-2 text-xs">
-                <li>
-                  <Link href="/blogs" className="hover:text-white transition">
-                    Micro-Market Spotlights
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/blogs" className="hover:text-white transition">
-                    Legal & RERA Compliance
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/blogs" className="hover:text-white transition">
-                    Investment Strategy
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/blogs" className="hover:text-white transition">
-                    Tax Planning & Capital Gains
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-3">
-                Contact Us
-              </h4>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Indiranagar, Bengaluru, Karnataka 560038
-                <br />
-                Email: invest@1aset.in
-                <br />
-                Phone: +91 80 4920 1122
-              </p>
-            </div>
-          </div>
-          <div className="mt-8 pt-8 border-t border-slate-800 text-center text-xs text-slate-500">
-            © {new Date().getFullYear()} 1ASET Real Estate Technologies Ltd. All rights reserved.
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

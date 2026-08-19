@@ -12,8 +12,10 @@ import {
   Menu,
   X,
   ChevronDown,
-  CheckCircle,
+  Loader2,
+  CheckCircle2,
 } from "lucide-react";
+import { Footer } from "@/components/layout/footer";
 
 import { submitLeadToWebhook } from "@/lib/webhook";
 
@@ -268,7 +270,7 @@ export default function ContactPage() {
               {submitted ? (
                 <div className="py-16 text-center space-y-4">
                   <div className="mx-auto w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center">
-                    <CheckCircle className="h-8 w-8" />
+                    <CheckCircle2 className="h-8 w-8" />
                   </div>
                   <h3 className="text-2xl font-serif font-bold text-slate-900">
                     Enquiry Received
@@ -433,110 +435,7 @@ export default function ContactPage() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-[#0b4eb7] text-white py-12 sm:py-16 border-t border-blue-700/50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 sm:gap-12">
-            {/* Column 1: Brand & Copyright */}
-            <div className="space-y-4">
-              <Link href="/" className="inline-block">
-                <span className="font-serif text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-                  1ASET
-                </span>
-              </Link>
-              <div className="text-[#9ec5ff] text-xs sm:text-sm leading-relaxed space-y-1 font-sans">
-                <p>© 2026 1ASET. All rights reserved.</p>
-                <p className="font-medium text-blue-200">
-                  Precision in Real Estate Investment.
-                </p>
-              </div>
-            </div>
-
-            {/* Column 2: Platform Links */}
-            <div>
-              <h3 className="font-serif text-lg font-bold text-white mb-4">
-                Platform
-              </h3>
-              <ul className="space-y-2.5 text-xs sm:text-sm font-sans text-[#9ec5ff]">
-                <li>
-                  <Link
-                    href="/projects"
-                    className="hover:text-white transition"
-                  >
-                    Projects
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/calculators"
-                    className="hover:text-white transition"
-                  >
-                    Investment Tools
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Column 3: Legal Links */}
-            <div>
-              <h3 className="font-serif text-lg font-bold text-white mb-4">
-                Legal
-              </h3>
-              <ul className="space-y-2.5 text-xs sm:text-sm font-sans text-[#9ec5ff]">
-                <li>
-                  <Link
-                    href="/privacy"
-                    className="hover:text-white transition"
-                  >
-                    Privacy Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/terms" className="hover:text-white transition">
-                    Terms of Service
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/cookies"
-                    className="hover:text-white transition"
-                  >
-                    Cookie Policy
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Column 4: Connect Links */}
-            <div>
-              <h3 className="font-serif text-lg font-bold text-white mb-4">
-                Connect
-              </h3>
-              <ul className="space-y-2.5 text-xs sm:text-sm font-sans text-[#9ec5ff]">
-                <li>
-                  <a
-                    href="https://linkedin.com"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-white transition"
-                  >
-                    LinkedIn
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://twitter.com"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-white transition"
-                  >
-                    Twitter
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

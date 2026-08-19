@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -12,7 +12,102 @@ import {
   Search,
   ChevronDown,
   ArrowRight,
+  RotateCcw,
 } from "lucide-react";
+import { Footer } from "@/components/layout/footer";
+
+const ALL_PROPERTIES = [
+  {
+    id: "marina-crown",
+    title: "Devanahalli Aerotropolis Layout",
+    price: "₹1.25 Cr",
+    priceVal: 12500000,
+    location: "Devanahalli, Bengaluru",
+    roi: "14.5%",
+    roiVal: 14.5,
+    area: "2,400 sqft",
+    status: "BIAPPA Approved",
+    badge: "EXCLUSIVE PLOT",
+    type: "Open Plots",
+    image: "/property-1.jpg",
+    featured: true,
+  },
+  {
+    id: "mayfair-exchange",
+    title: "Sarjapur Tech Corridor",
+    price: "₹85 Lakhs",
+    priceVal: 8500000,
+    location: "Sarjapur Road, Bengaluru",
+    roi: "12.8%",
+    roiVal: 12.8,
+    area: "1,500 sqft",
+    status: "RERA Registered",
+    badge: "HIGH GROWTH",
+    type: "Plotted Community",
+    image: "/property-2.jpg",
+    featured: true,
+  },
+  {
+    id: "palm-estate",
+    title: "The Imperial Palm Villas",
+    price: "₹4.5 Cr",
+    priceVal: 45000000,
+    location: "Yelahanka, Bengaluru",
+    roi: "10.2%",
+    roiVal: 10.2,
+    area: "4,800 sqft",
+    status: "Ready to Move",
+    badge: "LUXURY VILLA",
+    type: "Premium Villa",
+    image: "/property-3.jpg",
+    featured: true,
+  },
+  {
+    id: "whitefield-heights",
+    title: "Whitefield IT Heights",
+    price: "₹1.8 Cr",
+    priceVal: 18000000,
+    location: "Whitefield, Bengaluru",
+    roi: "9.5%",
+    roiVal: 9.5,
+    area: "2,100 sqft",
+    status: "Under Construction",
+    badge: "HIGH YIELD",
+    type: "Luxury Apartment",
+    image: "/property-1.jpg",
+    featured: false,
+  },
+  {
+    id: "greenwood-estates",
+    title: "Greenwood Managed Farm Plots",
+    price: "₹65 Lakhs",
+    priceVal: 6500000,
+    location: "Kanakapura Road, Bengaluru",
+    roi: "13.8%",
+    roiVal: 13.8,
+    area: "6,000 sqft",
+    status: "Clear Title",
+    badge: "ECO INVESTMENT",
+    type: "Farm Plots",
+    image: "/property-2.jpg",
+    featured: false,
+  },
+  {
+    id: "north-bengaluru-gate",
+    title: "North Bengaluru Gateway Layout",
+    price: "₹2.4 Cr",
+    priceVal: 24000000,
+    location: "Devanahalli, Bengaluru",
+    roi: "15.2%",
+    roiVal: 15.2,
+    area: "3,200 sqft",
+    status: "BIAPPA Approved",
+    badge: "PRIME LAND",
+    type: "Open Plots",
+    image: "/property-3.jpg",
+    featured: true,
+  },
+];
 
 export default function ProjectsPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -21,68 +116,61 @@ export default function ProjectsPage() {
   const [budgetRange, setBudgetRange] = useState("Any Budget");
   const [sortBy, setSortBy] = useState("Featured");
 
-  const properties = [
-    {
-      id: "marina-crown",
-      title: "Devanahalli Aerotropolis Layout",
-      price: "₹1.25 Cr",
-      location: "Devanahalli, Bengaluru",
-      roi: "14.5%",
-      area: "2,400 sqft",
-      status: "BIAPPA Approved",
-      badge: "EXCLUSIVE PLOT",
-      type: "Open Plots",
-      image: "/property-1.jpg",
-    },
-    {
-      id: "mayfair-exchange",
-      title: "Sarjapur Tech Corridor",
-      price: "₹85 Lakhs",
-      location: "Sarjapur Road, Bengaluru",
-      roi: "12.8%",
-      area: "1,500 sqft",
-      status: "RERA Registered",
-      badge: "HIGH GROWTH",
-      type: "Plotted Community",
-      image: "/property-2.jpg",
-    },
-    {
-      id: "palm-estate",
-      title: "The Imperial Palm Villas",
-      price: "₹4.5 Cr",
-      location: "Yelahanka, Bengaluru",
-      roi: "10.2%",
-      area: "4,800 sqft",
-      status: "Ready to Move",
-      badge: "LUXURY VILLA",
-      type: "Premium Villa",
-      image: "/property-3.jpg",
-    },
-    {
-      id: "whitefield-heights",
-      title: "Whitefield IT Heights",
-      price: "₹1.8 Cr",
-      location: "Whitefield, Bengaluru",
-      roi: "9.5%",
-      area: "2,100 sqft",
-      status: "Under Construction",
-      badge: "HIGH YIELD",
-      type: "Luxury Apartment",
-      image: "/property-1.jpg",
-    },
-    {
-      id: "greenwood-estates",
-      title: "Greenwood Managed Farm Plots",
-      price: "₹65 Lakhs",
-      location: "Kanakapura Road, Bengaluru",
-      roi: "13.8%",
-      area: "6,000 sqft",
-      status: "Clear Title",
-      badge: "ECO INVESTMENT",
-      type: "Farm Plots",
-      image: "/property-2.jpg",
-    },
-  ];
+  const filteredProperties = useMemo(() => {
+    return ALL_PROPERTIES.filter((item) => {
+      // 1. Location search filter
+      if (locationSearch.trim() !== "") {
+        const query = locationSearch.toLowerCase().trim();
+        const matchesLoc = item.location.toLowerCase().includes(query);
+        const matchesTitle = item.title.toLowerCase().includes(query);
+        if (!matchesLoc && !matchesTitle) return false;
+      }
+
+      // 2. Property Type filter
+      if (propertyType !== "All Types") {
+        if (propertyType === "Open Plots" && item.type !== "Open Plots") return false;
+        if (propertyType === "Plotted Community" && item.type !== "Plotted Community") return false;
+        if (propertyType === "Luxury Apartment" && item.type !== "Luxury Apartment") return false;
+        if (propertyType === "Premium Villa" && item.type !== "Premium Villa") return false;
+        if (propertyType === "Farm Plots" && item.type !== "Farm Plots") return false;
+      }
+
+      // 3. Budget Range filter
+      if (budgetRange !== "Any Budget") {
+        if (budgetRange === "Under 1Cr" && item.priceVal >= 10000000) return false;
+        if (budgetRange === "1Cr - 5Cr" && (item.priceVal < 10000000 || item.priceVal > 50000000)) return false;
+        if (budgetRange === "Above 5Cr" && item.priceVal <= 50000000) return false;
+      }
+
+      return true;
+    }).sort((a, b) => {
+      if (sortBy === "PriceLowToHigh") {
+        return a.priceVal - b.priceVal;
+      }
+      if (sortBy === "PriceHighToLow") {
+        return b.priceVal - a.priceVal;
+      }
+      if (sortBy === "HighestROI") {
+        return b.roiVal - a.roiVal;
+      }
+      // "Featured" default
+      return (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
+    });
+  }, [locationSearch, propertyType, budgetRange, sortBy]);
+
+  const resetFilters = () => {
+    setLocationSearch("");
+    setPropertyType("All Types");
+    setBudgetRange("Any Budget");
+    setSortBy("Featured");
+  };
+
+  const scrollToGrid = () => {
+    const el = document.getElementById("properties-grid-results");
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-[#faf7f2] font-sans antialiased text-slate-900 selection:bg-[#0b4eb7] selection:text-white">
@@ -297,6 +385,7 @@ export default function ProjectsPage() {
             <div className="md:col-span-2">
               <button
                 type="button"
+                onClick={scrollToGrid}
                 className="w-full bg-[#0b4eb7] hover:bg-[#083c91] text-white py-2.5 px-4 rounded-md font-semibold text-sm flex items-center justify-center gap-2 transition cursor-pointer shadow-sm"
               >
                 <Search className="h-4 w-4" />
@@ -307,13 +396,13 @@ export default function ProjectsPage() {
         </div>
 
         {/* Results Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4">
+        <div id="properties-grid-results" className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 scroll-mt-24">
           <div className="flex items-baseline gap-2">
             <h2 className="font-serif text-2xl font-bold text-[#0b4eb7]">
               Available Properties
             </h2>
             <span className="text-sm font-sans text-slate-500 font-medium">
-              (12)
+              ({filteredProperties.length})
             </span>
           </div>
 
@@ -336,207 +425,125 @@ export default function ProjectsPage() {
         </div>
 
         {/* Properties Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {properties.map((item) => (
-            <div
-              key={item.id}
-              className="bg-white rounded-2xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group h-full"
-            >
-              {/* Card Image Header */}
-              <div>
-                <div className="relative h-60 w-full overflow-hidden bg-slate-100">
-                  <Image
-                    src={item.image}
-                    alt={item.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                  />
-                  {/* Top Right Badge */}
-                  {item.badge && (
-                    <div className="absolute top-3 right-3">
-                      <span className="bg-[#0b4eb7] text-white text-[10px] font-extrabold tracking-wider px-3 py-1.5 rounded-md uppercase shadow-sm">
-                        {item.badge}
+        {filteredProperties.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {filteredProperties.map((item) => (
+              <div
+                key={item.id}
+                className="bg-white rounded-2xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group h-full"
+              >
+                {/* Card Image Header */}
+                <div>
+                  <div className="relative h-60 w-full overflow-hidden bg-slate-100">
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                    />
+                    {/* Top Right Badge */}
+                    {item.badge && (
+                      <div className="absolute top-3 right-3">
+                        <span className="bg-[#0b4eb7] text-white text-[10px] font-extrabold tracking-wider px-3 py-1.5 rounded-md uppercase shadow-sm">
+                          {item.badge}
+                        </span>
+                      </div>
+                    )}
+                    {/* Bottom Left Property Type Pill */}
+                    <div className="absolute bottom-3 left-3">
+                      <span className="bg-white/95 backdrop-blur-md text-slate-900 text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm">
+                        {item.type}
                       </span>
                     </div>
-                  )}
-                  {/* Bottom Left Property Type Pill */}
-                  <div className="absolute bottom-3 left-3">
-                    <span className="bg-white/95 backdrop-blur-md text-slate-900 text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm">
-                      {item.type}
-                    </span>
                   </div>
                 </div>
-              </div>
 
-              {/* Card Content Body */}
-              <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-                {/* Title & Location Header */}
-                <div className="space-y-2">
-                  <div className="flex items-start justify-between gap-2 min-h-[52px]">
-                    <h3 className="font-serif text-lg font-bold text-slate-900 group-hover:text-[#0b4eb7] transition-colors leading-snug line-clamp-2">
-                      {item.title}
-                    </h3>
-                    <span className="font-serif text-lg font-extrabold text-[#0b4eb7] whitespace-nowrap">
-                      {item.price}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between pt-1">
-                    {/* Location */}
-                    <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
-                      <MapPin className="h-3.5 w-3.5 text-[#0b4eb7] shrink-0" />
-                      <span className="truncate">{item.location}</span>
+                {/* Card Content Body */}
+                <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                  {/* Title & Location Header */}
+                  <div className="space-y-2">
+                    <div className="flex items-start justify-between gap-2 min-h-[52px]">
+                      <h3 className="font-serif text-lg font-bold text-slate-900 group-hover:text-[#0b4eb7] transition-colors leading-snug line-clamp-2">
+                        {item.title}
+                      </h3>
+                      <span className="font-serif text-lg font-extrabold text-[#0b4eb7] whitespace-nowrap">
+                        {item.price}
+                      </span>
                     </div>
 
-                    {/* Status Tag */}
-                    <span className="bg-emerald-50 text-emerald-700 border border-emerald-200/80 px-2.5 py-0.5 rounded-md text-[11px] font-bold whitespace-nowrap shrink-0">
-                      {item.status}
-                    </span>
+                    <div className="flex items-center justify-between pt-1">
+                      {/* Location */}
+                      <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+                        <MapPin className="h-3.5 w-3.5 text-[#0b4eb7] shrink-0" />
+                        <span className="truncate">{item.location}</span>
+                      </div>
+
+                      {/* Status Tag */}
+                      <span className="bg-emerald-50 text-emerald-700 border border-emerald-200/80 px-2.5 py-0.5 rounded-md text-[11px] font-bold whitespace-nowrap shrink-0">
+                        {item.status}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* 2 Key Metrics Box - Pinned to bottom with mt-auto */}
+                  <div className="bg-slate-50/80 border border-slate-100 rounded-xl p-3.5 grid grid-cols-2 gap-4 mt-auto">
+                    <div>
+                      <span className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">
+                        Est. Annual ROI
+                      </span>
+                      <span className="block text-base font-extrabold text-emerald-600 mt-0.5">
+                        {item.roi}
+                      </span>
+                    </div>
+
+                    <div className="border-l border-slate-200/60 pl-3.5">
+                      <span className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">
+                        Plot / Area Size
+                      </span>
+                      <span className="block text-base font-bold text-slate-900 mt-0.5">
+                        {item.area}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                {/* 2 Key Metrics Box - Pinned to bottom with mt-auto */}
-                <div className="bg-slate-50/80 border border-slate-100 rounded-xl p-3.5 grid grid-cols-2 gap-4 mt-auto">
-                  <div>
-                    <span className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">
-                      Est. Annual ROI
-                    </span>
-                    <span className="block text-base font-extrabold text-emerald-600 mt-0.5">
-                      {item.roi}
-                    </span>
-                  </div>
-
-                  <div className="border-l border-slate-200/60 pl-3.5">
-                    <span className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">
-                      Plot / Area Size
-                    </span>
-                    <span className="block text-base font-bold text-slate-900 mt-0.5">
-                      {item.area}
-                    </span>
-                  </div>
+                {/* Card Action Button */}
+                <div className="px-6 pb-6 pt-1">
+                  <Link
+                    href={`/projects/${item.id}`}
+                    className="w-full bg-[#0b4eb7] hover:bg-[#083c91] text-white py-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition-all group-hover:shadow-md"
+                  >
+                    <span>View Project Details</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
                 </div>
               </div>
-
-              {/* Card Action Button */}
-              <div className="px-6 pb-6 pt-1">
-                <Link
-                  href={`/projects/${item.id}`}
-                  className="w-full bg-[#0b4eb7] hover:bg-[#083c91] text-white py-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition-all group-hover:shadow-md"
-                >
-                  <span>View Project Details</span>
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="bg-white rounded-2xl p-12 text-center border border-slate-200/80 shadow-sm space-y-4 max-w-lg mx-auto">
+            <div className="w-12 h-12 rounded-full bg-blue-50 text-[#0b4eb7] flex items-center justify-center mx-auto">
+              <Search className="h-6 w-6" />
             </div>
-          ))}
-        </div>
+            <h3 className="font-serif text-xl font-bold text-slate-900">
+              No Properties Found
+            </h3>
+            <p className="text-sm text-slate-600 leading-relaxed">
+              No real estate investment projects currently match your exact location or filter criteria.
+            </p>
+            <button
+              onClick={resetFilters}
+              className="inline-flex items-center gap-2 bg-[#0b4eb7] hover:bg-[#083c91] text-white px-5 py-2.5 rounded-lg text-xs font-bold transition shadow-xs cursor-pointer"
+            >
+              <RotateCcw className="h-4 w-4" />
+              <span>Reset All Filters</span>
+            </button>
+          </div>
+        )}
       </main>
 
       {/* Footer */}
-      <footer className="bg-[#0b4eb7] text-white py-12 sm:py-16 border-t border-blue-700/50 mt-12">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 sm:gap-12">
-            {/* Column 1: Brand & Copyright */}
-            <div className="space-y-4">
-              <Link href="/" className="inline-block">
-                <span className="font-serif text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-                  1ASET
-                </span>
-              </Link>
-              <div className="text-[#9ec5ff] text-xs sm:text-sm leading-relaxed space-y-1 font-sans">
-                <p>© 2024 1ASET. All rights reserved.</p>
-                <p className="font-medium text-blue-200">
-                  Precision in Real Estate Investment.
-                </p>
-              </div>
-            </div>
-
-            {/* Column 2: Platform Links */}
-            <div>
-              <h3 className="font-serif text-lg font-bold text-white mb-4">
-                Platform
-              </h3>
-              <ul className="space-y-2.5 text-xs sm:text-sm font-sans text-[#9ec5ff]">
-                <li>
-                  <Link
-                    href="/projects"
-                    className="hover:text-white transition"
-                  >
-                    Projects
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/calculators"
-                    className="hover:text-white transition"
-                  >
-                    Investment Tools
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Column 3: Legal Links */}
-            <div>
-              <h3 className="font-serif text-lg font-bold text-white mb-4">
-                Legal
-              </h3>
-              <ul className="space-y-2.5 text-xs sm:text-sm font-sans text-[#9ec5ff]">
-                <li>
-                  <Link
-                    href="/privacy"
-                    className="hover:text-white transition"
-                  >
-                    Privacy Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/terms" className="hover:text-white transition">
-                    Terms of Service
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/cookies"
-                    className="hover:text-white transition"
-                  >
-                    Cookie Policy
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Column 4: Connect Links */}
-            <div>
-              <h3 className="font-serif text-lg font-bold text-white mb-4">
-                Connect
-              </h3>
-              <ul className="space-y-2.5 text-xs sm:text-sm font-sans text-[#9ec5ff]">
-                <li>
-                  <a
-                    href="https://linkedin.com"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-white transition"
-                  >
-                    LinkedIn
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://twitter.com"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-white transition"
-                  >
-                    Twitter
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
