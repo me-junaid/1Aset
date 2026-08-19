@@ -294,20 +294,19 @@ export default function ProjectDetailClient({
                 </h2>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 items-stretch">
-                  {/* Map Box */}
-                  <div className="relative min-h-[220px] rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-slate-100 flex flex-col items-center justify-center p-6 text-center">
-                    <Image
-                      src="/contact-map.jpg"
-                      alt="Location Map"
-                      fill
-                      className="object-cover opacity-60"
+                  {/* Real Google Maps Embed Box */}
+                  <div className="relative min-h-[240px] sm:min-h-[260px] rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-slate-100">
+                    <iframe
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.6344732973607!2d77.58261948187092!3d13.058923180140097!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae3d0213ed8e45%3A0x28e1fee18b669def!2s1Aset.com!5e0!3m2!1sen!2sin!4v1787169546623!5m2!1sen!2sin"
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      allowFullScreen={true}
+                      loading="lazy"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      title="1ASET Office Location Map"
+                      className="w-full h-full rounded-2xl"
                     />
-                    <div className="relative z-10 space-y-2 bg-white/90 backdrop-blur-md p-4 rounded-xl shadow-sm border border-slate-200">
-                      <MapPin className="h-6 w-6 text-[#0b4eb7] mx-auto" />
-                      <span className="font-semibold text-xs text-slate-800 block">
-                        Interactive Map Loading...
-                      </span>
-                    </div>
                   </div>
 
                   {/* Developer Details */}

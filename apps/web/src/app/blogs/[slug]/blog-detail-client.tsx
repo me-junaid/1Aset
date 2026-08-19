@@ -214,7 +214,7 @@ export default function BlogDetailClient({ params }: BlogDetailParams) {
           </div>
 
           {/* Article Body Content */}
-          <div className="prose prose-slate max-w-none prose-headings:font-serif prose-headings:font-bold prose-h2:text-2xl prose-h2:sm:text-3xl prose-h2:mt-10 prose-h2:mb-4 prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3 prose-p:text-slate-700 prose-p:leading-relaxed prose-p:mb-6 prose-li:text-slate-700 prose-blockquote:border-l-4 prose-blockquote:border-[#0b4eb7] prose-blockquote:bg-blue-50/50 prose-blockquote:p-4 prose-blockquote:rounded-r-lg prose-blockquote:italic prose-blockquote:text-slate-800">
+          <div className="article-content max-w-none font-sans">
             <div dangerouslySetInnerHTML={{ __html: post.content }} />
           </div>
 
