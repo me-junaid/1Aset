@@ -224,10 +224,10 @@ export default function AboutPage() {
               {/* Stat 2 */}
               <div className="py-4 md:py-0 md:px-8 space-y-2">
                 <span className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight">
-                  $2.4B
+                  ₹2,500+ Cr
                 </span>
                 <span className="block font-sans text-xs sm:text-sm font-semibold tracking-wider text-blue-200 uppercase">
-                  ASSETS MANAGED
+                  ASSETS UNDER ADVISORY
                 </span>
               </div>
 

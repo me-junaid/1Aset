@@ -380,7 +380,7 @@ export default function ContactPage() {
                       </label>
                       <input
                         type="text"
-                        placeholder="e.g. Dubai Marina"
+                        placeholder="e.g. Devanahalli, Bengaluru"
                         value={formData.preferredLocation}
                         onChange={(e) =>
                           setFormData({

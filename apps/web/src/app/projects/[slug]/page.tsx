@@ -40,60 +40,98 @@ interface ProjectData {
 const PROJECTS_DATA: Record<string, ProjectData> = {
   "marina-crown": {
     slug: "marina-crown",
-    title: "The Marina Crown",
-    badge: "EXCLUSIVE",
-    location: "Dubai Marina, UAE",
-    startingPrice: "$2.4M",
-    appreciation: "12% p.a.",
-    rentalYield: "7.5%",
-    horizon: "5-8 Yrs",
+    title: "Devanahalli Aerotropolis Layout",
+    badge: "EXCLUSIVE PLOT",
+    location: "Devanahalli, Bengaluru",
+    startingPrice: "₹1.25 Cr",
+    appreciation: "14.5% p.a.",
+    rentalYield: "8.5%",
+    horizon: "3-5 Yrs",
     overview:
-      "The Marina Crown represents the pinnacle of luxury waterfront living and institutional-grade real estate investment. Rising 72 stories above the iconic Dubai Marina, this architectural masterpiece offers unparalleled views of the Arabian Gulf and the Palm Jumeirah.\n\nDesigned by world-renowned architects, the development integrates cutting-edge smart home technology with sustainable building practices, ensuring long-term asset value preservation and premium rental yields. Every detail is meticulously crafted to cater to the highest standards of international luxury.",
+      "Devanahalli Aerotropolis Layout represents the premier land investment opportunity in North Bengaluru's fastest-growing growth corridor. Located minutes from Kempegowda International Airport and the 12,000-acre ITIR SEZ, this BIAPPA & RERA-approved layout features wide asphalt roads, underground cabling, and landscaped avenues.\n\nIdeal for investors seeking high annual land appreciation driven by major infrastructure projects including the Namma Metro Blue Line extension and Satellite Town Ring Road (STRR).",
     heroImage: "/property-1.jpg",
     galleryMain: "/gallery-interior.jpg",
     gallerySub1: "/property-1.jpg",
     gallerySub2: "/gallery-lounge.jpg",
     developerName: "Prestige Group",
     developerDesc:
-      "With over 30 years of excellence in luxury real estate, Prestige Group has consistently delivered iconic developments that redefine urban living. Known for their uncompromising quality and visionary designs.",
+      "With over 30 years of development excellence in Bengaluru, Prestige Group is renowned for landmark plotted communities, luxury towers, and high-yield asset delivery.",
   },
   "mayfair-exchange": {
     slug: "mayfair-exchange",
-    title: "Mayfair Exchange",
-    badge: "PRIME COMMERCIAL",
-    location: "London Mayfair, UK",
-    startingPrice: "$8.9M",
-    appreciation: "8.5% p.a.",
-    rentalYield: "5.2%",
-    horizon: "7-10 Yrs",
+    title: "Sarjapur Tech Corridor",
+    badge: "HIGH GROWTH",
+    location: "Sarjapur Road, Bengaluru",
+    startingPrice: "₹85 Lakhs",
+    appreciation: "12.8% p.a.",
+    rentalYield: "7.2%",
+    horizon: "4-6 Yrs",
     overview:
-      "Mayfair Exchange is a Grade-A commercial asset situated in London's premier financial and luxury district. Featuring floor-to-ceiling glass facades and BREEAM-certified sustainable infrastructure, this property secures institutional grade triple-net lease cash flows.",
+      "Sarjapur Tech Corridor is a premier residential & commercial plotted development strategically positioned between Outer Ring Road, Electronic City, and Whitefield tech hubs. Featuring BDA-approved layout specifications, overhead solar lighting, and 24/7 security, it delivers sustained capital growth and high tenant demand.",
     heroImage: "/property-2.jpg",
     galleryMain: "/gallery-lounge.jpg",
     gallerySub1: "/property-2.jpg",
     gallerySub2: "/gallery-interior.jpg",
-    developerName: "Grosvenor Estates",
+    developerName: "Sobha Developers",
     developerDesc:
-      "A storied legacy of prime central London development spanning over two centuries, setting the gold standard for commercial asset management.",
+      "A trusted legacy of precision engineering, backward integration, and top-tier residential layouts across South India.",
   },
   "palm-estate": {
     slug: "palm-estate",
-    title: "The Palm Estate",
-    badge: "HIGH YIELD",
-    location: "Palm Jumeirah, UAE",
-    startingPrice: "$12.5M",
-    appreciation: "15% p.a.",
-    rentalYield: "8.1%",
-    horizon: "3-5 Yrs",
+    title: "The Imperial Palm Villas",
+    badge: "LUXURY VILLA",
+    location: "Yelahanka, Bengaluru",
+    startingPrice: "₹4.5 Cr",
+    appreciation: "10.2% p.a.",
+    rentalYield: "6.5%",
+    horizon: "5-8 Yrs",
     overview:
-      "An ultra-exclusive beachfront villa compound offering private infinity pools, direct access to Arabian Gulf waters, and bespoke architectural finishes tailored for ultra-high-net-worth investors seeking capital preservation and high rental yields.",
+      "An ultra-exclusive gated villa estate offering private plunge pools, lush clubhouse amenities, and bespoke architectural finishes tailored for discerning investors seeking long-term capital preservation in North Bengaluru's serene micro-market.",
     heroImage: "/property-3.jpg",
     galleryMain: "/property-3.jpg",
     gallerySub1: "/gallery-interior.jpg",
     gallerySub2: "/gallery-lounge.jpg",
-    developerName: "Emaar Properties",
+    developerName: "Brigade Group",
     developerDesc:
-      "Global master developer renowned for landmark communities, pristine engineering, and high-yielding real estate portfolios.",
+      "Award-winning real estate developer behind iconic residential and commercial projects across Bengaluru.",
+  },
+  "whitefield-heights": {
+    slug: "whitefield-heights",
+    title: "Whitefield IT Heights",
+    badge: "HIGH YIELD",
+    location: "Whitefield, Bengaluru",
+    startingPrice: "₹1.8 Cr",
+    appreciation: "9.5% p.a.",
+    rentalYield: "5.8%",
+    horizon: "3-5 Yrs",
+    overview:
+      "Modern luxury residences located in the heart of Whitefield's IT corridor, adjacent to major tech parks, Purple Line Metro stations, and international schools.",
+    heroImage: "/property-1.jpg",
+    galleryMain: "/gallery-interior.jpg",
+    gallerySub1: "/property-1.jpg",
+    gallerySub2: "/gallery-lounge.jpg",
+    developerName: "Godrej Properties",
+    developerDesc:
+      "Pioneering sustainable and design-led real estate developments across India.",
+  },
+  "greenwood-estates": {
+    slug: "greenwood-estates",
+    title: "Greenwood Managed Farm Plots",
+    badge: "ECO INVESTMENT",
+    location: "Kanakapura Road, Bengaluru",
+    startingPrice: "₹65 Lakhs",
+    appreciation: "13.8% p.a.",
+    rentalYield: "4.5%",
+    horizon: "4-7 Yrs",
+    overview:
+      "Scenic managed farmland plots equipped with drip irrigation, fruit orchards, and resort amenities along Kanakapura Road, offering natural retreat living alongside strong land appreciation.",
+    heroImage: "/property-2.jpg",
+    galleryMain: "/gallery-lounge.jpg",
+    gallerySub1: "/property-2.jpg",
+    gallerySub2: "/gallery-interior.jpg",
+    developerName: "1ASET Managed Land",
+    developerDesc:
+      "Specialized in high-yield agricultural to non-agricultural land asset curation and turnkey layout management.",
   },
 };
 
@@ -137,7 +175,7 @@ export default function ProjectDetailPage({
 
   const scrollToRegister = () => {
     const el = document.getElementById("register-interest-card");
-    if (el) el.scrollIntoView({ behavior: "smooth" });
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
   };
 
   return (

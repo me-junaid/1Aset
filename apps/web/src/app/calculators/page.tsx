@@ -26,48 +26,48 @@ import {
 const PROJECT_PRESETS = [
   {
     id: "marina-crown",
-    title: "The Marina Crown (Luxury Apartment)",
-    initialInvestment: 24000000, // ₹2.4 Cr
-    sqft: 1800,
-    expectedAppreciationRate: 12,
-    holdingPeriodYears: 5,
-    monthlyRentalIncome: 110000,
-  },
-  {
-    id: "mayfair-exchange",
-    title: "Mayfair Exchange (Commercial Hub)",
-    initialInvestment: 50000000, // ₹5 Cr
-    sqft: 4500,
-    expectedAppreciationRate: 10,
-    holdingPeriodYears: 7,
-    monthlyRentalIncome: 280000,
-  },
-  {
-    id: "palm-estate",
-    title: "The Palm Estate (Premium Villa)",
-    initialInvestment: 85000000, // ₹8.5 Cr
-    sqft: 6200,
-    expectedAppreciationRate: 11,
-    holdingPeriodYears: 6,
-    monthlyRentalIncome: 350000,
-  },
-  {
-    id: "devanahalli-layout",
-    title: "Devanahalli Growth Layout (North Bengaluru Plots)",
-    initialInvestment: 12000000, // ₹1.2 Cr
+    title: "Devanahalli Aerotropolis Layout (North Bengaluru Plots)",
+    initialInvestment: 12500000, // ₹1.25 Cr
     sqft: 2400,
-    expectedAppreciationRate: 15,
+    expectedAppreciationRate: 14.5,
     holdingPeriodYears: 5,
     monthlyRentalIncome: 35000,
   },
   {
-    id: "sarjapur-plots",
-    title: "Sarjapur Prime Corridor (Plotted Layout)",
-    initialInvestment: 7500000, // ₹75 L
+    id: "mayfair-exchange",
+    title: "Sarjapur Tech Corridor (Plotted Community)",
+    initialInvestment: 8500000, // ₹85 L
     sqft: 1500,
-    expectedAppreciationRate: 14,
+    expectedAppreciationRate: 12.8,
     holdingPeriodYears: 4,
     monthlyRentalIncome: 25000,
+  },
+  {
+    id: "palm-estate",
+    title: "The Imperial Palm Villas (Yelahanka Villa)",
+    initialInvestment: 45000000, // ₹4.5 Cr
+    sqft: 4800,
+    expectedAppreciationRate: 10.2,
+    holdingPeriodYears: 6,
+    monthlyRentalIncome: 180000,
+  },
+  {
+    id: "whitefield-heights",
+    title: "Whitefield IT Heights (Luxury Apartment)",
+    initialInvestment: 18000000, // ₹1.8 Cr
+    sqft: 2100,
+    expectedAppreciationRate: 9.5,
+    holdingPeriodYears: 5,
+    monthlyRentalIncome: 75000,
+  },
+  {
+    id: "greenwood-estates",
+    title: "Greenwood Managed Farm Plots (Kanakapura Road)",
+    initialInvestment: 6500000, // ₹65 L
+    sqft: 6000,
+    expectedAppreciationRate: 13.8,
+    holdingPeriodYears: 5,
+    monthlyRentalIncome: 20000,
   },
 ];
 
@@ -258,8 +258,7 @@ export default function CalculatorsPage() {
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-10">
         {/* Page Header */}
         <div className="text-center max-w-3xl mx-auto space-y-3">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-100/70 border border-blue-200 text-[#0b4eb7] text-xs font-bold uppercase tracking-wider">
-            <Sparkles className="h-3.5 w-3.5" />
+          <div className="inline-flex opacity-70 items-center gap-2 px-3.5 py-1  text-[#0b4eb7] text-xs font-bold uppercase tracking-wider">
             <span>Institutional Financial Analytics</span>
           </div>
           <h1 className="font-serif text-3xl sm:text-5xl font-extrabold text-[#0b4eb7] tracking-tight">

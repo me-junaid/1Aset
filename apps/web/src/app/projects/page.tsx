@@ -11,6 +11,7 @@ import {
   Banknote,
   Search,
   ChevronDown,
+  ArrowRight,
 } from "lucide-react";
 
 export default function ProjectsPage() {
@@ -23,39 +24,63 @@ export default function ProjectsPage() {
   const properties = [
     {
       id: "marina-crown",
-      title: "The Marina Crown",
-      price: "$2.4M",
-      location: "Dubai Marina, UAE",
-      roi: "7.5%",
-      area: "1,200 sqft",
-      status: "Off-Plan",
-      badge: "EXCLUSIVE",
-      type: "Luxury Apartment",
+      title: "Devanahalli Aerotropolis Layout",
+      price: "₹1.25 Cr",
+      location: "Devanahalli, Bengaluru",
+      roi: "14.5%",
+      area: "2,400 sqft",
+      status: "BIAPPA Approved",
+      badge: "EXCLUSIVE PLOT",
+      type: "Open Plots",
       image: "/property-1.jpg",
     },
     {
       id: "mayfair-exchange",
-      title: "Mayfair Exchange",
-      price: "$8.9M",
-      location: "London Mayfair, UK",
-      roi: "5.2%",
-      area: "4,500 sqft",
-      status: "Ready",
-      badge: null,
-      type: "Commercial Hub",
+      title: "Sarjapur Tech Corridor",
+      price: "₹85 Lakhs",
+      location: "Sarjapur Road, Bengaluru",
+      roi: "12.8%",
+      area: "1,500 sqft",
+      status: "RERA Registered",
+      badge: "HIGH GROWTH",
+      type: "Plotted Community",
       image: "/property-2.jpg",
     },
     {
       id: "palm-estate",
-      title: "The Palm Estate",
-      price: "$12.5M",
-      location: "Palm Jumeirah, UAE",
-      roi: "8.1%",
-      area: "8,200 sqft",
-      status: "Ready",
-      badge: "HIGH YIELD",
+      title: "The Imperial Palm Villas",
+      price: "₹4.5 Cr",
+      location: "Yelahanka, Bengaluru",
+      roi: "10.2%",
+      area: "4,800 sqft",
+      status: "Ready to Move",
+      badge: "LUXURY VILLA",
       type: "Premium Villa",
       image: "/property-3.jpg",
+    },
+    {
+      id: "whitefield-heights",
+      title: "Whitefield IT Heights",
+      price: "₹1.8 Cr",
+      location: "Whitefield, Bengaluru",
+      roi: "9.5%",
+      area: "2,100 sqft",
+      status: "Under Construction",
+      badge: "HIGH YIELD",
+      type: "Luxury Apartment",
+      image: "/property-1.jpg",
+    },
+    {
+      id: "greenwood-estates",
+      title: "Greenwood Managed Farm Plots",
+      price: "₹65 Lakhs",
+      location: "Kanakapura Road, Bengaluru",
+      roi: "13.8%",
+      area: "6,000 sqft",
+      status: "Clear Title",
+      badge: "ECO INVESTMENT",
+      type: "Farm Plots",
+      image: "/property-2.jpg",
     },
   ];
 
@@ -216,7 +241,7 @@ export default function ProjectsPage() {
                 <MapPin className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
                 <input
                   type="text"
-                  placeholder="e.g. Dubai Marina"
+                  placeholder="e.g. Devanahalli, Sarjapur, Whitefield"
                   value={locationSearch}
                   onChange={(e) => setLocationSearch(e.target.value)}
                   className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-md text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#0b4eb7] transition"
@@ -237,10 +262,11 @@ export default function ProjectsPage() {
                   className="w-full pl-10 pr-10 py-2.5 bg-white border border-slate-200 rounded-md text-sm text-slate-700 appearance-none focus:outline-none focus:border-[#0b4eb7] transition cursor-pointer"
                 >
                   <option value="All Types">All Types</option>
+                  <option value="Open Plots">Open Plots & Layouts</option>
+                  <option value="Plotted Community">Plotted Community</option>
                   <option value="Luxury Apartment">Luxury Apartment</option>
-                  <option value="Commercial Hub">Commercial Hub</option>
                   <option value="Premium Villa">Premium Villa</option>
-                  <option value="Open Plots">Open Plots</option>
+                  <option value="Farm Plots">Farm Plots</option>
                 </select>
                 <ChevronDown className="absolute right-3.5 top-3.5 h-4 w-4 text-slate-400 pointer-events-none" />
               </div>
@@ -259,9 +285,9 @@ export default function ProjectsPage() {
                   className="w-full pl-10 pr-10 py-2.5 bg-white border border-slate-200 rounded-md text-sm text-slate-700 appearance-none focus:outline-none focus:border-[#0b4eb7] transition cursor-pointer"
                 >
                   <option value="Any Budget">Any Budget</option>
-                  <option value="Under 2M">Under $2M</option>
-                  <option value="2M - 8M">$2M - $8M</option>
-                  <option value="Above 8M">Above $8M</option>
+                  <option value="Under 1Cr">Under ₹1 Crore</option>
+                  <option value="1Cr - 5Cr">₹1 Cr - ₹5 Cr</option>
+                  <option value="Above 5Cr">Above ₹5 Crores</option>
                 </select>
                 <ChevronDown className="absolute right-3.5 top-3.5 h-4 w-4 text-slate-400 pointer-events-none" />
               </div>
@@ -314,92 +340,91 @@ export default function ProjectsPage() {
           {properties.map((item) => (
             <div
               key={item.id}
-              className="bg-white rounded-xl overflow-hidden border border-slate-200/80 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between"
+              className="bg-white rounded-2xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group h-full"
             >
               {/* Card Image Header */}
               <div>
-                <div className="relative h-64 w-full overflow-hidden bg-slate-100">
+                <div className="relative h-60 w-full overflow-hidden bg-slate-100">
                   <Image
                     src={item.image}
                     alt={item.title}
                     fill
-                    className="object-cover"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                   />
                   {/* Top Right Badge */}
                   {item.badge && (
                     <div className="absolute top-3 right-3">
-                      <span className="bg-[#0b4eb7] text-white text-[10px] font-bold tracking-wider px-3 py-1 rounded-sm uppercase">
+                      <span className="bg-[#0b4eb7] text-white text-[10px] font-extrabold tracking-wider px-3 py-1.5 rounded-md uppercase shadow-sm">
                         {item.badge}
                       </span>
                     </div>
                   )}
                   {/* Bottom Left Property Type Pill */}
                   <div className="absolute bottom-3 left-3">
-                    <span className="bg-white/95 backdrop-blur-sm text-slate-800 text-xs font-semibold px-3 py-1 rounded-md shadow-sm">
+                    <span className="bg-white/95 backdrop-blur-md text-slate-900 text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm">
                       {item.type}
                     </span>
                   </div>
                 </div>
+              </div>
 
-                {/* Card Content Body */}
-                <div className="p-6 space-y-4">
-                  {/* Title & Price */}
-                  <div className="flex items-start justify-between gap-2">
-                    <h3 className="font-serif text-xl font-bold text-[#0b4eb7]">
+              {/* Card Content Body */}
+              <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                {/* Title & Location Header */}
+                <div className="space-y-2">
+                  <div className="flex items-start justify-between gap-2 min-h-[52px]">
+                    <h3 className="font-serif text-lg font-bold text-slate-900 group-hover:text-[#0b4eb7] transition-colors leading-snug line-clamp-2">
                       {item.title}
                     </h3>
-                    <span className="font-serif text-xl font-extrabold text-[#b47b1c]">
+                    <span className="font-serif text-lg font-extrabold text-[#0b4eb7] whitespace-nowrap">
                       {item.price}
                     </span>
                   </div>
 
-                  {/* Location Subrow */}
-                  <div className="flex items-center gap-1.5 text-xs text-slate-500">
-                    <MapPin className="h-3.5 w-3.5 text-slate-400" />
-                    <span>{item.location}</span>
+                  <div className="flex items-center justify-between pt-1">
+                    {/* Location */}
+                    <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+                      <MapPin className="h-3.5 w-3.5 text-[#0b4eb7] shrink-0" />
+                      <span className="truncate">{item.location}</span>
+                    </div>
+
+                    {/* Status Tag */}
+                    <span className="bg-emerald-50 text-emerald-700 border border-emerald-200/80 px-2.5 py-0.5 rounded-md text-[11px] font-bold whitespace-nowrap shrink-0">
+                      {item.status}
+                    </span>
+                  </div>
+                </div>
+
+                {/* 2 Key Metrics Box - Pinned to bottom with mt-auto */}
+                <div className="bg-slate-50/80 border border-slate-100 rounded-xl p-3.5 grid grid-cols-2 gap-4 mt-auto">
+                  <div>
+                    <span className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">
+                      Est. Annual ROI
+                    </span>
+                    <span className="block text-base font-extrabold text-emerald-600 mt-0.5">
+                      {item.roi}
+                    </span>
                   </div>
 
-                  <hr className="border-slate-100 my-2" />
-
-                  {/* 3 Metrics Columns */}
-                  <div className="grid grid-cols-3 gap-2 text-left pt-1">
-                    <div>
-                      <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                        ROI (EST.)
-                      </span>
-                      <span className="block text-sm font-bold text-[#0b4eb7] mt-0.5">
-                        {item.roi}
-                      </span>
-                    </div>
-
-                    <div>
-                      <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                        AREA
-                      </span>
-                      <span className="block text-sm font-bold text-slate-800 mt-0.5">
-                        {item.area}
-                      </span>
-                    </div>
-
-                    <div>
-                      <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                        STATUS
-                      </span>
-                      <span className="block text-sm font-bold text-[#0b4eb7] mt-0.5">
-                        {item.status}
-                      </span>
-                    </div>
+                  <div className="border-l border-slate-200/60 pl-3.5">
+                    <span className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">
+                      Plot / Area Size
+                    </span>
+                    <span className="block text-base font-bold text-slate-900 mt-0.5">
+                      {item.area}
+                    </span>
                   </div>
                 </div>
               </div>
 
               {/* Card Action Button */}
-              <div className="px-6 pb-6 pt-2">
+              <div className="px-6 pb-6 pt-1">
                 <Link
                   href={`/projects/${item.id}`}
-                  className="block text-center w-full border border-[#0b4eb7] text-[#0b4eb7] hover:bg-[#0b4eb7] hover:text-white py-2.5 rounded-md text-sm font-semibold transition"
+                  className="w-full bg-[#0b4eb7] hover:bg-[#083c91] text-white py-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition-all group-hover:shadow-md"
                 >
-                  View Details
+                  <span>View Project Details</span>
+                  <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
             </div>

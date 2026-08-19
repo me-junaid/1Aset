@@ -3,7 +3,18 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Menu, X, MapPin, Phone, Mail } from "lucide-react";
+import {
+  Menu,
+  X,
+  MapPin,
+  Phone,
+  Mail,
+  Sparkles,
+  ArrowRight,
+  ShieldCheck,
+  TrendingUp,
+  Building2,
+} from "lucide-react";
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -143,7 +154,7 @@ export default function Home() {
       {/* Main Content */}
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative w-full min-h-[640px] sm:min-h-[720px] lg:min-h-[780px] flex flex-col items-center justify-start pt-16 sm:pt-24 pb-20 px-4 sm:px-6 overflow-hidden">
+        <section className="relative w-full min-h-[680px] sm:min-h-[760px] lg:min-h-[820px] flex flex-col items-center justify-start pt-12 sm:pt-20 pb-20 px-4 sm:px-6 overflow-hidden">
           {/* Hero Background Skyscraper Image */}
           <div className="absolute inset-0 z-0 pointer-events-none">
             <Image
@@ -151,34 +162,85 @@ export default function Home() {
               alt="1ASET Skyscraper"
               fill
               priority
-              className="object-cover object-center"
+              className="object-cover object-center scale-105 filter brightness-95"
             />
-            {/* Gradient Mask to Fade Image into Cream Background (#faf7f2) */}
-            <div className="absolute inset-0 bg-gradient-to-b from-[#faf7f2]/40 via-[#faf7f2]/75 via-60% to-[#faf7f2]" />
+            {/* Elegant Radial Gradient Mask for Crystal Clarity */}
+            <div className="absolute inset-0 bg-gradient-to-b from-[#faf7f2]/60 via-[#faf7f2]/85 via-50% to-[#faf7f2]" />
           </div>
 
           {/* Hero Content */}
           <div className="relative z-10 max-w-5xl mx-auto flex flex-col items-center text-center">
+            {/* Pill Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-1.5  text-[#0b4eb7] text-xs font-bold uppercase tracking-wider mb-6 animate-in fade-in duration-300">
+              <span>Institutional-Grade Real Estate Platform</span>
+            </div>
+
             {/* Large Serif Headline */}
-            <h1 className="font-serif font-extrabold text-3xl sm:text-5xl md:text-6xl text-[#0b4eb7] leading-[1.18] tracking-tight max-w-4xl">
+            <h1 className="font-serif font-extrabold text-3xl sm:text-5xl md:text-6xl text-[#073582] leading-[1.16] tracking-tight max-w-4xl drop-shadow-xs">
               Build Wealth Through Smarter Real Estate Investments.
             </h1>
 
             {/* Sans-serif Subheading */}
-            <p className="font-sans text-sm sm:text-base md:text-lg text-slate-600 max-w-2xl mt-5 sm:mt-6 leading-relaxed font-normal">
-              Discover premium, vetted projects and make informed decisions with
-              our institutional-grade investment platform designed for the
-              modern investor.
+            <p className="font-sans text-base sm:text-lg md:text-xl text-slate-700 max-w-3xl mt-5 sm:mt-6 leading-relaxed font-normal">
+              Discover premium, RERA-vetted layouts and high-yield properties across Bengaluru. Make data-driven decisions with institutional financial modeling.
             </p>
 
-            {/* CTA Button */}
-            <div className="mt-8 sm:mt-10">
+            {/* Dual CTA Buttons */}
+            <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center gap-4">
               <Link
                 href="/projects"
-                className="inline-flex items-center justify-center bg-[#0b4eb7] hover:bg-[#083c91] text-white px-8 sm:px-10 py-3.5 rounded-md font-semibold text-sm sm:text-base shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+                className="w-full sm:w-auto inline-flex items-center justify-center bg-[#0b4eb7] hover:bg-[#083c91] text-white px-8 py-3.5 rounded-lg font-semibold text-base shadow-md hover:shadow-xl transition-all transform hover:-translate-y-0.5 active:translate-y-0 gap-2"
               >
-                Explore Projects
+                <span>Explore Projects</span>
+                <ArrowRight size={18} />
               </Link>
+
+              <Link
+                href="/calculators"
+                className="w-full sm:w-auto inline-flex items-center justify-center bg-white/90 hover:bg-white text-slate-800 border border-slate-300 px-8 py-3.5 rounded-lg font-semibold text-base shadow-xs hover:shadow-md transition-all gap-2"
+              >
+                <Sparkles size={18} className="text-[#0b4eb7]" />
+                <span>Calculate Yield & ROI</span>
+              </Link>
+            </div>
+
+            {/* Floating Glassmorphic Stats Card */}
+            <div className="mt-12 sm:mt-16 w-full max-w-4xl bg-white/85 backdrop-blur-md border border-slate-200/90 rounded-2xl p-6 sm:p-8 shadow-xl grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+              <div className="space-y-1">
+                <span className="font-serif text-2xl sm:text-4xl font-extrabold text-[#0b4eb7]">
+                  ₹2,500+ Cr
+                </span>
+                <span className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
+                  Assets Under Advisory
+                </span>
+              </div>
+
+              <div className="space-y-1 border-l border-slate-200/60 pl-4 sm:pl-0">
+                <span className="font-serif text-2xl sm:text-4xl font-extrabold text-emerald-600">
+                  14.5%
+                </span>
+                <span className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
+                  Avg Annual Appreciation
+                </span>
+              </div>
+
+              <div className="space-y-1 md:border-l border-slate-200/60">
+                <span className="font-serif text-2xl sm:text-4xl font-extrabold text-[#0b4eb7]">
+                  100%
+                </span>
+                <span className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
+                  RERA & BIAPPA Verified
+                </span>
+              </div>
+
+              <div className="space-y-1 border-l border-slate-200/60 pl-4 sm:pl-0">
+                <span className="font-serif text-2xl sm:text-4xl font-extrabold text-slate-900">
+                  4,500+
+                </span>
+                <span className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
+                  Active Investors
+                </span>
+              </div>
             </div>
           </div>
         </section>
