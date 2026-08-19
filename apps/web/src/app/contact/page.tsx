@@ -15,9 +15,12 @@ import {
   CheckCircle,
 } from "lucide-react";
 
+import { submitLeadToWebhook } from "@/lib/webhook";
+
 export default function ContactPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
     phoneNumber: "",
@@ -27,9 +30,20 @@ export default function ContactPage() {
     message: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setIsSubmitting(true);
+    try {
+      await submitLeadToWebhook({
+        ...formData,
+        source: "1ASET Contact Enquiry Form",
+      });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
+      setSubmitted(true);
+    }
   };
 
   return (
@@ -398,10 +412,17 @@ export default function ContactPage() {
                   <div className="pt-2">
                     <button
                       type="submit"
-                      className="w-full bg-[#004bb7] hover:bg-[#00378a] text-white py-4 rounded-md font-semibold text-sm flex items-center justify-center gap-2 shadow-sm transition transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                      disabled={isSubmitting}
+                      className="w-full bg-[#004bb7] hover:bg-[#00378a] text-white py-4 rounded-md font-semibold text-sm flex items-center justify-center gap-2 shadow-sm transition transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
                     >
-                      <span>Submit Enquiry</span>
-                      <ArrowRight className="h-4 w-4" />
+                      {isSubmitting ? (
+                        <span>Submitting Enquiry...</span>
+                      ) : (
+                        <>
+                          <span>Submit Enquiry</span>
+                          <ArrowRight className="h-4 w-4" />
+                        </>
+                      )}
                     </button>
                   </div>
                 </form>

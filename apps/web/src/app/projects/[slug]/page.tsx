@@ -17,6 +17,7 @@ import {
   CheckCircle2,
   ArrowRight,
 } from "lucide-react";
+import { submitLeadToWebhook } from "@/lib/webhook";
 
 interface ProjectData {
   slug: string;
@@ -107,15 +108,31 @@ export default function ProjectDetailPage({
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({
     fullName: "",
     emailAddress: "",
     phoneNumber: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setIsSubmitting(true);
+    try {
+      await submitLeadToWebhook({
+        fullName: form.fullName,
+        phoneNumber: form.phoneNumber,
+        emailAddress: form.emailAddress,
+        interestedIn: project?.title || "Project Interest",
+        preferredLocation: project?.location || "",
+        source: `Project Page - ${project?.title || resolvedParams.slug}`,
+      });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
+      setSubmitted(true);
+    }
   };
 
   const scrollToRegister = () => {
