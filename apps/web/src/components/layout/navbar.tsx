@@ -37,7 +37,7 @@ export function Navbar() {
       <header className="sticky top-0 z-50 bg-[#faf7f2]/96 backdrop-blur-md border-b border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[60px] sm:h-20 flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-1" prefetch>
+          <Link href="/" className="flex items-center gap-1">
             <span className="font-serif text-2xl sm:text-3xl font-extrabold text-[#0b4eb7] tracking-tight">
               1ASET
             </span>
@@ -49,7 +49,6 @@ export function Navbar() {
               <Link
                 key={href}
                 href={href}
-                prefetch
                 className={
                   isActive(href)
                     ? "text-[#0b4eb7] font-semibold border-b-2 border-[#0b4eb7] pb-1 transition"
@@ -65,7 +64,6 @@ export function Navbar() {
           <div className="hidden md:flex items-center">
             <Link
               href="/contact"
-              prefetch
               className="bg-[#0b4eb7] hover:bg-[#083c91] text-white px-5 py-2.5 rounded-md font-semibold text-sm shadow-sm transition-all transform hover:-translate-y-0.5 active:translate-y-0"
             >
               Talk to an Expert
