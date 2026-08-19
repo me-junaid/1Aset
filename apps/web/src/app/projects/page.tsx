@@ -414,7 +414,8 @@ export default function ProjectsPage() {
                   key={item.id}
                   className="bg-white rounded-2xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group h-full"
                 >
-                  <div className="flex flex-col h-full flex-1">
+                  {/* Mobile: Horizontal card layout */}
+                  <div className="sm:block">
                     {/* Image */}
                     <div className="relative h-44 sm:h-52 w-full overflow-hidden bg-slate-100 shrink-0">
                       <Image
@@ -445,8 +446,8 @@ export default function ProjectsPage() {
 
                     {/* Card Body */}
                     <div className="p-4 sm:p-5 flex-1 flex flex-col gap-3">
-                      {/* Title row — min-h ensures identical alignment across 1-line and 2-line titles */}
-                      <div className="flex items-start justify-between gap-2 min-h-[52px] sm:min-h-[56px]">
+                      {/* Title row */}
+                      <div className="flex items-start justify-between gap-2">
                         <h3 className="font-serif text-base sm:text-lg font-bold text-slate-900 group-hover:text-[#0b4eb7] transition-colors leading-snug line-clamp-2">
                           {item.title}
                         </h3>
