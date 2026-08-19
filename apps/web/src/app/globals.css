@@ -1,0 +1,21 @@
+@import "tailwindcss";
+@source "../../../../packages/ui/src/**/*.{js,ts,jsx,tsx}";
+
+:root {
+  --background: #faf7f2;
+  --foreground: #1a202c;
+}
+
+@theme {
+  --font-serif: var(--font-serif), Georgia, serif;
+  --font-sans: var(--font-sans), Inter, system-ui, sans-serif;
+  --color-brand-blue: #0b4eb7;
+  --color-brand-navy: #1a3d8f;
+  --color-cream: #faf7f2;
+}
+
+body {
+  background-color: #faf7f2;
+  color: #1a202c;
+  font-family: var(--font-sans), Inter, sans-serif;
+}
