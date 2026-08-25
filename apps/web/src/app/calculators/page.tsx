@@ -243,7 +243,7 @@ export default function CalculatorsPage() {
                     <label className="text-xs font-bold text-slate-700">
                       Initial Investment Capital
                     </label>
-                    <span className="text-[#0b4eb7] text-base font-serif font-extrabold bg-blue-50 px-3 py-1 rounded-lg border border-blue-100">
+                    <span className="text-[#0b4eb7] text-base font-sans font-extrabold bg-blue-50 px-3 py-1 rounded-lg border border-blue-100">
                       {formatCurrencyINR(initialInvestment)}
                     </span>
                   </div>
@@ -404,7 +404,7 @@ export default function CalculatorsPage() {
                         {holdingPeriodYears} Yr Horizon
                       </span>
                     </div>
-                    <span className="block font-serif text-3xl sm:text-5xl font-extrabold tracking-tight pt-1">
+                    <span className="block font-sans text-3xl sm:text-5xl font-extrabold tracking-tight pt-1">
                       {formatCurrencyINR(investmentResult.totalProjectedValue)}
                     </span>
                   </div>
@@ -504,10 +504,11 @@ export default function CalculatorsPage() {
                       <span className="font-bold text-slate-800">
                         Estimated Property Asset Value
                       </span>
-                      <span className="font-serif font-extrabold text-xl text-[#0b4eb7]">
+                      <span className="font-sans font-extrabold text-xl text-[#0b4eb7]">
                         {formatCurrencyINR(investmentResult.projectedPropertyValue)}
                       </span>
                     </div>
+
                   </div>
 
                   {/* Call to Action */}
@@ -569,7 +570,7 @@ export default function CalculatorsPage() {
                     <label className="text-xs font-bold text-slate-700">
                       Base Property Investment Amount
                     </label>
-                    <span className="text-[#0b4eb7] text-base font-serif font-extrabold bg-blue-50 px-3 py-1 rounded-lg border border-blue-100">
+                    <span className="text-[#0b4eb7] text-base font-sans font-extrabold bg-blue-50 px-3 py-1 rounded-lg border border-blue-100">
                       {formatCurrencyINR(basePrice)}
                     </span>
                   </div>
@@ -663,7 +664,7 @@ export default function CalculatorsPage() {
                   <span className="block text-xs font-bold text-blue-200 uppercase tracking-wider">
                     Total Estimated Acquisition Outlay
                   </span>
-                  <span className="block font-serif text-3xl sm:text-5xl font-extrabold tracking-tight">
+                  <span className="block font-sans text-3xl sm:text-5xl font-extrabold tracking-tight">
                     {formatCurrencyINR(costResult.totalEstimatedInvestment)}
                   </span>
                 </div>
@@ -705,10 +706,11 @@ export default function CalculatorsPage() {
 
                     <div className="flex justify-between items-center text-slate-900 pt-3 border-t border-slate-200 font-bold">
                       <span>Total Outlay</span>
-                      <span className="font-serif text-2xl font-extrabold text-[#0b4eb7]">
+                      <span className="font-sans text-2xl font-extrabold text-[#0b4eb7]">
                         {formatCurrencyINR(costResult.totalEstimatedInvestment)}
                       </span>
                     </div>
+
                   </div>
 
                   <div className="pt-2">

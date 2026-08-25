@@ -43,6 +43,7 @@ export default function Home() {
               alt="1ASET Skyscraper"
               fill
               priority
+              sizes="100vw"
               className="object-cover object-center scale-105 brightness-95"
             />
             <div className="absolute inset-0 bg-gradient-to-b from-[#faf7f2]/55 via-[#faf7f2]/82 via-50% to-[#faf7f2]" />
@@ -148,8 +149,9 @@ export default function Home() {
                     <div className="relative w-64 h-72 sm:w-72 sm:h-84 lg:w-80 lg:h-96 rounded-2xl overflow-hidden shadow-2xl bg-slate-900 border-2 border-white/20">
                       <Image
                         src="/founder-of-1aset.jpeg"
-                        alt="Founder & CEO of 1ASET"
+                        alt="K Suresh Kumar Reddy - Founder & CEO of Paanya Empire Pvt Ltd"
                         fill
+                        sizes="(max-width: 640px) 256px, (max-width: 1024px) 288px, 320px"
                         className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
                         priority
                       />
@@ -159,8 +161,8 @@ export default function Home() {
                     <div className="absolute -bottom-4 right-2 sm:-right-4 bg-white text-slate-900 px-4 py-2 rounded-xl shadow-xl flex items-center gap-2 border border-slate-200">
                       <ShieldCheck className="w-5 h-5 text-[#0b4eb7]" />
                       <div>
-                        <span className="block text-xs font-extrabold leading-tight text-slate-900">Founder & CEO</span>
-                        <span className="block text-[10px] text-slate-500 font-semibold uppercase tracking-wider">1ASET</span>
+                        <span className="block text-xs font-extrabold leading-tight text-slate-900">K Suresh Kumar Reddy</span>
+                        <span className="block text-[10px] text-[#0b4eb7] font-bold uppercase tracking-wider">Founder & CEO • Paanya Empire</span>
                       </div>
                     </div>
                   </div>
@@ -170,7 +172,7 @@ export default function Home() {
                 <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
                   <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-500/20 text-blue-200 border border-blue-400/30 text-xs font-semibold uppercase tracking-wider">
                     <Award size={14} className="text-amber-400" />
-                    <span>Leadership Vision</span>
+                    <span>Leadership Vision • Paanya Empire Pvt Ltd</span>
                   </div>
 
                   <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-tight">
@@ -183,7 +185,11 @@ export default function Home() {
                     <p className="font-serif text-base sm:text-lg lg:text-xl text-blue-50 italic leading-relaxed relative z-10">
                       &ldquo;Real estate shouldn&apos;t be built on guesswork or hype. At 1ASET, we combine institutional due diligence, complete RERA compliance, and precision financial modeling so every investor secures prime land with compounding appreciation.&rdquo;
                     </p>
+                    <span className="block text-right text-xs font-bold text-amber-300 mt-2">
+                      — K Suresh Kumar Reddy, Founder & CEO (Paanya Empire Pvt Ltd)
+                    </span>
                   </div>
+
 
                   {/* Credentials / Key Highlights */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-left">
@@ -260,6 +266,7 @@ export default function Home() {
                     src={project.heroImage}
                     alt={project.title}
                     fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent" />

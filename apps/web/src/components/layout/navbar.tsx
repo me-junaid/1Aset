@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X, Home, Building2, Calculator, BookOpen, Phone } from "lucide-react";
 
@@ -37,10 +38,15 @@ export function Navbar() {
       <header className="sticky top-0 z-50 bg-[#faf7f2]/96 backdrop-blur-md border-b border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[60px] sm:h-20 flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-1">
-            <span className="font-serif text-2xl sm:text-3xl font-extrabold text-[#0b4eb7] tracking-tight">
-              1ASET
-            </span>
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/1asetBGRLogo.png"
+              alt="1ASET Logo"
+              width={160}
+              height={48}
+              priority
+              className="h-8 sm:h-11 w-auto object-contain"
+            />
           </Link>
 
           {/* Desktop Nav Links */}

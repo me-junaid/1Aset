@@ -423,6 +423,7 @@ export default function ProjectsPage() {
                         src={item.image}
                         alt={item.title}
                         fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                       />
                       {item.badge && (
@@ -439,7 +440,7 @@ export default function ProjectsPage() {
                       </div>
                       {/* Mobile price overlay */}
                       <div className="absolute bottom-2.5 right-2.5 sm:hidden">
-                        <span className="bg-white/95 backdrop-blur-md text-[#0b4eb7] text-sm font-extrabold px-2.5 py-1 rounded-lg shadow-sm font-serif">
+                        <span className="bg-white/95 backdrop-blur-md text-[#0b4eb7] text-sm font-extrabold px-2.5 py-1 rounded-lg shadow-sm font-sans">
                           {item.price}
                         </span>
                       </div>
@@ -453,10 +454,11 @@ export default function ProjectsPage() {
                           {item.title}
                         </h3>
                         {/* Desktop price */}
-                        <span className="hidden sm:block font-serif text-lg font-extrabold text-[#0b4eb7] whitespace-nowrap shrink-0">
+                        <span className="hidden sm:block font-sans text-lg font-extrabold text-[#0b4eb7] whitespace-nowrap shrink-0">
                           {item.price}
                         </span>
                       </div>
+
 
                       {/* Location + Status */}
                       <div className="flex items-center justify-between">

@@ -161,6 +161,7 @@ export default function BlogsPage() {
                     src={featuredPost.coverImage}
                     alt={featuredPost.title}
                     fill
+                    sizes="(max-width: 1024px) 100vw, 58vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                     priority
                   />
@@ -273,6 +274,7 @@ export default function BlogsPage() {
                         src={post.coverImage}
                         alt={post.title}
                         fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-cover group-hover:scale-105 transition-transform duration-300 ease-out"
                       />
                       <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-md text-[#0b4eb7] text-[11px] font-bold px-2.5 py-1 rounded-md shadow-xs">

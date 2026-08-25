@@ -157,7 +157,7 @@ export default function ProjectDetailClient({
                     <span className="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
                       Starting Investment
                     </span>
-                    <span className="block font-serif text-xl sm:text-2xl font-bold text-[#0b4eb7]">
+                    <span className="block font-sans text-xl sm:text-2xl font-bold text-[#0b4eb7]">
                       {project.startingPrice}
                     </span>
                   </div>
@@ -168,7 +168,7 @@ export default function ProjectDetailClient({
                       Est. Appreciation
                     </span>
                     <div className="flex items-center gap-1">
-                      <span className="font-serif text-xl sm:text-2xl font-bold text-emerald-600">
+                      <span className="font-sans text-xl sm:text-2xl font-bold text-emerald-600">
                         {project.appreciation}
                       </span>
                       <TrendingUp className="h-4 w-4 text-emerald-500" />
@@ -180,7 +180,7 @@ export default function ProjectDetailClient({
                     <span className="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
                       Expected Rental Yield
                     </span>
-                    <span className="block font-serif text-xl sm:text-2xl font-bold text-[#0b4eb7]">
+                    <span className="block font-sans text-xl sm:text-2xl font-bold text-[#0b4eb7]">
                       {project.rentalYield}
                     </span>
                   </div>
@@ -190,10 +190,11 @@ export default function ProjectDetailClient({
                     <span className="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
                       Investment Horizon
                     </span>
-                    <span className="block font-serif text-xl sm:text-2xl font-bold text-[#0b4eb7]">
+                    <span className="block font-sans text-xl sm:text-2xl font-bold text-[#0b4eb7]">
                       {project.horizon}
                     </span>
                   </div>
+
                 </div>
               </div>
 

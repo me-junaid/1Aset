@@ -11,7 +11,7 @@ export class WhatsappOtp {
   @Prop({ required: true })
   otpHash: string;
 
-  @Prop({ required: true, index: true })
+  @Prop({ required: true })
   expiresAt: Date;
 
   @Prop({ required: true })

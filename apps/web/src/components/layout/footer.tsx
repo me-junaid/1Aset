@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Globe, Share2, Camera, ArrowUp } from "lucide-react";
 
 // Computed once at module load — avoids unstable `new Date()` during prerender
@@ -21,9 +22,13 @@ export function Footer() {
           {/* Column 1: Brand — full width on small mobile */}
           <div className="col-span-2 sm:col-span-2 lg:col-span-1 space-y-3">
             <Link href="/" className="inline-block">
-              <span className="font-serif text-3xl font-extrabold text-white tracking-tight">
-                1ASET
-              </span>
+              <Image
+                src="/1asetBGRLogo.png"
+                alt="1ASET Logo"
+                width={160}
+                height={48}
+                className="h-9 sm:h-12 w-auto object-contain brightness-0 invert"
+              />
             </Link>
             <p className="text-blue-100/90 text-sm leading-relaxed max-w-xs font-sans">
               Institutional-grade real estate investment platform focused on high-yield prime market opportunities in Bengaluru.
@@ -106,7 +111,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="pt-6 border-t border-blue-700/60 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-blue-100/75 font-sans">
           <div>
-            © {CURRENT_YEAR} 1ASET. All rights reserved. Investment in real estate carries risk.
+            © {CURRENT_YEAR} 1ASET (Paanya Empire Pvt Ltd). All rights reserved. Investment in real estate carries risk.
           </div>
 
           <button
