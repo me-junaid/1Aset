@@ -40,7 +40,7 @@ export function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center">
             <Image
-              src="/1asetBGRLogo.png"
+              src="/1aset-bgr-logo.png"
               alt="1ASET Logo"
               width={160}
               height={48}

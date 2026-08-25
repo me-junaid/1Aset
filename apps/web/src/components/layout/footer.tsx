@@ -23,7 +23,7 @@ export function Footer() {
           <div className="col-span-2 sm:col-span-2 lg:col-span-1 space-y-3">
             <Link href="/" className="inline-block">
               <Image
-                src="/1asetBGRLogo.png"
+                src="/1aset-bgr-logo.png"
                 alt="1ASET Logo"
                 width={160}
                 height={48}
