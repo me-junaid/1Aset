@@ -28,6 +28,7 @@ export function Footer() {
                 width={160}
                 height={48}
                 className="h-9 sm:h-12 w-auto object-contain brightness-0 invert"
+                style={{ width: "auto" }}
               />
             </Link>
             <p className="text-blue-100/90 text-sm leading-relaxed max-w-xs font-sans">
