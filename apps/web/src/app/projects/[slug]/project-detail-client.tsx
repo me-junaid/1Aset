@@ -13,12 +13,14 @@ import {
   Cpu,
   Check,
   CheckCircle2,
-  ArrowRight
+  ArrowRight,
+  ShieldCheck,
 } from "lucide-react";
 import { Footer } from "@/components/layout/footer";
 import { Navbar } from "@/components/layout/navbar";
-import { submitLeadToWebhook } from "@/lib/webhook";
+import { OtpVerificationModal } from "@/components/features/otp-verification-modal";
 import { PROJECTS_DATA } from "@/lib/projects-data";
+import type { LeadSubmitPayload } from "@repo/types";
 
 export default function ProjectDetailClient({
   params
@@ -29,32 +31,44 @@ export default function ProjectDetailClient({
   const slug = resolvedParams.slug;
   const project = PROJECTS_DATA[slug] || PROJECTS_DATA["marina-crown"];
   const [submitted, setSubmitted] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showOtpModal, setShowOtpModal] = useState(false);
   const [form, setForm] = useState({
     fullName: "",
-    emailAddress: "",
-    phoneNumber: ""
-});
+    phoneNumber: "",
+    language: "English",
+    budgetRange: "25L",
+    siteVisit: "Not decided",
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    try {
-      await submitLeadToWebhook({
-        fullName: form.fullName,
-        phoneNumber: form.phoneNumber,
-        emailAddress: form.emailAddress,
-        interestedIn: project?.title || "Project Interest",
-        preferredLocation: project?.location || "",
-        source: `Project Page - ${project?.title || resolvedParams.slug}`
-});
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsSubmitting(false);
-      setSubmitted(true);
-    }
+  const normalizePhone = (phone: string): string => {
+    const digits = phone.replace(/[\s\-\(\)]/g, "");
+    if (digits.startsWith("+")) return digits;
+    if (digits.startsWith("91") && digits.length >= 12) return `+${digits}`;
+    if (digits.startsWith("0")) return `+91${digits.slice(1)}`;
+    return `+91${digits}`;
   };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.fullName.trim() || !form.phoneNumber.trim()) return;
+    setShowOtpModal(true);
+  };
+
+  const handleOtpSuccess = () => {
+    setShowOtpModal(false);
+    setSubmitted(true);
+  };
+
+  const buildLeadPayload = (): Omit<LeadSubmitPayload, "whatsappVerificationId"> => ({
+    name: form.fullName,
+    phoneNumber: normalizePhone(form.phoneNumber),
+    language: form.language,
+    budgetRange: form.budgetRange,
+    siteVisit: form.siteVisit,
+    interestedIn: project?.title || "Project Interest",
+    preferredLocation: project?.location || "",
+    source: "Project Page",
+  });
 
   const scrollToRegister = () => {
     const el = document.getElementById("register-interest-card");
@@ -64,6 +78,15 @@ export default function ProjectDetailClient({
   return (
     <div className="flex flex-col min-h-screen bg-[#faf7f2] font-sans antialiased text-slate-900 selection:bg-[#0b4eb7] selection:text-white">
       <Navbar />
+
+      {/* OTP Verification Modal */}
+      <OtpVerificationModal
+        isOpen={showOtpModal}
+        phoneNumber={normalizePhone(form.phoneNumber)}
+        leadPayload={buildLeadPayload()}
+        onClose={() => setShowOtpModal(false)}
+        onSuccess={handleOtpSuccess}
+      />
 
       {/* Main Content */}
       <main className="flex-1">
@@ -348,7 +371,6 @@ export default function ProjectDetailClient({
                     plans and availability.
                   </p>
                 </div>
-
                 {submitted ? (
                   <div className="py-10 text-center space-y-3">
                     <div className="mx-auto w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center">
@@ -363,69 +385,121 @@ export default function ProjectDetailClient({
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-4">
+                    {/* 1. Name */}
                     <div className="space-y-1.5">
                       <label className="block text-xs font-bold text-slate-700">
-                        Full Name
+                        Name <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
                         required
-                        placeholder="John Doe"
+                        placeholder="Your Full Name"
                         value={form.fullName}
                         onChange={(e) =>
                           setForm({ ...form, fullName: e.target.value })
                         }
-                        className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-md text-sm text-slate-900 focus:outline-none focus:border-[#0b4eb7] transition"
+                        className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-[#0b4eb7] transition"
                       />
                     </div>
 
+                    {/* 2. Phone */}
                     <div className="space-y-1.5">
                       <label className="block text-xs font-bold text-slate-700">
-                        Email Address
-                      </label>
-                      <input
-                        type="email"
-                        required
-                        placeholder="john@example.com"
-                        value={form.emailAddress}
-                        onChange={(e) =>
-                          setForm({ ...form, emailAddress: e.target.value })
-                        }
-                        className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-md text-sm text-slate-900 focus:outline-none focus:border-[#0b4eb7] transition"
-                      />
-                    </div>
-
-                    <div className="space-y-1.5">
-                      <label className="block text-xs font-bold text-slate-700">
-                        Phone Number
+                        Phone <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="tel"
                         required
-                        placeholder="+1 (555) 000-0000"
+                        placeholder="+91 98765 43210"
                         value={form.phoneNumber}
                         onChange={(e) =>
                           setForm({ ...form, phoneNumber: e.target.value })
                         }
-                        className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-md text-sm text-slate-900 focus:outline-none focus:border-[#0b4eb7] transition"
+                        className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-[#0b4eb7] transition"
                       />
+                    </div>
+
+                    {/* 3. Language */}
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-bold text-slate-700">
+                        Language <span className="text-red-500">*</span>
+                      </label>
+                      <div className="grid grid-cols-2 gap-1.5">
+                        {["English", "Hindi", "Kannada", "Other"].map((lang) => (
+                          <button
+                            key={lang}
+                            type="button"
+                            onClick={() => setForm({ ...form, language: lang })}
+                            className={`py-1.5 px-2 rounded-lg text-xs font-bold transition border cursor-pointer ${
+                              form.language === lang
+                                ? "bg-[#0b4eb7] text-white border-[#0b4eb7] shadow-sm"
+                                : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                            }`}
+                          >
+                            {lang}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 4. Budget */}
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-bold text-slate-700">
+                        Budget <span className="text-red-500">*</span>
+                      </label>
+                      <div className="grid grid-cols-2 gap-1.5">
+                        {["25L", "50L", "75L", "Above 1cr"].map((b) => (
+                          <button
+                            key={b}
+                            type="button"
+                            onClick={() => setForm({ ...form, budgetRange: b })}
+                            className={`py-1.5 px-2 rounded-lg text-xs font-bold transition border cursor-pointer ${
+                              form.budgetRange === b
+                                ? "bg-[#0b4eb7] text-white border-[#0b4eb7] shadow-sm"
+                                : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                            }`}
+                          >
+                            {b}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 5. Site Visit */}
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-bold text-slate-700">
+                        Site Visit <span className="text-red-500">*</span>
+                      </label>
+                      <div className="grid grid-cols-2 gap-1.5">
+                        {["This Weekend", "Next week", "Next Month", "Not decided"].map((sv) => (
+                          <button
+                            key={sv}
+                            type="button"
+                            onClick={() => setForm({ ...form, siteVisit: sv })}
+                            className={`py-1.5 px-1.5 rounded-lg text-[11px] font-bold transition border text-center cursor-pointer ${
+                              form.siteVisit === sv
+                                ? "bg-[#0b4eb7] text-white border-[#0b4eb7] shadow-sm"
+                                : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                            }`}
+                          >
+                            {sv}
+                          </button>
+                        ))}
+                      </div>
                     </div>
 
                     <div className="pt-2">
                       <button
                         type="submit"
-                        className="w-full bg-[#0b4eb7] hover:bg-[#083c91] text-white py-3 rounded-md font-semibold text-sm transition shadow-sm cursor-pointer"
+                        className="w-full bg-[#0b4eb7] hover:bg-[#083c91] text-white py-3 rounded-xl font-bold text-sm transition shadow-sm cursor-pointer flex items-center justify-center gap-2"
                       >
-                        Submit Enquiry
+                        <ShieldCheck className="h-4 w-4" />
+                        Verify & Submit Enquiry
                       </button>
+                      <p className="text-center text-[10px] text-slate-400 mt-2">
+                        WhatsApp OTP verification required
+                      </p>
                     </div>
-
-                    <p className="text-[11px] text-slate-400 text-center">
-                      By submitting, you agree to our{" "}
-                      <Link href="/privacy" className="underline">
-                        Privacy Policy
-                      </Link>
-                    </p>
                   </form>
                 )}
               </div>

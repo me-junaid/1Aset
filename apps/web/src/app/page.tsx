@@ -86,19 +86,19 @@ export default function Home() {
             </div>
 
             {/* Floating Stats Card */}
-            <div className="mt-10 sm:mt-16 w-full max-w-4xl bg-white/90 backdrop-blur-md border border-slate-200/90 rounded-2xl shadow-xl overflow-hidden">
+            <div className="mt-10 sm:mt-16 w-full max-w-4xl bg-white/95 backdrop-blur-md border border-slate-200/90 rounded-2xl shadow-xl overflow-hidden">
               <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-slate-200/60">
                 <div className="p-5 text-center space-y-1">
-                  <span className="font-serif text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0b4eb7]">
+                  <span className="font-sans text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0b4eb7] tracking-tight whitespace-nowrap">
                     ₹2,500+ Cr
                   </span>
-                  <span className="block text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">
+                  <span className="block text-center text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">
                     Assets Under Advisory
                   </span>
                 </div>
 
                 <div className="p-5 text-center space-y-1">
-                  <span className="font-serif text-2xl sm:text-3xl lg:text-4xl font-extrabold text-emerald-600">
+                  <span className="font-sans text-2xl sm:text-3xl lg:text-4xl font-extrabold text-emerald-600 tracking-tight whitespace-nowrap">
                     14.5%
                   </span>
                   <span className="block text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">
@@ -107,7 +107,7 @@ export default function Home() {
                 </div>
 
                 <div className="p-5 text-center space-y-1">
-                  <span className="font-serif text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0b4eb7]">
+                  <span className="font-sans text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0b4eb7] tracking-tight whitespace-nowrap">
                     100%
                   </span>
                   <span className="block text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">
@@ -116,7 +116,7 @@ export default function Home() {
                 </div>
 
                 <div className="p-5 text-center space-y-1">
-                  <span className="font-serif text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900">
+                  <span className="font-sans text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight whitespace-nowrap">
                     4,500+
                   </span>
                   <span className="block text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">
@@ -125,6 +125,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
+
           </div>
         </section>
 
@@ -271,7 +272,7 @@ export default function Home() {
                   {/* Price */}
                   <div className="absolute bottom-4 left-4 text-white">
                     <span className="block text-xs font-medium text-slate-200">Starting from</span>
-                    <span className="font-serif text-xl sm:text-2xl font-extrabold">{project.startingPrice}</span>
+                    <span className="font-sans text-xl sm:text-2xl font-extrabold tracking-tight">{project.startingPrice}</span>
                   </div>
                 </div>
 
@@ -291,17 +292,18 @@ export default function Home() {
                   <div className="grid grid-cols-2 gap-2 bg-[#faf7f2] p-3 rounded-xl border border-slate-200/60 text-center">
                     <div>
                       <span className="block text-[10px] font-semibold text-slate-500 uppercase">Appreciation</span>
-                      <span className="font-serif text-sm font-bold text-emerald-600">{project.appreciation}</span>
+                      <span className="font-sans text-sm font-bold text-emerald-600">{project.appreciation}</span>
                     </div>
                     <div>
                       <span className="block text-[10px] font-semibold text-slate-500 uppercase">Rental Yield</span>
-                      <span className="font-serif text-sm font-bold text-[#0b4eb7]">{project.rentalYield}</span>
+                      <span className="font-sans text-sm font-bold text-[#0b4eb7]">{project.rentalYield}</span>
                     </div>
                   </div>
 
+
                   <Link
                     href={`/projects/${project.slug}`}
-                    className="w-full inline-flex items-center justify-center bg-slate-900 hover:bg-[#0b4eb7] text-white py-2.5 rounded-xl text-sm font-semibold transition-colors gap-1.5"
+                    className="w-full inline-flex items-center justify-center hover:bg-slate-900 bg-[#0b4eb7] text-white py-2.5 rounded-xl text-sm font-semibold transition-colors gap-1.5"
                   >
                     <span>View Financial Model</span>
                     <ChevronRight size={16} />

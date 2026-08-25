@@ -134,7 +134,7 @@ export default function AboutPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-blue-400/30 text-center gap-8 md:gap-0">
               {/* Stat 1 */}
               <div className="py-4 md:py-0 md:px-8 space-y-2">
-                <span className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight">
+                <span className="font-sans text-4xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight">
                   15+
                 </span>
                 <span className="block font-sans text-xs sm:text-sm font-semibold tracking-wider text-blue-200 uppercase">
@@ -144,7 +144,7 @@ export default function AboutPage() {
 
               {/* Stat 2 */}
               <div className="py-4 md:py-0 md:px-8 space-y-2">
-                <span className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight">
+                <span className="font-sans text-4xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight">
                   ₹2,500+ Cr
                 </span>
                 <span className="block font-sans text-xs sm:text-sm font-semibold tracking-wider text-blue-200 uppercase">
@@ -154,13 +154,14 @@ export default function AboutPage() {
 
               {/* Stat 3 */}
               <div className="py-4 md:py-0 md:px-8 space-y-2">
-                <span className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight">
+                <span className="font-sans text-4xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight">
                   142
                 </span>
                 <span className="block font-sans text-xs sm:text-sm font-semibold tracking-wider text-blue-200 uppercase">
                   SUCCESSFUL EXITS
                 </span>
               </div>
+
             </div>
           </div>
         </section>

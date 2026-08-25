@@ -93,14 +93,15 @@ export default function BlogsPage() {
               {/* Quick Stat Pill */}
               <div className="flex items-center gap-3 text-blue-100 text-xs font-semibold shrink-0 pt-2 sm:pt-0 border-t border-white/15 sm:border-t-0">
                 <div className="text-center">
-                  <div className="font-serif text-2xl font-extrabold text-white">6+</div>
+                  <div className="font-sans text-2xl font-extrabold text-white">6+</div>
                   <div className="uppercase tracking-wide text-[10px]">Reports</div>
                 </div>
                 <div className="w-px h-8 bg-white/20" />
                 <div className="text-center">
-                  <div className="font-serif text-2xl font-extrabold text-white">100%</div>
+                  <div className="font-sans text-2xl font-extrabold text-white">100%</div>
                   <div className="uppercase tracking-wide text-[10px]">RERA Verified</div>
                 </div>
+
               </div>
             </div>
 

@@ -4,6 +4,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BlogsModule } from './modules/blogs/blogs.module';
+import { WhatsappOtpModule } from './modules/whatsapp-otp/whatsapp-otp.module';
+import { LeadsModule } from './modules/leads/leads.module';
 
 @Module({
   imports: [
@@ -14,13 +16,18 @@ import { BlogsModule } from './modules/blogs/blogs.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGODB_URI') || 'mongodb://localhost:27017/1aset',
+        uri:
+          configService.get<string>('MONGODB_URI') ||
+          'mongodb+srv://jdasjunaid_db_user:HmTzw1c0PimVriqA@cluster0.6prs2au.mongodb.net/1aset?appName=Cluster0',
       }),
     }),
     BlogsModule,
+    WhatsappOtpModule,
+    LeadsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
+
 

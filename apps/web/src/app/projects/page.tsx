@@ -188,14 +188,15 @@ export default function ProjectsPage() {
               </div>
               <div className="flex items-center gap-3 text-blue-100 text-xs font-semibold shrink-0">
                 <div className="text-center">
-                  <div className="font-serif text-2xl font-extrabold text-white">6+</div>
+                  <div className="font-sans text-2xl font-extrabold text-white">6+</div>
                   <div className="uppercase tracking-wide text-[10px]">Projects</div>
                 </div>
                 <div className="w-px h-10 bg-white/20" />
                 <div className="text-center">
-                  <div className="font-serif text-2xl font-extrabold text-white">14.5%</div>
+                  <div className="font-sans text-2xl font-extrabold text-white">14.5%</div>
                   <div className="uppercase tracking-wide text-[10px]">Avg ROI</div>
                 </div>
+
               </div>
             </div>
           </div>

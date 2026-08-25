@@ -20,48 +20,76 @@ import {
   ShieldCheck,
   Clock,
   Banknote,
+  Globe,
+  Calendar,
 } from "lucide-react";
 import { Footer } from "@/components/layout/footer";
 import { Navbar } from "@/components/layout/navbar";
-import { submitLeadToWebhook } from "@/lib/webhook";
+import { OtpVerificationModal } from "@/components/features/otp-verification-modal";
+import type { LeadSubmitPayload } from "@repo/types";
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showOtpModal, setShowOtpModal] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
     phoneNumber: "",
-    emailAddress: "",
-    interestedIn: "",
-    preferredLocation: "",
-    budgetRange: "",
-    message: "",
+    language: "English",
+    budgetRange: "25L",
+    siteVisit: "Not decided",
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    try {
-      await submitLeadToWebhook({
-        fullName: formData.fullName,
-        phoneNumber: formData.phoneNumber,
-        emailAddress: formData.emailAddress,
-        interestedIn: formData.interestedIn || "General Investment Advisory",
-        preferredLocation: formData.preferredLocation || "Bengaluru",
-        message: `${formData.budgetRange ? `[Budget: ${formData.budgetRange}] ` : ""}${formData.message}`,
-        source: "1ASET Contact Advisory Form",
-      });
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsSubmitting(false);
-      setSubmitted(true);
-    }
+  /**
+   * Normalize phone number to E.164 format.
+   * Handles: "9876543210", "09876543210", "+919876543210", "919876543210"
+   */
+  const normalizePhone = (phone: string): string => {
+    const digits = phone.replace(/[\s\-\(\)]/g, "");
+    if (digits.startsWith("+")) return digits;
+    if (digits.startsWith("91") && digits.length >= 12) return `+${digits}`;
+    if (digits.startsWith("0")) return `+91${digits.slice(1)}`;
+    return `+91${digits}`;
   };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Basic validation before opening OTP modal
+    if (!formData.fullName.trim() || !formData.phoneNumber.trim()) {
+      return;
+    }
+
+    // Open OTP modal instead of submitting directly
+    setShowOtpModal(true);
+  };
+
+  const handleOtpSuccess = () => {
+    setShowOtpModal(false);
+    setSubmitted(true);
+  };
+
+  /** Build the lead payload (without verificationId — that gets added by the modal) */
+  const buildLeadPayload = (): Omit<LeadSubmitPayload, "whatsappVerificationId"> => ({
+    name: formData.fullName,
+    phoneNumber: normalizePhone(formData.phoneNumber),
+    language: formData.language,
+    budgetRange: formData.budgetRange,
+    siteVisit: formData.siteVisit,
+    source: "1ASET Contact Form",
+  });
 
   return (
     <div className="flex flex-col min-h-screen bg-[#faf7f2] font-sans text-slate-900 selection:bg-[#0b4eb7] selection:text-white">
       <Navbar />
+
+      {/* OTP Verification Modal */}
+      <OtpVerificationModal
+        isOpen={showOtpModal}
+        phoneNumber={normalizePhone(formData.phoneNumber)}
+        leadPayload={buildLeadPayload()}
+        onClose={() => setShowOtpModal(false)}
+        onSuccess={handleOtpSuccess}
+      />
 
       {/* Main Page Content */}
       <main className="flex-1">
@@ -231,11 +259,9 @@ export default function ContactPage() {
                           setFormData({
                             fullName: "",
                             phoneNumber: "",
-                            emailAddress: "",
-                            interestedIn: "",
-                            preferredLocation: "",
-                            budgetRange: "",
-                            message: "",
+                            language: "English",
+                            budgetRange: "25L",
+                            siteVisit: "Not decided",
                           });
                         }}
                         className="inline-flex items-center gap-2 bg-[#0b4eb7] text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-sm hover:bg-[#083c91] transition cursor-pointer"
@@ -248,184 +274,138 @@ export default function ContactPage() {
                   <form onSubmit={handleSubmit} className="space-y-5">
                     <div className="border-b border-slate-100 pb-4 space-y-1">
                       <h3 className="font-serif text-xl font-bold text-slate-900">
-                        Request Advisory Consultation
+                        Quick Enquiry Form
                       </h3>
                       <p className="text-xs text-slate-500">
-                        Fill in your details below to schedule a private real estate strategy session.
+                        Fill in your details below and verify via WhatsApp to receive full project details.
                       </p>
                     </div>
 
-                    {/* Row 1: Full Name & Phone Number */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="space-y-1.5">
-                        <label className="block text-xs font-bold text-slate-700">
-                          Full Name <span className="text-red-500">*</span>
-                        </label>
-                        <div className="relative">
-                          <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                          <input
-                            type="text"
-                            required
-                            placeholder="John Doe"
-                            value={formData.fullName}
-                            onChange={(e) =>
-                              setFormData({ ...formData, fullName: e.target.value })
-                            }
-                            className="w-full pl-10 pr-4 py-2.5 bg-slate-50/60 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#0b4eb7] focus:bg-white transition"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="space-y-1.5">
-                        <label className="block text-xs font-bold text-slate-700">
-                          Phone Number <span className="text-red-500">*</span>
-                        </label>
-                        <div className="relative">
-                          <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                          <input
-                            type="tel"
-                            required
-                            placeholder="+91 98765 43210"
-                            value={formData.phoneNumber}
-                            onChange={(e) =>
-                              setFormData({ ...formData, phoneNumber: e.target.value })
-                            }
-                            className="w-full pl-10 pr-4 py-2.5 bg-slate-50/60 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#0b4eb7] focus:bg-white transition"
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Row 2: Email Address */}
+                    {/* 1. Full Name */}
                     <div className="space-y-1.5">
                       <label className="block text-xs font-bold text-slate-700">
-                        Email Address <span className="text-red-500">*</span>
+                        Name <span className="text-red-500">*</span>
                       </label>
                       <div className="relative">
-                        <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                        <input
-                          type="email"
-                          required
-                          placeholder="john@example.com"
-                          value={formData.emailAddress}
-                          onChange={(e) =>
-                            setFormData({ ...formData, emailAddress: e.target.value })
-                          }
-                          className="w-full pl-10 pr-4 py-2.5 bg-slate-50/60 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#0b4eb7] focus:bg-white transition"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Row 3: Interested In & Investment Budget */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="space-y-1.5">
-                        <label className="block text-xs font-bold text-slate-700">
-                          Interested In Asset Class
-                        </label>
-                        <div className="relative">
-                          <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
-                          <select
-                            value={formData.interestedIn}
-                            onChange={(e) =>
-                              setFormData({ ...formData, interestedIn: e.target.value })
-                            }
-                            className="w-full pl-10 pr-8 py-2.5 bg-slate-50/60 border border-slate-200 rounded-xl text-sm text-slate-700 appearance-none focus:outline-none focus:border-[#0b4eb7] focus:bg-white transition cursor-pointer"
-                          >
-                            <option value="">Select option...</option>
-                            <option value="Open Plots">Open Plots & Layouts</option>
-                            <option value="Plotted Community">Plotted Community</option>
-                            <option value="Luxury Apartments">Luxury Apartments</option>
-                            <option value="Exclusive Villas">Exclusive Villas</option>
-                            <option value="Farm Plots">Managed Farm Plots</option>
-                            <option value="Advisory">Portfolio Advisory</option>
-                          </select>
-                          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
-                        </div>
-                      </div>
-
-                      <div className="space-y-1.5">
-                        <label className="block text-xs font-bold text-slate-700">
-                          Investment Budget Range
-                        </label>
-                        <div className="relative">
-                          <Banknote className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
-                          <select
-                            value={formData.budgetRange}
-                            onChange={(e) =>
-                              setFormData({ ...formData, budgetRange: e.target.value })
-                            }
-                            className="w-full pl-10 pr-8 py-2.5 bg-slate-50/60 border border-slate-200 rounded-xl text-sm text-slate-700 appearance-none focus:outline-none focus:border-[#0b4eb7] focus:bg-white transition cursor-pointer"
-                          >
-                            <option value="">Select budget...</option>
-                            <option value="Under 1Cr">Under ₹1 Crore</option>
-                            <option value="1Cr - 5Cr">₹1 Cr - ₹5 Cr</option>
-                            <option value="Above 5Cr">Above ₹5 Crores</option>
-                          </select>
-                          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Row 4: Preferred Location */}
-                    <div className="space-y-1.5">
-                      <label className="block text-xs font-bold text-slate-700">
-                        Preferred Location / Micro-Market
-                      </label>
-                      <div className="relative">
-                        <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                        <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                         <input
                           type="text"
-                          placeholder="e.g. Devanahalli, Sarjapur, Whitefield, Yelahanka"
-                          value={formData.preferredLocation}
+                          required
+                          placeholder="Your Full Name"
+                          value={formData.fullName}
                           onChange={(e) =>
-                            setFormData({ ...formData, preferredLocation: e.target.value })
+                            setFormData({ ...formData, fullName: e.target.value })
                           }
                           className="w-full pl-10 pr-4 py-2.5 bg-slate-50/60 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#0b4eb7] focus:bg-white transition"
                         />
                       </div>
                     </div>
 
-                    {/* Row 5: Message */}
+                    {/* 2. Phone Number */}
                     <div className="space-y-1.5">
                       <label className="block text-xs font-bold text-slate-700">
-                        Investment Requirement & Notes
+                        Phone <span className="text-red-500">*</span>
                       </label>
                       <div className="relative">
-                        <MessageSquare className="absolute left-3.5 top-3.5 h-4 w-4 text-slate-400" />
-                        <textarea
-                          rows={4}
-                          placeholder="Share your investment horizon, expected yields, or specific project queries..."
-                          value={formData.message}
+                        <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                        <input
+                          type="tel"
+                          required
+                          placeholder="+91 98765 43210"
+                          value={formData.phoneNumber}
                           onChange={(e) =>
-                            setFormData({ ...formData, message: e.target.value })
+                            setFormData({ ...formData, phoneNumber: e.target.value })
                           }
-                          className="w-full pl-10 pr-4 py-3 bg-slate-50/60 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#0b4eb7] focus:bg-white transition"
+                          className="w-full pl-10 pr-4 py-2.5 bg-slate-50/60 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#0b4eb7] focus:bg-white transition"
                         />
+                      </div>
+                    </div>
+
+                    {/* 3. Preferred Language */}
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-bold text-slate-700">
+                        Language <span className="text-red-500">*</span>
+                      </label>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        {["English", "Hindi", "Kannada", "Other"].map((lang) => (
+                          <button
+                            key={lang}
+                            type="button"
+                            onClick={() => setFormData({ ...formData, language: lang })}
+                            className={`py-2 px-3 rounded-xl text-xs font-bold transition border cursor-pointer ${
+                              formData.language === lang
+                                ? "bg-[#0b4eb7] text-white border-[#0b4eb7] shadow-sm"
+                                : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                            }`}
+                          >
+                            {lang}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 4. Budget */}
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-bold text-slate-700">
+                        Budget <span className="text-red-500">*</span>
+                      </label>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        {["25L", "50L", "75L", "Above 1cr"].map((b) => (
+                          <button
+                            key={b}
+                            type="button"
+                            onClick={() => setFormData({ ...formData, budgetRange: b })}
+                            className={`py-2 px-3 rounded-xl text-xs font-bold transition border cursor-pointer ${
+                              formData.budgetRange === b
+                                ? "bg-[#0b4eb7] text-white border-[#0b4eb7] shadow-sm"
+                                : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                            }`}
+                          >
+                            {b}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 5. Site Visit */}
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-bold text-slate-700">
+                        Site Visit <span className="text-red-500">*</span>
+                      </label>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        {["This Weekend", "Next week", "Next Month", "Not decided"].map((sv) => (
+                          <button
+                            key={sv}
+                            type="button"
+                            onClick={() => setFormData({ ...formData, siteVisit: sv })}
+                            className={`py-2 px-2.5 rounded-xl text-xs font-bold transition border text-center cursor-pointer ${
+                              formData.siteVisit === sv
+                                ? "bg-[#0b4eb7] text-white border-[#0b4eb7] shadow-sm"
+                                : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                            }`}
+                          >
+                            {sv}
+                          </button>
+                        ))}
                       </div>
                     </div>
 
                     {/* Submit Button */}
-                    <div className="pt-2">
+                    <div className="pt-3">
                       <button
                         type="submit"
-                        disabled={isSubmitting}
-                        className="w-full bg-[#0b4eb7] hover:bg-[#083c91] text-white py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-md transition transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
+                        className="w-full bg-[#0b4eb7] hover:bg-[#083c91] text-white py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-md transition transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
                       >
-                        {isSubmitting ? (
-                          <>
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                            <span>Submitting Enquiry...</span>
-                          </>
-                        ) : (
-                          <>
-                            <span>Submit Advisory Enquiry</span>
-                            <ArrowRight className="h-4 w-4" />
-                          </>
-                        )}
+                        <ShieldCheck className="h-4 w-4" />
+                        <span>Verify & Submit Enquiry</span>
                       </button>
+                      <p className="text-center text-[10px] text-slate-400 mt-2">
+                        WhatsApp OTP verification required before submission
+                      </p>
                     </div>
                   </form>
                 )}
+
               </div>
             </div>
           </div>

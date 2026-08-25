@@ -5,6 +5,9 @@ export const WEBHOOK_URL =
 export interface LeadFormData {
   fullName: string;
   phoneNumber: string;
+  language?: string;
+  budget?: string;
+  siteVisit?: string;
   emailAddress?: string;
   interestedIn?: string;
   preferredLocation?: string;
@@ -20,6 +23,9 @@ export async function submitLeadToWebhook(data: LeadFormData): Promise<boolean> 
     params.append("gid", "0");
     params.append("Full Name", data.fullName || "");
     params.append("Phone Number", data.phoneNumber || "");
+    params.append("Language", data.language || "English");
+    params.append("Budget", data.budget || "25L");
+    params.append("Site Visit", data.siteVisit || "Not decided");
     params.append("Email Address", data.emailAddress || "");
     params.append("Interested In", data.interestedIn || "");
     params.append("Preferred Location", data.preferredLocation || "");
