@@ -20,6 +20,21 @@ import { Navbar } from "@/components/layout/navbar";
 
 const ALL_PROPERTIES = [
   {
+    id: "vedha-bhoomi",
+    title: "Vedha Bhoomi Managed Farmland",
+    price: "₹35 Lakhs",
+    priceVal: 3500000,
+    location: "North Bengaluru Corridor (5km Expressway)",
+    roi: "18.5%",
+    roiVal: 18.5,
+    area: "10,600 sqft",
+    status: "Clear Legal Titles",
+    badge: "35 PLANTS / PLOT",
+    type: "Farm Plots",
+    image: "/about-mission.jpg",
+    featured: true,
+  },
+  {
     id: "marina-crown",
     title: "Devanahalli Aerotropolis Layout",
     price: "₹1.25 Cr",
