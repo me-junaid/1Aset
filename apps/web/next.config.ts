@@ -4,8 +4,8 @@ const nextConfig: NextConfig = {
   // Compress responses with gzip
   compress: true,
 
-  // Cache-based component rendering (Next.js 16 PPR successor)
-  cacheComponents: true,
+  // Disable floating dev badge so it doesn't overlap mobile bottom navigation
+  devIndicators: false,
 
   // Optimize images — avif is ~50% smaller than webp
   images: {
