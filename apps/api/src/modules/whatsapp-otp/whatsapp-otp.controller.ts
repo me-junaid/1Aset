@@ -1,7 +1,10 @@
 import {
   Controller,
+  Get,
   Post,
   Body,
+  Query,
+  ForbiddenException,
   UsePipes,
   ValidationPipe,
   HttpCode,
@@ -48,5 +51,33 @@ export class WhatsappOtpController {
       message: 'Phone number verified successfully',
       data: result,
     };
+  }
+
+  /**
+   * GET /api/v1/whatsapp-otp/webhook
+   * Meta WhatsApp Webhook Verification Endpoint.
+   */
+  @Get('webhook')
+  verifyWebhook(
+    @Query('hub.mode') mode: string,
+    @Query('hub.verify_token') token: string,
+    @Query('hub.challenge') challenge: string,
+  ) {
+    const verifyToken =
+      process.env.META_WHATSAPP_VERIFY_TOKEN || '1aset_verify_token';
+    if (mode === 'subscribe' && token === verifyToken) {
+      return challenge;
+    }
+    throw new ForbiddenException('Invalid verify token');
+  }
+
+  /**
+   * POST /api/v1/whatsapp-otp/webhook
+   * Meta WhatsApp Webhook Event Notification Endpoint.
+   */
+  @Post('webhook')
+  @HttpCode(HttpStatus.OK)
+  handleWebhook(@Body() body: any) {
+    return { status: 'EVENT_RECEIVED' };
   }
 }
