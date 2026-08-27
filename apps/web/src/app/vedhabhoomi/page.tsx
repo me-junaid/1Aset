@@ -116,7 +116,7 @@ export default function VedhaBhoomiPage() {
         {/* ─── HERO ─── */}
         <section className="relative w-full min-h-[600px] sm:min-h-[720px] flex items-end overflow-hidden">
           <Image
-            src="/property-2.jpg"
+            src="/vedha-bhoomi-hero.jpg"
             alt="Vedha Bhoomi Farmland"
             fill
             priority
@@ -477,150 +477,205 @@ export default function VedhaBhoomiPage() {
           </section>
 
           {/* ─── ENQUIRY FORM ─── */}
+
           <section id="enquire" className="scroll-mt-20">
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12 items-start">
-              {/* Left: Info */}
-              <div className="lg:col-span-2 space-y-6">
-                <div className="space-y-2">
-                  <div className="inline-flex items-center gap-1.5 text-emerald-600 text-[11px] font-bold uppercase tracking-widest">
-                    <Leaf className="h-3.5 w-3.5" />
-                    Register Your Interest
-                  </div>
-                  <h2 className="font-serif text-3xl sm:text-4xl font-extrabold text-[#041e3f] leading-tight">
-                    Book a Free Site Visit
-                  </h2>
-                  <p className="text-slate-600 text-base leading-relaxed">
-                    We offer complimentary pickup and site visit tours to Vedha Bhoomi. Our investment advisors will walk you through every plot, amenity, and legal document.
-                  </p>
-                </div>
-
-                <div className="space-y-3">
-                  {[
-                    "Free pickup from Bengaluru for site visits",
-                    "On-site walkthrough with project team",
-                    "Full legal documentation review",
-                    "No obligations — just explore",
-                  ].map((pt, i) => (
-                    <div key={i} className="flex items-start gap-2.5">
-                      <Check className="h-4 w-4 text-emerald-600 mt-0.5 shrink-0" />
-                      <span className="text-slate-700 text-sm font-medium">{pt}</span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Developer info */}
-                <div className="bg-white border border-slate-200/80 rounded-xl p-5 shadow-sm">
-                  <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Developer</p>
-                  <p className="font-bold text-slate-900 text-base">Vedha Sree Parivar LLP</p>
-                  <p className="text-slate-500 text-sm mt-1 leading-relaxed">
-                    Specializing in premium managed farmland communities across South India with a strong focus on legal transparency and investor returns.
-                  </p>
-                </div>
+            <div className="relative rounded-3xl overflow-hidden">
+              {/* Background */}
+              <div
+                className="absolute inset-0"
+                style={{ background: "linear-gradient(135deg, #041e0e 0%, #0a3018 40%, #0f3d20 100%)" }}
+              />
+              <div className="absolute inset-0 opacity-20">
+                <Image
+                  src="/vedha-bhoomi-hero.jpg"
+                  alt=""
+                  fill
+                  sizes="100vw"
+                  className="object-cover object-top"
+                />
               </div>
 
-              {/* Right: Form */}
-              <div className="lg:col-span-3">
-                {submitted ? (
-                  <div className="bg-white border border-emerald-200 rounded-2xl p-8 shadow-sm text-center space-y-4">
-                    <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto">
-                      <Check className="h-8 w-8 text-emerald-600" />
+              <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-0">
+
+                {/* Left — Info panel */}
+                <div className="flex flex-col justify-between p-8 sm:p-10 lg:p-12 gap-8">
+                  <div className="space-y-6">
+                    <div className="space-y-2">
+                      <div className="inline-flex items-center gap-2 bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-[11px] font-bold uppercase tracking-widest px-3.5 py-1.5 rounded-full">
+                        <Leaf className="h-3 w-3" />
+                        Register Your Interest
+                      </div>
+                      <h2 className="font-serif text-3xl sm:text-4xl font-extrabold text-white leading-tight">
+                        Book a Free<br />
+                        <span className="text-emerald-300">Site Visit</span>
+                      </h2>
+                      <p className="text-white/60 text-sm leading-relaxed max-w-xs">
+                        Our advisors personally escort you to Vedha Bhoomi — free pickup from anywhere in Bengaluru.
+                      </p>
                     </div>
-                    <h3 className="font-serif text-2xl font-bold text-slate-900">Enquiry Submitted!</h3>
-                    <p className="text-slate-600 text-sm leading-relaxed max-w-sm mx-auto">
-                      A dedicated 1ASET investment advisor will reach out within 24 business hours to schedule your free site visit to Vedha Bhoomi.
-                    </p>
-                    <Link
-                      href="/projects"
-                      className="inline-flex items-center gap-2 text-[#0b4eb7] font-bold text-sm hover:underline"
-                    >
-                      Explore Other Projects
-                      <ArrowRight className="h-4 w-4" />
-                    </Link>
+
+                    {/* What you get */}
+                    <div className="space-y-3">
+                      {[
+                        { icon: "🚗", title: "Free pickup from Bengaluru", sub: "We come to you — no travel hassle" },
+                        { icon: "🌿", title: "Guided plot walkthrough", sub: "Walk every acre with our project team" },
+                        { icon: "📄", title: "Legal doc review on-site", sub: "Title deed, AHUDA approval & more" },
+                        { icon: "💬", title: "Zero obligation", sub: "Just explore — no pressure, no commitments" },
+                      ].map((pt, i) => (
+                        <div key={i} className="flex items-start gap-3.5">
+                          <div className="w-9 h-9 rounded-xl bg-white/8 border border-white/10 flex items-center justify-center text-lg shrink-0">
+                            {pt.icon}
+                          </div>
+                          <div>
+                            <p className="text-white text-sm font-semibold">{pt.title}</p>
+                            <p className="text-white/45 text-xs mt-0.5">{pt.sub}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                ) : (
-                  <form
-                    onSubmit={handleSubmit}
-                    className="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-8 shadow-sm space-y-5"
-                  >
-                    <div className="border-b border-slate-100 pb-4">
-                      <h3 className="font-serif text-xl font-bold text-slate-900">Get Project Details & Pricing</h3>
-                      <p className="text-slate-500 text-sm mt-1">OTP verified — your data is 100% secure.</p>
+
+                  {/* Trust badges strip */}
+                  <div className="border-t border-white/10 pt-6 space-y-3">
+                    <p className="text-white/30 text-[10px] font-bold uppercase tracking-widest">Trusted by investors across Bengaluru</p>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        "🔒 OTP Verified",
+                        "📋 AHUDA Approved",
+                        "✅ Clear Title",
+                        "🆓 Free Site Visit",
+                      ].map((badge, i) => (
+                        <span key={i} className="bg-white/8 border border-white/12 text-white/70 text-[11px] font-semibold px-3 py-1.5 rounded-full">
+                          {badge}
+                        </span>
+                      ))}
                     </div>
+                  </div>
+                </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="space-y-1.5 sm:col-span-2">
-                        <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">
-                          Full Name <span className="text-red-400">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="Your full name"
-                          value={form.fullName}
-                          required
-                          onChange={(e) => setForm({ ...form, fullName: e.target.value })}
-                          className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#0b4eb7] focus:ring-2 focus:ring-blue-50 transition"
-                        />
+                {/* Right — Form */}
+                <div className="p-6 sm:p-8 lg:p-10 flex items-center">
+                  {submitted ? (
+                    <div className="w-full bg-white rounded-2xl p-8 text-center space-y-5 shadow-2xl shadow-slate-950/20 border border-slate-100">
+                      <div className="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center mx-auto">
+                        <Check className="h-8 w-8 text-emerald-600" />
                       </div>
-
-                      <div className="space-y-1.5 sm:col-span-2">
-                        <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">
-                          WhatsApp Number <span className="text-red-400">*</span>
-                        </label>
-                        <input
-                          type="tel"
-                          placeholder="+91 XXXXX XXXXX"
-                          value={form.phoneNumber}
-                          required
-                          onChange={(e) => setForm({ ...form, phoneNumber: e.target.value })}
-                          className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#0b4eb7] focus:ring-2 focus:ring-blue-50 transition"
-                        />
+                      <div className="space-y-2">
+                        <h3 className="font-serif text-2xl font-bold text-slate-900">Enquiry Submitted!</h3>
+                        <p className="text-slate-600 text-sm leading-relaxed max-w-xs mx-auto">
+                          A dedicated 1ASET advisor will reach out within 24 hours to schedule your free site visit.
+                        </p>
                       </div>
-
-                      <div className="space-y-1.5">
-                        <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Budget Range</label>
-                        <select
-                          value={form.budgetRange}
-                          onChange={(e) => setForm({ ...form, budgetRange: e.target.value })}
-                          className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:border-[#0b4eb7] transition cursor-pointer"
-                        >
-                          <option value="25L">Under ₹25 Lakhs</option>
-                          <option value="50L">₹25L – ₹50L</option>
-                          <option value="1Cr">₹50L – ₹1 Cr</option>
-                          <option value="1Cr+">Above ₹1 Crore</option>
-                        </select>
-                      </div>
-
-                      <div className="space-y-1.5">
-                        <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Site Visit</label>
-                        <select
-                          value={form.siteVisit}
-                          onChange={(e) => setForm({ ...form, siteVisit: e.target.value })}
-                          className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 focus:outline-none focus:border-[#0b4eb7] transition cursor-pointer"
-                        >
-                          <option value="Not decided">Not yet decided</option>
-                          <option value="This week">This week</option>
-                          <option value="This month">This month</option>
-                          <option value="Just exploring">Just exploring</option>
-                        </select>
-                      </div>
+                      <Link
+                        href="/projects"
+                        className="inline-flex items-center gap-2 text-emerald-700 font-bold text-sm hover:underline"
+                      >
+                        Explore Other Projects
+                        <ArrowRight className="h-4 w-4" />
+                      </Link>
                     </div>
-
-                    <button
-                      type="submit"
-                      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 cursor-pointer"
+                  ) : (
+                    <form
+                      onSubmit={handleSubmit}
+                      className="w-full bg-white rounded-2xl p-6 sm:p-8 space-y-5 shadow-2xl shadow-slate-950/25 border border-slate-100/80"
                     >
-                      <ShieldCheck className="h-4 w-4" />
-                      Book Free Site Visit — Verify via WhatsApp
-                    </button>
+                      {/* Form header */}
+                      <div className="flex items-start justify-between gap-3 border-b border-slate-100 pb-4">
+                        <div>
+                          <h3 className="font-serif text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+                            Get Pricing & Plot Details
+                          </h3>
+                          <p className="text-slate-500 text-xs mt-1">Fill in your details below and verify via WhatsApp to receive full project details.</p>
+                        </div>
+                      </div>
 
-                    <p className="text-center text-slate-400 text-xs">
-                      🔒 OTP verified · No spam · No hidden charges · Free site visit pickup
-                    </p>
-                  </form>
-                )}
+                      {/* Fields */}
+                      <div className="space-y-4">
+                        <div className="space-y-1.5">
+                          <label className="text-slate-700 text-xs font-bold uppercase tracking-wider">
+                            Full Name <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="Your full name"
+                            value={form.fullName}
+                            required
+                            onChange={(e) => setForm({ ...form, fullName: e.target.value })}
+                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:bg-white focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/10 transition font-medium"
+                          />
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <label className="text-slate-700 text-xs font-bold uppercase tracking-wider">
+                            WhatsApp Number <span className="text-red-500">*</span>
+                          </label>
+                          <div className="relative">
+                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm font-semibold select-none">
+                              🇮🇳 +91
+                            </span>
+                            <input
+                              type="tel"
+                              placeholder="XXXXX XXXXX"
+                              value={form.phoneNumber}
+                              required
+                              onChange={(e) => setForm({ ...form, phoneNumber: e.target.value })}
+                              className="w-full pl-[72px] pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:bg-white focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/10 transition font-medium"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="space-y-1.5">
+                            <label className="text-slate-700 text-xs font-bold uppercase tracking-wider">Budget</label>
+                            <select
+                              value={form.budgetRange}
+                              onChange={(e) => setForm({ ...form, budgetRange: e.target.value })}
+                              className="w-full px-3.5 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 text-sm font-medium focus:outline-none focus:bg-white focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/10 transition cursor-pointer"
+                            >
+                              <option value="25L">Under ₹25L</option>
+                              <option value="50L">₹25L – ₹50L</option>
+                              <option value="1Cr">₹50L – ₹1Cr</option>
+                              <option value="1Cr+">Above ₹1Cr</option>
+                            </select>
+                          </div>
+
+                          <div className="space-y-1.5">
+                            <label className="text-slate-700 text-xs font-bold uppercase tracking-wider">Site Visit</label>
+                            <select
+                              value={form.siteVisit}
+                              onChange={(e) => setForm({ ...form, siteVisit: e.target.value })}
+                              className="w-full px-3.5 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 text-sm font-medium focus:outline-none focus:bg-white focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/10 transition cursor-pointer"
+                            >
+                              <option value="Not decided">Not decided</option>
+                              <option value="This week">This week</option>
+                              <option value="This month">This month</option>
+                              <option value="Just exploring">Just exploring</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Submit Button */}
+                      <button
+                        type="submit"
+                        className="w-full bg-[#0b4eb7] hover:bg-[#0b45a1] text-white py-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2.5 shadow-lg shadow-emerald-600/20 hover:shadow-emerald-600/30 transition-all duration-200 transform hover:-translate-y-0.5 cursor-pointer"
+                      >
+                        <ShieldCheck className="h-4 w-4" />
+                        <span>Book Free Site Visit</span>
+                      </button>
+
+                      <div className="flex items-center justify-center gap-1.5 text-slate-400 text-xs font-medium pt-1">
+                        <span>🔒</span>
+                        <span>OTP verified</span>
+                      </div>
+                    </form>
+                  )}
+                </div>
+
               </div>
             </div>
           </section>
+
 
           {/* ─── CTA STRIP ─── */}
           <section className="bg-gradient-to-r from-[#0b4eb7] to-[#062d7a] rounded-2xl p-6 sm:p-8 text-white flex flex-col sm:flex-row items-center justify-between gap-5">
