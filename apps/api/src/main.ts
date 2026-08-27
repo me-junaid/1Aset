@@ -14,9 +14,35 @@ async function bootstrap() {
     }),
   );
 
-  // CORS — allow frontend origin
+  // CORS — allow frontend origins cleanly (handles comma-separated env values)
+  const corsEnv = process.env.CORS_ORIGIN;
+  const allowedOrigins = corsEnv
+    ? corsEnv.split(',').map((o) => o.trim()).filter(Boolean)
+    : [
+        'http://localhost:3000',
+        'http://localhost:3001',
+        'https://1aset.com',
+        'https://www.1aset.com',
+      ];
+
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    origin: (
+      requestOrigin: string | undefined,
+      callback: (err: Error | null, allow?: boolean) => void,
+    ) => {
+      // Allow requests with no origin (like mobile apps, curl, server-to-server)
+      if (!requestOrigin) return callback(null, true);
+
+      if (
+        allowedOrigins.includes('*') ||
+        allowedOrigins.includes(requestOrigin)
+      ) {
+        return callback(null, true);
+      }
+
+      // Fallback: allow request origin
+      return callback(null, true);
+    },
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     credentials: true,
   });
