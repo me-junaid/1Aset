@@ -253,6 +253,108 @@ export default function Home() {
             </Link>
           </div>
 
+          {/* ── Flagship Project Hero Banner (Vedha Bhoomi) ── */}
+          <div className="mb-10">
+            <Link
+              href="/vedhabhoomi"
+              className="group block w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 relative border border-emerald-900/20"
+              style={{ background: "linear-gradient(135deg, #0a2e1a 0%, #0f3d25 50%, #072016 100%)" }}
+            >
+              {/* Background image */}
+              <div className="absolute inset-0">
+                <Image
+                  src="/vedha-bhoomi-hero.jpg"
+                  alt="Vedha Bhoomi Luxury Farmland Plots"
+                  fill
+                  sizes="100vw"
+                  className="object-cover object-center group-hover:scale-[1.03] transition-transform duration-700 ease-out opacity-50"
+                  priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#041e0e]/95 via-[#041e0e]/70 to-[#041e0e]/20" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#041e0e]/60 via-transparent to-transparent" />
+              </div>
+
+              {/* Content */}
+              <div className="relative z-10 flex flex-col sm:flex-row items-stretch min-h-[260px] sm:min-h-[280px]">
+                {/* Left — Main Info */}
+                <div className="flex-1 flex flex-col justify-between p-6 sm:p-8 lg:p-10 gap-6">
+                  {/* Badges */}
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="inline-flex items-center gap-1.5 bg-emerald-500 text-white text-[10px] font-extrabold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg">
+                      <span className="text-sm leading-none">🌿</span>
+                      Flagship Project
+                    </span>
+                    <span className="inline-flex items-center gap-1 bg-white/10 backdrop-blur-md border border-white/15 text-white/90 text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full">
+                      AHUDA Approved
+                    </span>
+                    <span className="inline-flex items-center gap-1 bg-amber-500/80 backdrop-blur-sm text-white text-[10px] font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-full">
+                      ⚡ Limited Plots
+                    </span>
+                  </div>
+
+                  {/* Title block */}
+                  <div className="space-y-2">
+                    <p className="text-emerald-400 text-[11px] font-extrabold uppercase tracking-[0.18em]">
+                      Exclusive Farmland Investment · Vedha Sree Parivar LLP
+                    </p>
+                    <h3 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight tracking-tight">
+                      Vedha Bhoomi
+                    </h3>
+                    <div className="flex items-center gap-1.5 text-white/70 text-sm font-medium">
+                      <MapPin className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+                      <span>40 Acres · 63 Luxury Farm Plots · Near Lepakshi, North Bengaluru</span>
+                    </div>
+                  </div>
+
+                  {/* Metrics */}
+                  <div className="flex flex-wrap items-end gap-4 sm:gap-6">
+                    <div>
+                      <p className="text-emerald-400/80 text-[10px] font-bold uppercase tracking-widest">Starting From</p>
+                      <p className="text-white text-2xl sm:text-3xl font-extrabold font-sans leading-tight">₹22 Lakhs</p>
+                    </div>
+                    <div className="w-px h-10 bg-white/15 hidden sm:block" />
+                    <div>
+                      <p className="text-emerald-400/80 text-[10px] font-bold uppercase tracking-widest">Est. Appreciation</p>
+                      <p className="text-emerald-300 text-2xl sm:text-3xl font-extrabold font-sans leading-tight">18% p.a.</p>
+                    </div>
+                    <div className="w-px h-10 bg-white/15 hidden sm:block" />
+                    <div className="hidden sm:block">
+                      <p className="text-emerald-400/80 text-[10px] font-bold uppercase tracking-widest">Plot Size</p>
+                      <p className="text-white text-2xl sm:text-3xl font-extrabold font-sans leading-tight">10,600 sqft</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right — CTA panel */}
+                <div className="sm:w-64 lg:w-72 bg-white/5 backdrop-blur-sm border-t sm:border-t-0 sm:border-l border-white/10 flex flex-col items-center justify-center gap-5 p-6 sm:p-8">
+                  <div className="grid grid-cols-2 gap-2 w-full">
+                    {[
+                      { val: "40", lbl: "Acres" },
+                      { val: "63", lbl: "Plots" },
+                      { val: "25+", lbl: "Amenities" },
+                      { val: "35", lbl: "Free Trees" },
+                    ].map((s, i) => (
+                      <div key={i} className="bg-white/8 border border-white/10 rounded-xl py-2 text-center">
+                        <p className="text-white font-extrabold text-base font-sans leading-tight">{s.val}</p>
+                        <p className="text-white/55 text-[9px] font-bold uppercase tracking-wider mt-0.5">{s.lbl}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="w-full space-y-2">
+                    <span className="flex w-full items-center justify-center gap-2 bg-emerald-500 group-hover:bg-emerald-400 text-white px-5 py-3 rounded-xl font-bold text-sm shadow-lg transition-all duration-300 group-hover:shadow-emerald-500/30 group-hover:shadow-xl">
+                      Explore Project
+                      <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+                    </span>
+                    <p className="text-white/40 text-[10px] text-center font-medium">
+                      Free site visit pickup available
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          </div>
+
           {/* Project Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {featuredProjects.map((project) => (
@@ -263,7 +365,7 @@ export default function Home() {
                 {/* Card Header Image */}
                 <div className="relative h-56 w-full overflow-hidden bg-slate-100">
                   <Image
-                    src={project.heroImage}
+                    src={project.slug === "vedha-bhoomi" ? "/vedha-bhoomi-hero.jpg" : project.heroImage}
                     alt={project.title}
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
@@ -272,7 +374,9 @@ export default function Home() {
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent" />
                   
                   {/* Badge */}
-                  <span className="absolute top-4 left-4 bg-[#0b4eb7] text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
+                  <span className={`absolute top-4 left-4 text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md ${
+                    project.slug === "vedha-bhoomi" ? "bg-emerald-600" : "bg-[#0b4eb7]"
+                  }`}>
                     {project.badge}
                   </span>
 
@@ -307,12 +411,15 @@ export default function Home() {
                     </div>
                   </div>
 
-
                   <Link
-                    href={`/projects/${project.slug}`}
-                    className="w-full inline-flex items-center justify-center hover:bg-slate-900 bg-[#0b4eb7] text-white py-2.5 rounded-xl text-sm font-semibold transition-colors gap-1.5"
+                    href={project.slug === "vedha-bhoomi" ? "/vedhabhoomi" : `/projects/${project.slug}`}
+                    className={`w-full inline-flex items-center justify-center text-white py-2.5 rounded-xl text-sm font-semibold transition-colors gap-1.5 ${
+                      project.slug === "vedha-bhoomi"
+                        ? "bg-emerald-600 hover:bg-emerald-700"
+                        : "bg-[#0b4eb7] hover:bg-slate-900"
+                    }`}
                   >
-                    <span>View Financial Model</span>
+                    <span>View Project Details</span>
                     <ChevronRight size={16} />
                   </Link>
                 </div>
