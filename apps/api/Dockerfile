@@ -1,10 +1,11 @@
-FROM node:20-alpine AS base
+FROM node:22-alpine AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
 FROM base AS builder
 WORKDIR /app
+RUN apk add --no-cache python3 make g++
 
 # Copy root workspace configurations and lockfile
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
