@@ -20,6 +20,22 @@ import { Navbar } from "@/components/layout/navbar";
 
 const ALL_PROPERTIES = [
   {
+    id: "vedha-bhoomi",
+    title: "Vedha Bhoomi — Luxury Farmland Plots",
+    price: "₹22 Lakhs",
+    priceVal: 2200000,
+    location: "Near Lepakshi, North Bengaluru",
+    roi: "18%",
+    roiVal: 18,
+    area: "10,600 sqft",
+    status: "AHUDA Approved",
+    badge: "FLAGSHIP PROJECT",
+    type: "Farm Plots",
+    image: "/property-2.jpg",
+    featured: true,
+    isFlagship: true,
+  },
+  {
     id: "marina-crown",
     title: "Devanahalli Aerotropolis Layout",
     price: "₹1.25 Cr",
@@ -375,6 +391,74 @@ export default function ProjectsPage() {
             </div>
           </div>
 
+          {/* ── Flagship Featured Banner ── */}
+          <Link
+            href="/vedhabhoomi"
+            className="group block w-full rounded-2xl overflow-hidden border-2 border-emerald-400/30 shadow-lg hover:shadow-2xl hover:-translate-y-0.5 transition-all duration-300 relative"
+          >
+            <div className="relative h-56 sm:h-72 w-full">
+              <Image
+                src="/property-2.jpg"
+                alt="Vedha Bhoomi Luxury Farmland Plots"
+                fill
+                sizes="100vw"
+                className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out brightness-75"
+                priority
+              />
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-r from-[#062d7a]/80 via-[#0b4eb7]/50 to-transparent" />
+
+              {/* Content */}
+              <div className="absolute inset-0 flex flex-col justify-between p-5 sm:p-8">
+                {/* Top Badges */}
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="bg-emerald-500 text-white text-[10px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full shadow">
+                    🌿 Flagship Project
+                  </span>
+                  <span className="bg-white/15 backdrop-blur-sm text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full border border-white/20">
+                    AHUDA Approved
+                  </span>
+                  <span className="bg-white/15 backdrop-blur-sm text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full border border-white/20">
+                    Limited Plots
+                  </span>
+                </div>
+
+                {/* Bottom content */}
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-emerald-300 text-xs font-bold uppercase tracking-widest mb-1">Exclusive Farmland Investment</p>
+                    <h2 className="font-serif text-2xl sm:text-4xl font-extrabold text-white leading-tight tracking-tight">
+                      Vedha Bhoomi
+                    </h2>
+                    <p className="text-blue-100/90 text-sm sm:text-base mt-1">40 Acres · 63 Luxury Farm Plots · Near Lepakshi, North Bengaluru</p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-3 sm:gap-5">
+                    <div className="text-white">
+                      <span className="text-xs text-blue-200 block">Starting From</span>
+                      <span className="text-xl sm:text-2xl font-extrabold font-sans">₹22 Lakhs</span>
+                    </div>
+                    <div className="w-px h-8 bg-white/20 hidden sm:block" />
+                    <div className="text-white">
+                      <span className="text-xs text-blue-200 block">Est. Appreciation</span>
+                      <span className="text-xl sm:text-2xl font-extrabold font-sans text-emerald-300">18% p.a.</span>
+                    </div>
+                    <div className="w-px h-8 bg-white/20 hidden sm:block" />
+                    <div className="text-white hidden sm:block">
+                      <span className="text-xs text-blue-200 block">Plot Size</span>
+                      <span className="text-xl sm:text-2xl font-extrabold font-sans">10,600 sqft</span>
+                    </div>
+                    <div className="ml-auto">
+                      <span className="inline-flex items-center gap-2 bg-white text-[#0b4eb7] px-5 py-2.5 rounded-xl font-bold text-sm shadow-md group-hover:bg-emerald-50 transition">
+                        View Project
+                        <ArrowRight className="h-4 w-4" />
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Link>
+
           {/* Results Header */}
           <div
             id="properties-grid-results"
@@ -382,7 +466,7 @@ export default function ProjectsPage() {
           >
             <div className="flex items-baseline gap-2">
               <h2 className="font-serif text-xl sm:text-2xl font-bold text-[#0b4eb7]">
-                Available Properties
+                All Properties
               </h2>
               <span className="text-sm font-sans text-slate-500 font-medium">
                 ({filteredProperties.length})
@@ -493,7 +577,7 @@ export default function ProjectsPage() {
 
                       {/* CTA */}
                       <Link
-                        href={`/projects/${item.id}`}
+                        href={(item as any).isFlagship ? '/vedhabhoomi' : `/projects/${item.id}`}
                         className="w-full bg-[#0b4eb7] hover:bg-[#083c91] text-white py-2.5 sm:py-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition-all group-hover:shadow-md"
                       >
                         <span>View Project Details</span>

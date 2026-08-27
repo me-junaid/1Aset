@@ -20,6 +20,26 @@ export interface ProjectData {
 }
 
 export const PROJECTS_DATA: Record<string, ProjectData> = {
+  "vedha-bhoomi": {
+    slug: "vedha-bhoomi",
+    title: "Vedha Bhoomi — Luxury Farmland Plots",
+    badge: "FLAGSHIP PROJECT",
+    location: "Near Lepakshi, North Bengaluru",
+    startingPrice: "₹22 Lakhs",
+    appreciation: "18% p.a.",
+    rentalYield: "5.5%",
+    horizon: "3-7 Yrs",
+    overview:
+      "Vedha Bhoomi is a premium gated farmland community by Vedha Sree Parivar LLP, nestled in the serene landscapes near Lepakshi — just 90 km from Kempegowda International Airport, North Bengaluru.\n\nSpread across 40 acres and divided into 63 luxury farm plots, each plot comes with 35 free fruit-bearing trees, comprehensive drip irrigation, and access to a world-class clubhouse. AHUDA-approved with clear legal titles, Vedha Bhoomi offers a rare combination of weekend retreat living and strong long-term land appreciation along the Bengaluru–Vijayawada Expressway growth corridor.",
+    heroImage: "/property-2.jpg",
+    galleryMain: "/gallery-lounge.jpg",
+    gallerySub1: "/property-2.jpg",
+    gallerySub2: "/gallery-interior.jpg",
+    developerName: "Vedha Sree Parivar LLP",
+    developerDesc:
+      "Vedha Sree Parivar LLP is a trusted real estate developer specializing in premium managed farmland communities across South India, with a strong focus on eco-friendly infrastructure, legal transparency, and long-term investor returns.",
+  },
+
   "marina-crown": {
     slug: "marina-crown",
     title: "Devanahalli Aerotropolis Layout",
