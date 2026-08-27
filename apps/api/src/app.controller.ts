@@ -10,4 +10,9 @@ export class AppController {
   getUser(): ApiResponse<User> {
     return this.appService.getUser();
   }
+
+  @Get('health')
+  getHealth() {
+    return { status: 'ok', timestamp: new Date().toISOString() };
+  }
 }

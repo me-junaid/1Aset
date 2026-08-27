@@ -122,15 +122,35 @@ export class WhatsappOtpService {
       invalidated: false,
     });
 
+    // ── Log generated OTP in console for local dev & testing ──
+    this.logger.log(
+      `🔑 [OTP SERVER LOG] Verification code generated for ${phoneNumber}: ${otp}`,
+    );
+
     // ── Send OTP via WhatsApp ──
     try {
       await this.whatsappProvider.sendOtp(phoneNumber, otp);
-    } catch (error) {
-      this.logger.error(`Failed to send OTP to ${phoneNumber}`, error);
-      throw new BadRequestException(
-        'Failed to send verification code. Please try again.',
+    } catch (error: any) {
+      this.logger.error(
+        `Failed to send OTP via Meta WhatsApp API to ${phoneNumber}: ${error?.message || error}`,
       );
+
+      const nodeEnv =
+        this.configService.get<string>('NODE_ENV') || 'development';
+      const allowDevFallback =
+        this.configService.get<string>('ALLOW_DEV_OTP_FALLBACK') !== 'false';
+
+      if (nodeEnv !== 'production' && allowDevFallback) {
+        this.logger.warn(
+          `⚠️ [DEV FALLBACK ACTIVE] Meta WhatsApp API failed (likely expired token). Use OTP code "${otp}" in your browser to verify!`,
+        );
+      } else {
+        throw new BadRequestException(
+          'Failed to send verification code. Meta WhatsApp API token may be expired or invalid.',
+        );
+      }
     }
+
 
     // ── Return masked phone and metadata ──
     const maskedPhone = this.maskPhoneNumber(phoneNumber);

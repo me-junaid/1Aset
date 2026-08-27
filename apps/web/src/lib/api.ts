@@ -8,7 +8,16 @@ import type {
   LeadSubmitResponse,
 } from '@repo/types';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+function getApiBaseUrl(): string {
+  let rawUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  rawUrl = rawUrl.trim();
+  if (rawUrl && !rawUrl.startsWith('http://') && !rawUrl.startsWith('https://')) {
+    rawUrl = `https://${rawUrl}`;
+  }
+  return rawUrl.replace(/\/+$/, '');
+}
+
+const API_BASE = getApiBaseUrl();
 
 /**
  * Generic API fetcher with typed responses.
