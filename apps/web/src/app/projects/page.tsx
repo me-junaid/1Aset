@@ -28,10 +28,10 @@ const ALL_PROPERTIES = [
     roi: "18%",
     roiVal: 18,
     area: "10,600 sqft",
-    status: "AHUDA Approved",
+    status: "Clear Title",
     badge: "FLAGSHIP PROJECT",
     type: "Farm Plots",
-    image: "/property-2.jpg",
+    image: "/vedhabhoomi/vedhabhoomi1.jpg",
     featured: true,
     isFlagship: true,
   },
@@ -400,7 +400,7 @@ export default function ProjectsPage() {
             {/* Background image */}
             <div className="absolute inset-0">
               <Image
-                src="/vedha-bhoomi-hero.jpg"
+                src="/vedhabhoomi/vedhabhoomi1.jpg"
                 alt="Vedha Bhoomi Luxury Farmland Plots"
                 fill
                 sizes="100vw"
@@ -425,7 +425,7 @@ export default function ProjectsPage() {
                     Flagship Project
                   </span>
                   <span className="inline-flex items-center gap-1 bg-white/10 backdrop-blur-md border border-white/15 text-white/90 text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full">
-                    AHUDA Approved
+                    Clear Title
                   </span>
                   <span className="inline-flex items-center gap-1 bg-amber-500/80 backdrop-blur-sm text-white text-[10px] font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-full">
                     ⚡ Limited Plots
@@ -442,7 +442,7 @@ export default function ProjectsPage() {
                   </h2>
                   <div className="flex items-center gap-1.5 text-white/70 text-sm font-medium">
                     <MapPin className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
-                    <span>40 Acres · 63 Luxury Farm Plots · Near Lepakshi, North Bengaluru</span>
+                    <span>Phase 1: 18 Acres (Total 40 Acres) · 63 Luxury Farm Plots · Near Lepakshi, North Bengaluru</span>
                   </div>
                 </div>
 
@@ -470,10 +470,10 @@ export default function ProjectsPage() {
                 {/* Mini stat pills */}
                 <div className="grid grid-cols-2 gap-2 w-full">
                   {[
-                    { val: "40", lbl: "Acres" },
+                    { val: "18/40", lbl: "Acres" },
                     { val: "63", lbl: "Plots" },
                     { val: "25+", lbl: "Amenities" },
-                    { val: "35", lbl: "Free Trees" },
+                    { val: "Up to 400", lbl: "Plants/Plot" },
                   ].map((s, i) => (
                     <div key={i} className="bg-white/8 border border-white/10 rounded-xl py-2.5 text-center">
                       <p className="text-white font-extrabold text-lg font-sans leading-tight">{s.val}</p>

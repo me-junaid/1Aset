@@ -29,6 +29,15 @@ import { Navbar } from "@/components/layout/navbar";
 
 const PROJECT_PRESETS = [
   {
+    id: "vedha-bhoomi",
+    title: "Vedha Bhoomi (Luxury Farmland Plots, Lepakshi Corridor)",
+    initialInvestment: 2200000, // ₹22 L
+    sqft: 10600,
+    expectedAppreciationRate: 18.0,
+    holdingPeriodYears: 5,
+    monthlyRentalIncome: 10000,
+  },
+  {
     id: "marina-crown",
     title: "Devanahalli Aerotropolis Layout (North Bengaluru Plots)",
     initialInvestment: 12500000, // ₹1.25 Cr
@@ -104,8 +113,8 @@ export default function CalculatorsPage() {
   // Cost Estimator Inputs State
   const [basePrice, setBasePrice] = useState(10000000); // 1 Cr
   const [platformFeePercent, setPlatformFeePercent] = useState(1.0);
-  const [registrationPercent, setRegistrationPercent] = useState(5.6);
-  const [taxPercent, setTaxPercent] = useState(5.0);
+  const registrationPercent = 5.6; // Fixed Karnataka statutory rate
+  const taxPercent = 5.0; // Standard statutory taxes & GST
 
   // Compute Results dynamically
   const investmentResult = calculateInvestmentReturn({
@@ -251,7 +260,7 @@ export default function CalculatorsPage() {
                     type="range"
                     min={1000000} // 10 L
                     max={100000000} // 10 Cr
-                    step={500000}
+                    step={100000}
                     value={initialInvestment}
                     onChange={(e) => setInitialInvestment(Number(e.target.value))}
                     className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#0b4eb7]"
@@ -275,7 +284,7 @@ export default function CalculatorsPage() {
                   <input
                     type="range"
                     min={500}
-                    max={10000}
+                    max={20000}
                     step={100}
                     value={sqft}
                     onChange={(e) => setSqft(Number(e.target.value))}
@@ -283,7 +292,7 @@ export default function CalculatorsPage() {
                   />
                   <div className="flex justify-between text-[11px] text-slate-400 font-semibold">
                     <span>500 sqft</span>
-                    <span>10,000 sqft</span>
+                    <span>20,000 sqft</span>
                   </div>
                 </div>
 
@@ -578,7 +587,7 @@ export default function CalculatorsPage() {
                     type="range"
                     min={1000000}
                     max={100000000}
-                    step={500000}
+                    step={100000}
                     value={basePrice}
                     onChange={(e) => setBasePrice(Number(e.target.value))}
                     className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#0b4eb7]"
@@ -610,50 +619,40 @@ export default function CalculatorsPage() {
                   />
                 </div>
 
-                {/* Registration & Stamp Duty % */}
-                <div className="space-y-3 bg-slate-50/60 p-4 rounded-xl border border-slate-100">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-bold text-slate-700">
-                      Stamp Duty & Registration (%)
-                    </label>
-                    <span className="text-slate-900 font-bold text-sm bg-white px-3 py-1 rounded-lg border border-slate-200">
-                      {registrationPercent}%
-                    </span>
+                {/* Registration & Stamp Duty % (Fixed Statutory) */}
+                <div className="flex items-center justify-between bg-slate-50/60 p-4 rounded-xl border border-slate-100">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <label className="text-xs font-bold text-slate-700">
+                        Stamp Duty &amp; Registration
+                      </label>
+              
+                    </div>
+                    <p className="text-[11px] text-slate-500 flex items-center gap-1">
+                      <Info size={13} className="text-[#0b4eb7] shrink-0" />
+                      Karnataka standard stamp duty is 5.6%
+                    </p>
                   </div>
-                  <input
-                    type="range"
-                    min={1}
-                    max={10}
-                    step={0.1}
-                    value={registrationPercent}
-                    onChange={(e) => setRegistrationPercent(Number(e.target.value))}
-                    className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#0b4eb7]"
-                  />
-                  <p className="text-[11px] text-slate-500 flex items-center gap-1">
-                    <Info size={13} className="text-[#0b4eb7]" />
-                    Karnataka standard stamp duty is 5.6%
-                  </p>
+                  <span className="text-slate-900 font-extrabold text-sm bg-white px-3 py-1.5 rounded-lg border border-slate-200 shrink-0">
+                    {registrationPercent}%
+                  </span>
                 </div>
 
-                {/* Tax / GST % */}
-                <div className="space-y-3 bg-slate-50/60 p-4 rounded-xl border border-slate-100">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-bold text-slate-700">
-                      Taxes & GST (%)
-                    </label>
-                    <span className="text-slate-900 font-bold text-sm bg-white px-3 py-1 rounded-lg border border-slate-200">
-                      {taxPercent}%
-                    </span>
+                {/* Tax / GST % (Fixed Statutory) */}
+                <div className="flex items-center justify-between bg-slate-50/60 p-4 rounded-xl border border-slate-100">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <label className="text-xs font-bold text-slate-700">
+                        Taxes &amp; GST
+                      </label>
+                    </div>
+                    <p className="text-[11px] text-slate-500">
+                      Standard applicable statutory tax (5%)
+                    </p>
                   </div>
-                  <input
-                    type="range"
-                    min={0}
-                    max={12}
-                    step={0.5}
-                    value={taxPercent}
-                    onChange={(e) => setTaxPercent(Number(e.target.value))}
-                    className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#0b4eb7]"
-                  />
+                  <span className="text-slate-900 font-extrabold text-sm bg-white px-3 py-1.5 rounded-lg border border-slate-200 shrink-0">
+                    {taxPercent}%
+                  </span>
                 </div>
               </div>
 

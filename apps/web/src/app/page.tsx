@@ -144,7 +144,7 @@ export default function Home() {
                   <div className="relative group">
                     {/* Glowing ring frame */}
                     <div className="absolute -inset-1.5 bg-gradient-to-tr from-amber-400 via-blue-400 to-[#0b4eb7] rounded-3xl opacity-80 group-hover:opacity-100 transition duration-300 blur-xs" />
-                    
+
                     {/* Image container */}
                     <div className="relative w-64 h-72 sm:w-72 sm:h-84 lg:w-80 lg:h-96 rounded-2xl overflow-hidden shadow-2xl bg-slate-900 border-2 border-white/20">
                       <Image
@@ -263,7 +263,7 @@ export default function Home() {
               {/* Background image */}
               <div className="absolute inset-0">
                 <Image
-                  src="/vedha-bhoomi-hero.jpg"
+                  src="/vedhabhoomi/vedhabhoomi1.jpg"
                   alt="Vedha Bhoomi Luxury Farmland Plots"
                   fill
                   sizes="100vw"
@@ -285,7 +285,7 @@ export default function Home() {
                       Flagship Project
                     </span>
                     <span className="inline-flex items-center gap-1 bg-white/10 backdrop-blur-md border border-white/15 text-white/90 text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full">
-                      AHUDA Approved
+                      Clear Title
                     </span>
                     <span className="inline-flex items-center gap-1 bg-amber-500/80 backdrop-blur-sm text-white text-[10px] font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-full">
                       ⚡ Limited Plots
@@ -302,7 +302,7 @@ export default function Home() {
                     </h3>
                     <div className="flex items-center gap-1.5 text-white/70 text-sm font-medium">
                       <MapPin className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
-                      <span>40 Acres · 63 Luxury Farm Plots · Near Lepakshi, North Bengaluru</span>
+                      <span>Phase 1: 18 Acres (Total 40 Acres) · 63 Luxury Farm Plots · Near Lepakshi, North Bengaluru</span>
                     </div>
                   </div>
 
@@ -329,10 +329,10 @@ export default function Home() {
                 <div className="sm:w-64 lg:w-72 bg-white/5 backdrop-blur-sm border-t sm:border-t-0 sm:border-l border-white/10 flex flex-col items-center justify-center gap-5 p-6 sm:p-8">
                   <div className="grid grid-cols-2 gap-2 w-full">
                     {[
-                      { val: "40", lbl: "Acres" },
+                      { val: "18/40", lbl: "Acres" },
                       { val: "63", lbl: "Plots" },
                       { val: "25+", lbl: "Amenities" },
-                      { val: "35", lbl: "Free Trees" },
+                      { val: "Up to 400", lbl: "Plants/Plot" },
                     ].map((s, i) => (
                       <div key={i} className="bg-white/8 border border-white/10 rounded-xl py-2 text-center">
                         <p className="text-white font-extrabold text-base font-sans leading-tight">{s.val}</p>
@@ -365,18 +365,17 @@ export default function Home() {
                 {/* Card Header Image */}
                 <div className="relative h-56 w-full overflow-hidden bg-slate-100">
                   <Image
-                    src={project.slug === "vedha-bhoomi" ? "/vedha-bhoomi-hero.jpg" : project.heroImage}
+                    src={project.slug === "vedha-bhoomi" ? "/vedhabhoomi/vedhabhoomi1.jpg" : project.heroImage}
                     alt={project.title}
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent" />
-                  
+
                   {/* Badge */}
-                  <span className={`absolute top-4 left-4 text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md ${
-                    project.slug === "vedha-bhoomi" ? "bg-emerald-600" : "bg-[#0b4eb7]"
-                  }`}>
+                  <span className={`absolute top-4 left-4 text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md ${project.slug === "vedha-bhoomi" ? "bg-emerald-600" : "bg-[#0b4eb7]"
+                    }`}>
                     {project.badge}
                   </span>
 
@@ -413,11 +412,10 @@ export default function Home() {
 
                   <Link
                     href={project.slug === "vedha-bhoomi" ? "/vedhabhoomi" : `/projects/${project.slug}`}
-                    className={`w-full inline-flex items-center justify-center text-white py-2.5 rounded-xl text-sm font-semibold transition-colors gap-1.5 ${
-                      project.slug === "vedha-bhoomi"
+                    className={`w-full inline-flex items-center justify-center text-white py-2.5 rounded-xl text-sm font-semibold transition-colors gap-1.5 ${project.slug === "vedha-bhoomi"
                         ? "bg-emerald-600 hover:bg-emerald-700"
                         : "bg-[#0b4eb7] hover:bg-slate-900"
-                    }`}
+                      }`}
                   >
                     <span>View Project Details</span>
                     <ChevronRight size={16} />

@@ -19,6 +19,7 @@ import {
 import { Footer } from "@/components/layout/footer";
 import { Navbar } from "@/components/layout/navbar";
 import { OtpVerificationModal } from "@/components/features/otp-verification-modal";
+import { submitLeadToNeoDove, submitLeadToWebhook } from "@/lib/webhook";
 import { PROJECTS_DATA } from "@/lib/projects-data";
 import type { LeadSubmitPayload } from "@repo/types";
 
@@ -51,7 +52,32 @@ export default function ProjectDetailClient({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.fullName.trim() || !form.phoneNumber.trim()) return;
-    setShowOtpModal(true);
+
+    // Immediately dispatch lead to NeoDove CRM and Google Sheets
+    submitLeadToNeoDove({
+      fullName: form.fullName,
+      phoneNumber: normalizePhone(form.phoneNumber),
+      language: form.language,
+      budget: form.budgetRange,
+      siteVisit: form.siteVisit,
+      interestedIn: project?.title || "Project Interest",
+      preferredLocation: project?.location || "",
+      source: "Project Page",
+    }).catch((err) => console.error("NeoDove CRM submission error:", err));
+
+    submitLeadToWebhook({
+      fullName: form.fullName,
+      phoneNumber: normalizePhone(form.phoneNumber),
+      language: form.language,
+      budget: form.budgetRange,
+      siteVisit: form.siteVisit,
+      interestedIn: project?.title || "Project Interest",
+      preferredLocation: project?.location || "",
+      source: "Project Page",
+    }).catch((err) => console.error("Webhook submission error:", err));
+
+    // OTP verification temporarily bypassed until production number is live
+    setSubmitted(true);
   };
 
   const handleOtpSuccess = () => {
@@ -495,11 +521,9 @@ export default function ProjectDetailClient({
                         className="w-full bg-[#0b4eb7] hover:bg-[#083c91] text-white py-3 rounded-xl font-bold text-sm transition shadow-sm cursor-pointer flex items-center justify-center gap-2"
                       >
                         <ShieldCheck className="h-4 w-4" />
-                        Verify & Submit Enquiry
+                        Submit Enquiry
                       </button>
-                      <p className="text-center text-[10px] text-slate-400 mt-2">
-                        WhatsApp OTP verification required
-                      </p>
+  
                     </div>
                   </form>
                 )}

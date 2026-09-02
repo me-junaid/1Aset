@@ -23,9 +23,10 @@ import {
   Globe,
   Calendar,
 } from "lucide-react";
-import { Footer } from "@/components/layout/footer";
 import { Navbar } from "@/components/layout/navbar";
+import { Footer } from "@/components/layout/footer";
 import { OtpVerificationModal } from "@/components/features/otp-verification-modal";
+import { submitLeadToNeoDove, submitLeadToWebhook } from "@/lib/webhook";
 import type { LeadSubmitPayload } from "@repo/types";
 
 export default function ContactPage() {
@@ -54,13 +55,31 @@ export default function ContactPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Basic validation before opening OTP modal
     if (!formData.fullName.trim() || !formData.phoneNumber.trim()) {
       return;
     }
 
-    // Open OTP modal instead of submitting directly
-    setShowOtpModal(true);
+    // Immediately dispatch lead to NeoDove CRM and Google Sheets
+    submitLeadToNeoDove({
+      fullName: formData.fullName,
+      phoneNumber: normalizePhone(formData.phoneNumber),
+      language: formData.language,
+      budget: formData.budgetRange,
+      siteVisit: formData.siteVisit,
+      source: "1ASET Contact Form",
+    }).catch((err) => console.error("NeoDove CRM submission error:", err));
+
+    submitLeadToWebhook({
+      fullName: formData.fullName,
+      phoneNumber: normalizePhone(formData.phoneNumber),
+      language: formData.language,
+      budget: formData.budgetRange,
+      siteVisit: formData.siteVisit,
+      source: "1ASET Contact Form",
+    }).catch((err) => console.error("Webhook submission error:", err));
+
+    // OTP verification temporarily bypassed until production number is live
+    setSubmitted(true);
   };
 
   const handleOtpSuccess = () => {
@@ -397,11 +416,8 @@ export default function ContactPage() {
                         className="w-full bg-[#0b4eb7] hover:bg-[#083c91] text-white py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 shadow-md transition transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
                       >
                         <ShieldCheck className="h-4 w-4" />
-                        <span>Verify & Submit Enquiry</span>
+                        <span>Submit Enquiry</span>
                       </button>
-                      <p className="text-center text-[10px] text-slate-400 mt-2">
-                        WhatsApp OTP verification required before submission
-                      </p>
                     </div>
                   </form>
                 )}

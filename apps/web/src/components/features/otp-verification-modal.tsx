@@ -11,6 +11,7 @@ import {
   Smartphone,
 } from "lucide-react";
 import { requestWhatsAppOtp, verifyWhatsAppOtp, submitLead } from "@/lib/api";
+import { submitLeadToNeoDove } from "@/lib/webhook";
 import type { LeadSubmitPayload } from "@repo/types";
 
 type OtpStep =
@@ -121,6 +122,19 @@ export function OtpVerificationModal({
             setStep("ENQUIRY_SUBMITTED");
             setTimeout(() => onSuccess(), 2000);
           } catch (submitError: any) {
+            // Fallback: send directly to NeoDove if backend API is unreachable
+            submitLeadToNeoDove({
+              fullName: leadPayload.name,
+              phoneNumber: leadPayload.phoneNumber,
+              emailAddress: leadPayload.email,
+              language: leadPayload.language,
+              budget: leadPayload.budgetRange,
+              siteVisit: leadPayload.siteVisit,
+              interestedIn: leadPayload.interestedIn,
+              preferredLocation: leadPayload.preferredLocation,
+              source: leadPayload.source,
+            }).catch(() => {});
+
             setErrorMessage(submitError.message || "Failed to submit enquiry");
             setStep("ERROR");
           }

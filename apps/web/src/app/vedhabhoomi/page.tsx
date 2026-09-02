@@ -21,15 +21,21 @@ import {
   Users,
   ChevronRight,
   Star,
+  Video,
+  Play,
+  Maximize2,
+  X,
+  Sparkles,
 } from "lucide-react";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { OtpVerificationModal } from "@/components/features/otp-verification-modal";
+import { submitLeadToNeoDove, submitLeadToWebhook } from "@/lib/webhook";
 import type { LeadSubmitPayload } from "@repo/types";
 
 const AMENITIES = [
   { icon: Droplets, label: "Drip Irrigation System" },
-  { icon: Trees, label: "35 Free Fruit Trees / Plot" },
+  { icon: Trees, label: "Up to 400 Plants / Trees / Plot" },
   { icon: ShieldCheck, label: "24/7 CCTV Security" },
   { icon: Home, label: "Grand Gated Entry" },
   { icon: Leaf, label: "Eco-Friendly Infrastructure" },
@@ -38,36 +44,48 @@ const AMENITIES = [
   { icon: Car, label: "Internal Asphalt Roads" },
   { icon: Phone, label: "Resident Community App" },
   { icon: Award, label: "Clear Legal Titles" },
-  { icon: MapPin, label: "AHUDA Approved Layout" },
+  { icon: MapPin, label: "Verified Layout Plan" },
   { icon: Users, label: "Managed Maintenance" },
 ];
 
 const HIGHLIGHTS = [
-  { value: "40", label: "Acres" },
+  { value: "18 / 40", label: "Acres (Phase 1 / Total)" },
   { value: "63", label: "Luxury Plots" },
   { value: "25+", label: "Amenities" },
-  { value: "35", label: "Free Trees/Plot" },
+  { value: "Up to 400", label: "Plants / Trees per Plot" },
 ];
 
 const LEGAL_CHECKS = [
-  "AHUDA Approved Layout",
+  "100% Clear Title & Ownership",
   "Clear Patta & Legal Title Deed",
+  "Agricultural Farmland — No AHUDA Required",
   "Water Test Reports Available",
   "Soil Test Reports Available",
   "No Encumbrance Certificate",
   "Registered Sale Deed",
 ];
 
+const GALLERY_IMAGES = [
+  { src: "/vedhabhoomi/vedhabhoomi1.jpg", title: "Project Overview & Aerial View", badge: "Farmland Layout" },
+  { src: "/vedhabhoomi/vedhabhoomi2.jpeg", title: "Internal Roads & Tree Plantation", badge: "Infrastructure" },
+  { src: "/vedhabhoomi/vedhabhoomi3.jpeg", title: "Luxury Farm Plot Demarcation", badge: "Plot View" },
+  { src: "/vedhabhoomi/vedhabhoomi4.jpeg", title: "Managed Plantation & Green Belt", badge: "Drip System" },
+  { src: "/vedhabhoomi/vedhabhoomi5.jpeg", title: "Masterplan & Development Layout", badge: "Masterplan" },
+  { src: "/vedhabhoomi/vedhabhoomi6.jpeg", title: "Clubhouse & Scenic Surroundings", badge: "Amenities" },
+];
+
 export default function VedhaBhoomiPage() {
   const [form, setForm] = useState({
     fullName: "",
     phoneNumber: "",
+    email: "",
     language: "English",
     budgetRange: "25L",
     siteVisit: "Not decided",
   });
   const [submitted, setSubmitted] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
+  const [selectedImg, setSelectedImg] = useState<{ src: string; title: string } | null>(null);
 
   const normalizePhone = (phone: string): string => {
     const digits = phone.replace(/[\s\-\(\)]/g, "");
@@ -80,12 +98,40 @@ export default function VedhaBhoomiPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.fullName.trim() || !form.phoneNumber.trim()) return;
-    setShowOtpModal(true);
+
+    // Immediately dispatch lead to NeoDove CRM and Google Sheets
+    submitLeadToNeoDove({
+      fullName: form.fullName,
+      phoneNumber: normalizePhone(form.phoneNumber),
+      emailAddress: form.email,
+      language: form.language,
+      budget: form.budgetRange,
+      siteVisit: form.siteVisit,
+      interestedIn: "Vedha Bhoomi — Luxury Farmland Plots",
+      preferredLocation: "Near Lepakshi, North Bengaluru",
+      source: "Vedha Bhoomi Form",
+    }).catch((err) => console.error("NeoDove CRM submission error:", err));
+
+    submitLeadToWebhook({
+      fullName: form.fullName,
+      phoneNumber: normalizePhone(form.phoneNumber),
+      emailAddress: form.email,
+      language: form.language,
+      budget: form.budgetRange,
+      siteVisit: form.siteVisit,
+      interestedIn: "Vedha Bhoomi — Luxury Farmland Plots",
+      preferredLocation: "Near Lepakshi, North Bengaluru",
+      source: "Vedha Bhoomi Form",
+    }).catch((err) => console.error("Webhook submission error:", err));
+
+    // OTP verification temporarily bypassed until production number is live
+    setSubmitted(true);
   };
 
   const buildLeadPayload = (): Omit<LeadSubmitPayload, "whatsappVerificationId"> => ({
     name: form.fullName,
     phoneNumber: normalizePhone(form.phoneNumber),
+    email: form.email || undefined,
     language: form.language,
     budgetRange: form.budgetRange,
     siteVisit: form.siteVisit,
@@ -111,21 +157,47 @@ export default function VedhaBhoomiPage() {
         onSuccess={handleOtpSuccess}
       />
 
+      {/* ── Lightbox Modal ── */}
+      {selectedImg && (
+        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="relative max-w-5xl w-full max-h-[90vh] flex flex-col items-center">
+            <button
+              onClick={() => setSelectedImg(null)}
+              className="absolute -top-12 right-0 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-full p-2 transition"
+            >
+              <X className="h-6 w-6" />
+            </button>
+            <div className="relative w-full h-[70vh] rounded-2xl overflow-hidden shadow-2xl">
+              <Image
+                src={selectedImg.src}
+                alt={selectedImg.title}
+                fill
+                sizes="100vw"
+                className="object-contain"
+              />
+            </div>
+            <p className="text-white text-base font-serif font-bold mt-4 text-center">
+              {selectedImg.title}
+            </p>
+          </div>
+        </div>
+      )}
+
       <main className="flex-1">
 
         {/* ─── HERO ─── */}
         <section className="relative w-full min-h-[600px] sm:min-h-[720px] flex items-end overflow-hidden">
           <Image
-            src="/vedha-bhoomi-hero.jpg"
-            alt="Vedha Bhoomi Farmland"
+            src="/vedhabhoomi/vedhabhoomi1.jpg"
+            alt="Vedha Bhoomi Farmland Layout"
             fill
             priority
             sizes="100vw"
             className="object-cover object-center scale-105 brightness-60"
           />
           {/* Gradient Overlays */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#041e3f]/90 via-[#041e3f]/40 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#041e3f]/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#041e3f]/95 via-[#041e3f]/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#041e3f]/70 via-[#041e3f]/30 to-transparent" />
 
           {/* Breadcrumb */}
           <div className="absolute top-6 left-4 sm:left-8 z-10 flex items-center gap-1.5 text-white/70 text-xs font-medium">
@@ -133,7 +205,7 @@ export default function VedhaBhoomiPage() {
             <ChevronRight className="h-3.5 w-3.5" />
             <Link href="/projects" className="hover:text-white transition">Projects</Link>
             <ChevronRight className="h-3.5 w-3.5" />
-            <span className="text-emerald-300">Vedha Bhoomi</span>
+            <span className="text-emerald-300 font-semibold">Vedha Bhoomi</span>
           </div>
 
           {/* Hero Content */}
@@ -142,33 +214,33 @@ export default function VedhaBhoomiPage() {
               {/* Badges */}
               <div className="flex flex-wrap gap-2">
                 <span className="bg-emerald-500 text-white text-[10px] font-extrabold uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg">
-                  🌿 Flagship Project
+                  🌿 Flagship Farmland Project
                 </span>
                 <span className="bg-white/15 backdrop-blur-sm border border-white/25 text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full">
-                  AHUDA Approved
+                  Clear Title
                 </span>
                 <span className="bg-amber-500/90 text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full">
-                  Limited Availability
+                  ⚡ Limited Plots
                 </span>
               </div>
 
               {/* Headline */}
               <div>
                 <p className="text-emerald-300 text-sm font-bold uppercase tracking-widest mb-2">
-                  By Vedha Sree Parivar LLP
+                  Marketed by 1ASET · Developer Vedha Sree Parivar LLP
                 </p>
                 <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight tracking-tight">
                   Vedha Bhoomi
                 </h1>
                 <p className="text-blue-100 text-lg sm:text-xl font-medium mt-2">
-                  Luxury Gated Farmland Plots
+                  Luxury Gated Farmland Plots &amp; Weekend Home Destination
                 </p>
               </div>
 
               {/* Location */}
               <div className="flex items-center gap-2 text-white/80 text-sm font-medium">
                 <MapPin className="h-4 w-4 text-emerald-400 shrink-0" />
-                <span>Near Lepakshi, North Bengaluru — 90 km from Airport</span>
+                <span>Near Lepakshi, North Bengaluru — 90 km from Kempegowda Airport</span>
               </div>
 
               {/* Price CTA strip */}
@@ -177,20 +249,20 @@ export default function VedhaBhoomiPage() {
                   <span className="block text-blue-200 text-xs font-bold uppercase tracking-wider">Starting From</span>
                   <span className="block text-white text-3xl font-extrabold font-sans">₹22 Lakhs</span>
                 </div>
-                <div className="flex gap-3">
+                <div className="flex flex-wrap gap-3">
                   <a
                     href="#enquire"
-                    className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5"
+                    className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3.5 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5"
                   >
                     Book Free Site Visit
                     <ArrowRight className="h-4 w-4" />
                   </a>
                   <a
-                    href="tel:+919876543210"
-                    className="inline-flex items-center gap-2 bg-white/15 hover:bg-white/25 backdrop-blur-sm border border-white/25 text-white px-5 py-3 rounded-xl font-bold text-sm transition"
+                    href="#video-tour"
+                    className="inline-flex items-center gap-2 bg-white/15 hover:bg-white/25 backdrop-blur-sm border border-white/25 text-white px-5 py-3.5 rounded-xl font-bold text-sm transition"
                   >
-                    <Phone className="h-4 w-4" />
-                    <span className="hidden sm:inline">Call Now</span>
+                    <Video className="h-4 w-4 text-emerald-400" />
+                    <span>Watch Site Video</span>
                   </a>
                 </div>
               </div>
@@ -214,7 +286,7 @@ export default function VedhaBhoomiPage() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-16 sm:space-y-20">
 
-          {/* ─── OVERVIEW + GALLERY ─── */}
+          {/* ─── OVERVIEW + FEATURED PHOTOS ─── */}
           <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
             {/* Left: Text */}
             <div className="space-y-6">
@@ -228,21 +300,22 @@ export default function VedhaBhoomiPage() {
                 </h2>
               </div>
               <p className="text-slate-600 text-base leading-relaxed">
-                Vedha Bhoomi is a first-of-its-kind premium gated farmland community nestled in the tranquil landscapes near Lepakshi, Andhra Pradesh border — a strategic location on the Bengaluru–Vijayawada Expressway growth corridor and just 90 km from Kempegowda International Airport.
+                Vedha Bhoomi is a premier gated farmland community developed by <strong className="text-slate-900">Vedha Sree Parivar LLP</strong> and marketed exclusively by <strong className="text-slate-900">1ASET.com</strong>. Nestled near the historic Lepakshi region along the Bengaluru–Vijayawada Expressway growth corridor, it sits just 90 km from Kempegowda International Airport.
               </p>
               <p className="text-slate-600 text-base leading-relaxed">
-                Spread across <strong className="text-slate-900">40 pristine acres</strong>, the project is divided into <strong className="text-slate-900">63 luxury farm plots</strong>, each handcrafted for discerning investors seeking a premium weekend home destination, nature retreat, or high-yield land asset. Every plot comes with <strong className="text-slate-900">35 free fruit-bearing trees</strong>, ready drip irrigation, and full clubhouse access.
+                Spread across <strong className="text-slate-900">40 acres</strong> (with Phase 1 across <strong className="text-slate-900">18 acres</strong>) and featuring <strong className="text-slate-900">63 luxury farm plots</strong>, each plot includes <strong className="text-slate-900">up to 400 plants &amp; fruit-bearing trees</strong>, automated drip irrigation, round-the-clock security, internal asphalt roads, and exclusive access to a modern clubhouse retreat.
               </p>
 
               {/* Key Investment Points */}
               <div className="bg-emerald-50 border border-emerald-200/60 rounded-2xl p-5 space-y-3">
                 <p className="text-emerald-800 text-xs font-extrabold uppercase tracking-widest">Why Invest in Vedha Bhoomi</p>
                 {[
-                  "Bengaluru–Vijayawada Expressway corridor land appreciation",
-                  "AHUDA Approved — full regulatory compliance",
-                  "40 acres of managed eco-farmland with full infrastructure",
-                  "Passive plantation income from fruit-bearing trees",
-                  "Free pickup for site visits — no hidden charges",
+                  "Rapid land value appreciation along Bengaluru–Vijayawada Expressway",
+                  "100% clear legal title deeds",
+                  "Phase 1 development across 18 acres of a 40-acre master community",
+                  "Up to 400 fruit-bearing plants & trees (mango, sapota, teak) per plot",
+                  "Automated drip irrigation & 24/7 security with gated entry",
+                  "Free pickup and site visit tours directly from Bengaluru",
                 ].map((pt, i) => (
                   <div key={i} className="flex items-start gap-2.5">
                     <Check className="h-4 w-4 text-emerald-600 mt-0.5 shrink-0" />
@@ -252,46 +325,158 @@ export default function VedhaBhoomiPage() {
               </div>
             </div>
 
-            {/* Right: Gallery */}
+            {/* Right: Featured Photos */}
             <div className="space-y-3">
-              <div className="relative h-64 sm:h-80 rounded-2xl overflow-hidden shadow-lg">
+              <div
+                onClick={() => setSelectedImg({ src: "/vedhabhoomi/vedhabhoomi1.jpg", title: "Project Overview & Aerial View" })}
+                className="relative h-64 sm:h-80 rounded-2xl overflow-hidden shadow-lg group cursor-pointer"
+              >
                 <Image
-                  src="/gallery-lounge.jpg"
-                  alt="Vedha Bhoomi Clubhouse"
+                  src="/vedhabhoomi/vedhabhoomi1.jpg"
+                  alt="Vedha Bhoomi Site Overview"
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-cover"
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute bottom-3 left-3 bg-black/50 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1.5 rounded-lg">
-                  Clubhouse & Common Areas
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
+                <div className="absolute bottom-3 left-3 flex items-center justify-between right-3">
+                  <span className="bg-black/60 backdrop-blur-md text-white text-xs font-semibold px-3 py-1.5 rounded-lg">
+                    Real Site Photo — Aerial View
+                  </span>
+                  <span className="bg-white/20 backdrop-blur-md text-white p-1.5 rounded-lg group-hover:bg-emerald-500 transition">
+                    <Maximize2 className="h-4 w-4" />
+                  </span>
                 </div>
               </div>
+
               <div className="grid grid-cols-2 gap-3">
-                <div className="relative h-36 sm:h-44 rounded-xl overflow-hidden shadow-md">
+                <div
+                  onClick={() => setSelectedImg({ src: "/vedhabhoomi/vedhabhoomi2.jpeg", title: "Internal Roads & Tree Plantation" })}
+                  className="relative h-36 sm:h-44 rounded-xl overflow-hidden shadow-md group cursor-pointer"
+                >
                   <Image
-                    src="/property-2.jpg"
-                    alt="Vedha Bhoomi Farm Plot"
+                    src="/vedhabhoomi/vedhabhoomi2.jpeg"
+                    alt="Vedha Bhoomi Internal Roads"
                     fill
                     sizes="50vw"
-                    className="object-cover"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute bottom-2 left-2 bg-black/50 backdrop-blur-sm text-white text-[10px] font-semibold px-2 py-1 rounded-md">
-                    Farm Plots
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent" />
+                  <div className="absolute bottom-2 left-2 bg-black/60 backdrop-blur-md text-white text-[10px] font-semibold px-2 py-1 rounded-md">
+                    Internal Roads &amp; Trees
                   </div>
                 </div>
-                <div className="relative h-36 sm:h-44 rounded-xl overflow-hidden shadow-md">
+
+                <div
+                  onClick={() => setSelectedImg({ src: "/vedhabhoomi/vedhabhoomi3.jpeg", title: "Luxury Farm Plot Demarcation" })}
+                  className="relative h-36 sm:h-44 rounded-xl overflow-hidden shadow-md group cursor-pointer"
+                >
                   <Image
-                    src="/gallery-interior.jpg"
-                    alt="Vedha Bhoomi Amenities"
+                    src="/vedhabhoomi/vedhabhoomi3.jpeg"
+                    alt="Vedha Bhoomi Farm Plot Demarcation"
                     fill
                     sizes="50vw"
-                    className="object-cover"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute bottom-2 left-2 bg-black/50 backdrop-blur-sm text-white text-[10px] font-semibold px-2 py-1 rounded-md">
-                    Amenities
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent" />
+                  <div className="absolute bottom-2 left-2 bg-black/60 backdrop-blur-md text-white text-[10px] font-semibold px-2 py-1 rounded-md">
+                    Plot Demarcation
                   </div>
                 </div>
               </div>
+            </div>
+          </section>
+
+          {/* ─── LIVE VIDEO TOUR SECTION ─── */}
+          <section id="video-tour" className="scroll-mt-24 space-y-6">
+            <div className="text-center space-y-2 max-w-2xl mx-auto">
+              <div className="inline-flex items-center gap-1.5 text-emerald-700 text-[11px] font-extrabold uppercase tracking-widest bg-emerald-50 px-3.5 py-1.5 rounded-full border border-emerald-200 shadow-xs">
+                <Video className="h-3.5 w-3.5 text-emerald-600" />
+                Real Site Video Tour
+              </div>
+              <h2 className="font-serif text-3xl sm:text-4xl font-extrabold text-[#041e3f]">
+                Watch the Live Site Walkthrough
+              </h2>
+              <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+                Take an authentic video tour of Vedha Bhoomi — inspect the road infrastructure, plantation work, and surrounding greenery.
+              </p>
+            </div>
+
+            <div className="max-w-4xl mx-auto bg-slate-950 rounded-3xl overflow-hidden shadow-2xl border border-slate-800 relative group">
+              <video
+                controls
+                preload="metadata"
+                poster="/vedhabhoomi/vedhabhoomi1.jpg"
+                className="w-full aspect-video object-cover"
+              >
+                <source src="/vedhabhoomi/vedhabhoomi7.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+              <div className="p-4 sm:p-5 bg-gradient-to-r from-[#041e3f] via-[#072d6e] to-[#041e3f] text-white flex flex-wrap items-center justify-between gap-3 border-t border-white/10">
+                <div className="flex items-center gap-2.5">
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+                  </span>
+                  <span className="text-xs font-bold uppercase tracking-wider text-emerald-300">
+                    On-Site Verified Footage
+                  </span>
+                </div>
+                <div className="flex items-center gap-4 text-xs text-blue-100 font-medium">
+                  <span>📹 Site Walkthrough</span>
+                  <span>📍 Lepakshi Corridor</span>
+                  <span>🌳 Phase 1: 18 Ac (40 Ac Total)</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* ─── REAL SITE PHOTOS GALLERY GRID ─── */}
+          <section className="space-y-8">
+            <div className="text-center space-y-2 max-w-2xl mx-auto">
+              <div className="inline-flex items-center gap-1.5 text-[#0b4eb7] text-[11px] font-bold uppercase tracking-widest bg-blue-50 px-3.5 py-1.5 rounded-full border border-blue-200">
+                <Camera className="h-3.5 w-3.5" />
+                Site Gallery &amp; Layout
+              </div>
+              <h2 className="font-serif text-3xl sm:text-4xl font-extrabold text-[#041e3f]">
+                Explore Vedha Bhoomi in Pictures
+              </h2>
+              <p className="text-slate-500 text-sm sm:text-base leading-relaxed">
+                Click on any photo to inspect high-resolution site developments, plot demarcations, and layout maps.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              {GALLERY_IMAGES.map((img, idx) => (
+                <div
+                  key={idx}
+                  onClick={() => setSelectedImg({ src: img.src, title: img.title })}
+                  className="group bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col"
+                >
+                  <div className="relative h-56 w-full overflow-hidden bg-slate-100">
+                    <Image
+                      src={img.src}
+                      alt={img.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
+
+                    <span className="absolute top-3 left-3 bg-emerald-600 text-white text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-md shadow-sm">
+                      {img.badge}
+                    </span>
+
+                    <span className="absolute top-3 right-3 bg-black/40 backdrop-blur-md text-white p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Maximize2 className="h-4 w-4" />
+                    </span>
+
+                    <div className="absolute bottom-3 left-3 right-3 text-white">
+                      <p className="font-serif text-base font-bold leading-tight">{img.title}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </section>
 
@@ -300,7 +485,7 @@ export default function VedhaBhoomiPage() {
             <div className="text-center space-y-2">
               <div className="inline-flex items-center gap-1.5 text-[#0b4eb7] text-[11px] font-bold uppercase tracking-widest">
                 <TrendingUp className="h-3.5 w-3.5" />
-                Pricing & Plot Details
+                Pricing &amp; Plot Details
               </div>
               <h2 className="font-serif text-3xl sm:text-4xl font-extrabold text-[#041e3f]">
                 Investment Overview
@@ -329,8 +514,8 @@ export default function VedhaBhoomiPage() {
                     <span className="font-bold text-emerald-300">18% p.a.</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-blue-200">Free Trees</span>
-                    <span className="font-bold">35 Plants/Plot</span>
+                    <span className="text-blue-200">Plants &amp; Trees</span>
+                    <span className="font-bold">Up to 400</span>
                   </div>
                 </div>
                 <a
@@ -342,42 +527,118 @@ export default function VedhaBhoomiPage() {
               </div>
 
               {/* Market Comparison */}
-              <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm col-span-1 sm:col-span-2 space-y-4">
-                <p className="text-slate-800 font-serif text-lg font-bold">Land Price Comparison — North Bengaluru Growth Corridor</p>
-                <div className="overflow-x-auto">
+              <div className="bg-white border border-slate-200/80 rounded-2xl p-5 sm:p-6 shadow-sm col-span-1 sm:col-span-2 space-y-4">
+                <div className="space-y-1">
+                  <p className="text-slate-900 font-serif text-lg font-bold leading-snug">
+                    Land Price Comparison — North Bengaluru Corridor
+                  </p>
+                  <p className="text-xs text-slate-500 font-medium">
+                    Compare land prices &amp; appreciation rates across prime growth sectors.
+                  </p>
+                </div>
+
+                {/* Mobile View: High-converting card list */}
+                <div className="block sm:hidden space-y-2.5 pt-1">
+                  {/* Vedha Bhoomi Highlight Card */}
+                  <div className="bg-gradient-to-r from-emerald-700 via-emerald-800 to-emerald-900 text-white rounded-xl p-4 shadow-md space-y-2 relative overflow-hidden">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-serif text-base font-extrabold">Vedha Bhoomi</span>
+                        <span className="bg-white/20 text-white text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                          NOW
+                        </span>
+                      </div>
+                      <span className="bg-white text-emerald-900 text-xs font-extrabold px-2.5 py-1 rounded-lg shadow-xs">
+                        18% p.a.
+                      </span>
+                    </div>
+                    <div className="flex items-baseline justify-between pt-1 border-t border-white/15">
+                      <span className="text-xs text-emerald-200 font-medium">Price / sqft:</span>
+                      <span className="font-sans text-lg font-extrabold text-white">₹210 – ₹250</span>
+                    </div>
+                  </div>
+
+                  {/* Devanahalli */}
+                  <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-bold text-slate-900">Devanahalli</p>
+                      <p className="text-xs text-slate-500 font-semibold mt-0.5">₹3,500 – ₹5,000 / sqft</p>
+                    </div>
+                    <span className="text-xs font-bold text-slate-700 bg-white border border-slate-200 px-2.5 py-1 rounded-lg">
+                      12% p.a.
+                    </span>
+                  </div>
+
+                  {/* Chikkaballapur */}
+                  <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-bold text-slate-900">Chikkaballapur</p>
+                      <p className="text-xs text-slate-500 font-semibold mt-0.5">₹1,200 – ₹2,000 / sqft</p>
+                    </div>
+                    <span className="text-xs font-bold text-slate-700 bg-white border border-slate-200 px-2.5 py-1 rounded-lg">
+                      10% p.a.
+                    </span>
+                  </div>
+
+                  {/* Doddaballapur */}
+                  <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-bold text-slate-900">Doddaballapur</p>
+                      <p className="text-xs text-slate-500 font-semibold mt-0.5">₹900 – ₹1,400 / sqft</p>
+                    </div>
+                    <span className="text-xs font-bold text-slate-700 bg-white border border-slate-200 px-2.5 py-1 rounded-lg">
+                      11% p.a.
+                    </span>
+                  </div>
+                </div>
+
+                {/* Desktop View: Full Table */}
+                <div className="hidden sm:block overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="text-left text-xs font-extrabold uppercase tracking-wider text-slate-400 border-b border-slate-100 pb-2">
-                        <th className="pb-3 pr-4">Location</th>
-                        <th className="pb-3 pr-4">Price / Sqft</th>
-                        <th className="pb-3">Appreciation</th>
+                      <tr className="text-left text-xs font-extrabold uppercase tracking-wider text-slate-500 border-b border-slate-100 pb-2">
+                        <th className="pb-3 pr-4 whitespace-nowrap">Location</th>
+                        <th className="pb-3 pr-4 whitespace-nowrap">Price / sqft</th>
+                        <th className="pb-3 whitespace-nowrap">Appreciation</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-50">
-                      <tr className="bg-emerald-50/50">
-                        <td className="py-3 pr-4 font-bold text-emerald-800">Vedha Bhoomi <span className="text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded font-extrabold ml-1">NOW</span></td>
-                        <td className="py-3 pr-4 font-bold text-emerald-700">₹210–250</td>
-                        <td className="py-3 font-bold text-emerald-600">18% p.a.</td>
+                    <tbody className="divide-y divide-slate-100">
+                      <tr className="bg-emerald-50/70">
+                        <td className="py-3.5 pr-4 font-bold text-emerald-900 whitespace-nowrap">
+                          Vedha Bhoomi{" "}
+                          <span className="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded-full font-extrabold ml-1.5 uppercase tracking-wider">
+                            NOW
+                          </span>
+                        </td>
+                        <td className="py-3.5 pr-4 font-extrabold text-emerald-700 whitespace-nowrap">
+                          Up to ₹400
+                        </td>
+                        <td className="py-3.5 font-extrabold text-emerald-600 whitespace-nowrap">
+                          18% p.a.
+                        </td>
                       </tr>
                       <tr>
-                        <td className="py-3 pr-4 text-slate-600">Devanahalli</td>
-                        <td className="py-3 pr-4 text-slate-600">₹3,500–5,000</td>
-                        <td className="py-3 text-slate-500">12% p.a.</td>
+                        <td className="py-3.5 pr-4 font-semibold text-slate-800 whitespace-nowrap">Devanahalli</td>
+                        <td className="py-3.5 pr-4 text-slate-600 font-medium whitespace-nowrap">₹3,500 – ₹5,000</td>
+                        <td className="py-3.5 text-slate-600 font-semibold whitespace-nowrap">12% p.a.</td>
                       </tr>
                       <tr>
-                        <td className="py-3 pr-4 text-slate-600">Chikkaballapur</td>
-                        <td className="py-3 pr-4 text-slate-600">₹1,200–2,000</td>
-                        <td className="py-3 text-slate-500">10% p.a.</td>
+                        <td className="py-3.5 pr-4 font-semibold text-slate-800 whitespace-nowrap">Chikkaballapur</td>
+                        <td className="py-3.5 pr-4 text-slate-600 font-medium whitespace-nowrap">₹1,200 – ₹2,000</td>
+                        <td className="py-3.5 text-slate-600 font-semibold whitespace-nowrap">10% p.a.</td>
                       </tr>
                       <tr>
-                        <td className="py-3 pr-4 text-slate-600">Doddaballapur</td>
-                        <td className="py-3 pr-4 text-slate-600">₹900–1,400</td>
-                        <td className="py-3 text-slate-500">11% p.a.</td>
+                        <td className="py-3.5 pr-4 font-semibold text-slate-800 whitespace-nowrap">Doddaballapur</td>
+                        <td className="py-3.5 pr-4 text-slate-600 font-medium whitespace-nowrap">₹900 – ₹1,400</td>
+                        <td className="py-3.5 text-slate-600 font-semibold whitespace-nowrap">11% p.a.</td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
-                <p className="text-xs text-slate-400">* Appreciation estimates are indicative based on regional market trends. Consult your investment advisor before purchasing.</p>
+
+                <p className="text-[11px] text-slate-400 leading-relaxed pt-1">
+                  * Appreciation estimates are indicative based on regional market trends. Consult your investment advisor before purchasing.
+                </p>
               </div>
             </div>
           </section>
@@ -443,7 +704,7 @@ export default function VedhaBhoomiPage() {
               <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 space-y-3">
                 <p className="text-slate-800 font-bold text-sm">Why Lepakshi Corridor?</p>
                 <p className="text-slate-600 text-sm leading-relaxed">
-                  Located at the Karnataka–Andhra Pradesh border, Lepakshi sits at the confluence of multiple high-growth economic corridors — the Bengaluru–Vijayawada Expressway, the APIIC industrial belt, and growing tourism infrastructure around the Lepakshi Heritage Complex (a UNESCO-listed site).
+                  Located at the Karnataka–Andhra Pradesh border, Lepakshi sits at the confluence of multiple high-growth economic corridors — the Bengaluru–Vijayawada Expressway, the APIIC industrial belt, and growing tourism infrastructure around the Lepakshi Heritage Complex.
                 </p>
                 <p className="text-slate-600 text-sm leading-relaxed">
                   Early-stage land investors in this corridor have seen 3–5x appreciation over a 5-year window.
@@ -477,18 +738,17 @@ export default function VedhaBhoomiPage() {
           </section>
 
           {/* ─── ENQUIRY FORM ─── */}
-
           <section id="enquire" className="scroll-mt-20">
-            <div className="relative rounded-3xl overflow-hidden">
+            <div className="relative rounded-3xl overflow-hidden border border-emerald-900/30 shadow-2xl">
               {/* Background */}
               <div
                 className="absolute inset-0"
                 style={{ background: "linear-gradient(135deg, #041e0e 0%, #0a3018 40%, #0f3d20 100%)" }}
               />
-              <div className="absolute inset-0 opacity-20">
+              <div className="absolute inset-0 opacity-25">
                 <Image
-                  src="/vedha-bhoomi-hero.jpg"
-                  alt=""
+                  src="/vedhabhoomi/vedhabhoomi3.jpeg"
+                  alt="Vedha Bhoomi Background"
                   fill
                   sizes="100vw"
                   className="object-cover object-top"
@@ -509,26 +769,26 @@ export default function VedhaBhoomiPage() {
                         Book a Free<br />
                         <span className="text-emerald-300">Site Visit</span>
                       </h2>
-                      <p className="text-white/60 text-sm leading-relaxed max-w-xs">
+                      <p className="text-white/70 text-sm leading-relaxed max-w-xs">
                         Our advisors personally escort you to Vedha Bhoomi — free pickup from anywhere in Bengaluru.
                       </p>
                     </div>
 
                     {/* What you get */}
-                    <div className="space-y-3">
+                    <div className="space-y-3.5">
                       {[
                         { icon: "🚗", title: "Free pickup from Bengaluru", sub: "We come to you — no travel hassle" },
                         { icon: "🌿", title: "Guided plot walkthrough", sub: "Walk every acre with our project team" },
-                        { icon: "📄", title: "Legal doc review on-site", sub: "Title deed, AHUDA approval & more" },
+                        { icon: "📄", title: "Legal doc review on-site", sub: "Title deed, RTC records & more" },
                         { icon: "💬", title: "Zero obligation", sub: "Just explore — no pressure, no commitments" },
                       ].map((pt, i) => (
                         <div key={i} className="flex items-start gap-3.5">
-                          <div className="w-9 h-9 rounded-xl bg-white/8 border border-white/10 flex items-center justify-center text-lg shrink-0">
+                          <div className="w-9 h-9 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center text-lg shrink-0">
                             {pt.icon}
                           </div>
                           <div>
                             <p className="text-white text-sm font-semibold">{pt.title}</p>
-                            <p className="text-white/45 text-xs mt-0.5">{pt.sub}</p>
+                            <p className="text-white/50 text-xs mt-0.5">{pt.sub}</p>
                           </div>
                         </div>
                       ))}
@@ -537,15 +797,13 @@ export default function VedhaBhoomiPage() {
 
                   {/* Trust badges strip */}
                   <div className="border-t border-white/10 pt-6 space-y-3">
-                    <p className="text-white/30 text-[10px] font-bold uppercase tracking-widest">Trusted by investors across Bengaluru</p>
+                    <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest">Trusted by investors across Bengaluru</p>
                     <div className="flex flex-wrap gap-2">
                       {[
-                        "🔒 OTP Verified",
-                        "📋 AHUDA Approved",
                         "✅ Clear Title",
                         "🆓 Free Site Visit",
                       ].map((badge, i) => (
-                        <span key={i} className="bg-white/8 border border-white/12 text-white/70 text-[11px] font-semibold px-3 py-1.5 rounded-full">
+                        <span key={i} className="bg-white/10 border border-white/15 text-white/80 text-[11px] font-semibold px-3 py-1.5 rounded-full">
                           {badge}
                         </span>
                       ))}
@@ -556,7 +814,7 @@ export default function VedhaBhoomiPage() {
                 {/* Right — Form */}
                 <div className="p-6 sm:p-8 lg:p-10 flex items-center">
                   {submitted ? (
-                    <div className="w-full bg-white rounded-2xl p-8 text-center space-y-5 shadow-2xl shadow-slate-950/20 border border-slate-100">
+                    <div className="w-full bg-white rounded-2xl p-8 text-center space-y-5 shadow-2xl border border-slate-100">
                       <div className="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center mx-auto">
                         <Check className="h-8 w-8 text-emerald-600" />
                       </div>
@@ -577,16 +835,14 @@ export default function VedhaBhoomiPage() {
                   ) : (
                     <form
                       onSubmit={handleSubmit}
-                      className="w-full bg-white rounded-2xl p-6 sm:p-8 space-y-5 shadow-2xl shadow-slate-950/25 border border-slate-100/80"
+                      className="w-full bg-white rounded-2xl p-6 sm:p-8 space-y-5 shadow-2xl border border-slate-100/80"
                     >
                       {/* Form header */}
-                      <div className="flex items-start justify-between gap-3 border-b border-slate-100 pb-4">
-                        <div>
-                          <h3 className="font-serif text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
-                            Get Pricing & Plot Details
-                          </h3>
-                          <p className="text-slate-500 text-xs mt-1">Fill in your details below and verify via WhatsApp to receive full project details.</p>
-                        </div>
+                      <div className="border-b border-slate-100 pb-4">
+                        <h3 className="font-serif text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+                          Get Pricing &amp; Plot Details
+                        </h3>
+                        <p className="text-slate-500 text-xs mt-1">Fill in your details below to receive full project details and schedule your free site visit.</p>
                       </div>
 
                       {/* Fields */}
@@ -622,6 +878,19 @@ export default function VedhaBhoomiPage() {
                               className="w-full pl-[72px] pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:bg-white focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/10 transition font-medium"
                             />
                           </div>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <label className="text-slate-700 text-xs font-bold uppercase tracking-wider">
+                            Email Address <span className="text-slate-400 font-normal normal-case">(Optional)</span>
+                          </label>
+                          <input
+                            type="email"
+                            placeholder="name@example.com"
+                            value={form.email}
+                            onChange={(e) => setForm({ ...form, email: e.target.value })}
+                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:bg-white focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/10 transition font-medium"
+                          />
                         </div>
 
                         <div className="grid grid-cols-2 gap-3">
@@ -663,11 +932,6 @@ export default function VedhaBhoomiPage() {
                         <ShieldCheck className="h-4 w-4" />
                         <span>Book Free Site Visit</span>
                       </button>
-
-                      <div className="flex items-center justify-center gap-1.5 text-slate-400 text-xs font-medium pt-1">
-                        <span>🔒</span>
-                        <span>OTP verified</span>
-                      </div>
                     </form>
                   )}
                 </div>
@@ -675,7 +939,6 @@ export default function VedhaBhoomiPage() {
               </div>
             </div>
           </section>
-
 
           {/* ─── CTA STRIP ─── */}
           <section className="bg-gradient-to-r from-[#0b4eb7] to-[#062d7a] rounded-2xl p-6 sm:p-8 text-white flex flex-col sm:flex-row items-center justify-between gap-5">

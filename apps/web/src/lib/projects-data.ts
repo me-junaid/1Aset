@@ -30,11 +30,11 @@ export const PROJECTS_DATA: Record<string, ProjectData> = {
     rentalYield: "5.5%",
     horizon: "3-7 Yrs",
     overview:
-      "Vedha Bhoomi is a premium gated farmland community by Vedha Sree Parivar LLP, nestled in the serene landscapes near Lepakshi — just 90 km from Kempegowda International Airport, North Bengaluru.\n\nSpread across 40 acres and divided into 63 luxury farm plots, each plot comes with 35 free fruit-bearing trees, comprehensive drip irrigation, and access to a world-class clubhouse. AHUDA-approved with clear legal titles, Vedha Bhoomi offers a rare combination of weekend retreat living and strong long-term land appreciation along the Bengaluru–Vijayawada Expressway growth corridor.",
-    heroImage: "/property-2.jpg",
-    galleryMain: "/gallery-lounge.jpg",
-    gallerySub1: "/property-2.jpg",
-    gallerySub2: "/gallery-interior.jpg",
+      "Vedha Bhoomi is a premium gated farmland community by Vedha Sree Parivar LLP, nestled in the serene landscapes near Lepakshi — just 90 km from Kempegowda International Airport, North Bengaluru.\n\nSpread across 40 acres (with Phase 1 across 18 acres) and divided into 63 luxury farm plots, each plot comes with up to 400 plants and fruit-bearing trees, comprehensive drip irrigation, and access to a world-class clubhouse. With clear legal title deeds, Vedha Bhoomi offers a rare combination of weekend retreat living and strong long-term land appreciation along the Bengaluru–Vijayawada Expressway growth corridor.",
+    heroImage: "/vedhabhoomi/vedhabhoomi1.jpg",
+    galleryMain: "/vedhabhoomi/vedhabhoomi2.jpeg",
+    gallerySub1: "/vedhabhoomi/vedhabhoomi3.jpeg",
+    gallerySub2: "/vedhabhoomi/vedhabhoomi4.jpeg",
     developerName: "Vedha Sree Parivar LLP",
     developerDesc:
       "Vedha Sree Parivar LLP is a trusted real estate developer specializing in premium managed farmland communities across South India, with a strong focus on eco-friendly infrastructure, legal transparency, and long-term investor returns.",

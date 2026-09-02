@@ -159,7 +159,7 @@ export default function AboutPage() {
             <span className="text-[#0b4eb7] font-bold text-xs uppercase tracking-wider">
               15+ Years of Evolution
             </span>
-            <h2 className="font-serif text-3xl sm:text-4xl font-extrabold text-slate-900">
+            <h2 className="font-sans text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
               2010 → 2018 → 2024 → Today
             </h2>
             <p className="text-slate-600 text-sm sm:text-base">

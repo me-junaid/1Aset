@@ -47,3 +47,40 @@ export async function submitLeadToWebhook(data: LeadFormData): Promise<boolean> 
     return false;
   }
 }
+
+export const NEODOVE_CRM_URL =
+  process.env.NEXT_PUBLIC_NEODOVE_CRM_URL ||
+  "https://2dfb0b37-c8db-4877-919d-68f029567963.neodove.com/integration/custom/8770b6d6-35ec-4634-808f-a2462b2b4ab3/leads";
+
+export async function submitLeadToNeoDove(data: LeadFormData): Promise<boolean> {
+  try {
+    const cleanDigits = (data.phoneNumber || "").replace(/\D/g, "");
+    const mobile =
+      cleanDigits.length >= 10
+        ? Number(cleanDigits.slice(-10))
+        : Number(cleanDigits) || 0;
+
+    const payload = {
+      name: data.fullName || "",
+      mobile,
+      email: data.emailAddress || "",
+      detail1: data.interestedIn || "Vedha Bhoomi",
+      detail2: `Budget: ${data.budget || "25L"} | Visit: ${data.siteVisit || "Not decided"}`,
+      detail3: data.preferredLocation || "North Bengaluru",
+      detail4: `Source: ${data.source || "Website Form"}`,
+    };
+
+    const res = await fetch(NEODOVE_CRM_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    return res.ok;
+  } catch (error) {
+    console.error("Error submitting lead to NeoDove CRM:", error);
+    return false;
+  }
+}
