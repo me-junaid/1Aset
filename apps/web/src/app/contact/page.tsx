@@ -219,14 +219,14 @@ export default function ContactPage() {
                       PRIORITY PHONE & WHATSAPP
                     </span>
                     <a
-                      href="tel:+919876543210"
+                      href="tel:+918884524365"
                       className="block text-sm font-bold text-slate-900 hover:text-[#0b4eb7] transition"
                     >
-                      +91 9876543210
+                      +91 88845 24365
                     </a>
                     <div className="flex items-center gap-2 pt-0.5">
                       <a
-                        href="https://wa.me/919876543210"
+                        href="https://wa.me/918884524365"
                         target="_blank"
                         rel="noreferrer"
                         className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-lg text-xs font-bold hover:bg-emerald-100 transition"

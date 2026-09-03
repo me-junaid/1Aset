@@ -604,7 +604,7 @@ export default function Home() {
                 {
                   icon: <Phone className="h-5 w-5 text-[#0b4eb7]" />,
                   title: "Direct Advisory Line",
-                  desc: "+91 9876543210",
+                  desc: "+91 88845 24365",
                 },
                 {
                   icon: <Mail className="h-5 w-5 text-[#0b4eb7]" />,

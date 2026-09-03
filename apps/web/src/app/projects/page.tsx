@@ -647,7 +647,7 @@ export default function ProjectsPage() {
           <div className="sm:hidden bg-[#0b4eb7] rounded-2xl p-5 text-white text-center space-y-3">
             <p className="text-sm font-semibold">Need help choosing the right property?</p>
             <a
-              href="https://wa.me/919876543210"
+              href="https://wa.me/918884524365"
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-2 bg-white text-[#0b4eb7] px-5 py-2.5 rounded-lg font-bold text-sm"

@@ -154,7 +154,7 @@ export default function ProjectDetailClient({
                   Enquire Now
                 </button>
                 <a
-                  href="https://wa.me/919876543210"
+                  href="https://wa.me/918884524365"
                   target="_blank"
                   rel="noreferrer"
                   className="bg-slate-900/70 hover:bg-slate-900 backdrop-blur-md text-white border border-slate-700/80 px-5 py-2.5 rounded-md font-semibold text-xs sm:text-sm flex items-center gap-2 transition"

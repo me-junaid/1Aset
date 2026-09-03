@@ -110,3 +110,21 @@ export interface LeadSubmitResponse {
   otpVerified: boolean;
 }
 
+// ── Calculator Types ───────────────────────────────────────────────────
+
+export interface ProjectCalculatorPreset {
+  id: string;
+  title: string;
+  shortName: string;
+  pricePerSqft: number; // e.g. 250 for Vedha Bhoomi
+  defaultInvestment: number; // e.g. 2500000 (25 Lakhs)
+  expectedAppreciationRate: number; // e.g. 18 (%)
+  holdingPeriodYears: number; // e.g. 5
+  monthlyRentalIncome: number;
+  stampDutyPercent?: number; // e.g. 7.5 for Vedha Bhoomi
+  taxPercent?: number; // e.g. 0 for Vedha Bhoomi (farmland exempt)
+  stampDutyNote?: string;
+  taxNote?: string;
+}
+
+

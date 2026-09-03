@@ -1,120 +1,166 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
+import { useState, useMemo, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import {
   Calculator,
   Receipt,
-  TrendingUp,
-  Building2,
-  PieChart,
   Sparkles,
   ArrowRight,
   ChevronDown,
   Info,
-  CheckCircle2,
   RotateCcw,
-  Coins,
-  ShieldCheck,
-  Percent,
+  Check,
+  Building2,
+  Lock,
+  Sliders,
+  ExternalLink,
 } from "lucide-react";
 import {
   calculateInvestmentReturn,
   calculateCostEstimation,
   formatCurrencyINR,
+  calculateSqftFromInvestment,
+  calculateInvestmentFromSqft,
+  DEFAULT_PROJECT_CALCULATOR_PRESETS,
 } from "@repo/utils";
 import { Footer } from "@/components/layout/footer";
 import { Navbar } from "@/components/layout/navbar";
 
-const PROJECT_PRESETS = [
-  {
-    id: "vedha-bhoomi",
-    title: "Vedha Bhoomi (Luxury Farmland Plots, Lepakshi Corridor)",
-    initialInvestment: 2200000, // ₹22 L
-    sqft: 10600,
-    expectedAppreciationRate: 18.0,
-    holdingPeriodYears: 5,
-    monthlyRentalIncome: 10000,
-  },
-  {
-    id: "marina-crown",
-    title: "Devanahalli Aerotropolis Layout (North Bengaluru Plots)",
-    initialInvestment: 12500000, // ₹1.25 Cr
-    sqft: 2400,
-    expectedAppreciationRate: 14.5,
-    holdingPeriodYears: 5,
-    monthlyRentalIncome: 35000,
-  },
-  {
-    id: "mayfair-exchange",
-    title: "Sarjapur Tech Corridor (Plotted Community)",
-    initialInvestment: 8500000, // ₹85 L
-    sqft: 1500,
-    expectedAppreciationRate: 12.8,
-    holdingPeriodYears: 4,
-    monthlyRentalIncome: 25000,
-  },
-  {
-    id: "palm-estate",
-    title: "The Imperial Palm Villas (Yelahanka Villa)",
-    initialInvestment: 45000000, // ₹4.5 Cr
-    sqft: 4800,
-    expectedAppreciationRate: 10.2,
-    holdingPeriodYears: 6,
-    monthlyRentalIncome: 180000,
-  },
-  {
-    id: "whitefield-heights",
-    title: "Whitefield IT Heights (Luxury Apartment)",
-    initialInvestment: 18000000, // ₹1.8 Cr
-    sqft: 2100,
-    expectedAppreciationRate: 9.5,
-    holdingPeriodYears: 5,
-    monthlyRentalIncome: 75000,
-  },
-  {
-    id: "greenwood-estates",
-    title: "Greenwood Managed Farm Plots (Kanakapura Road)",
-    initialInvestment: 6500000, // ₹65 L
-    sqft: 6000,
-    expectedAppreciationRate: 13.8,
-    holdingPeriodYears: 5,
-    monthlyRentalIncome: 20000,
-  },
-];
+function CalculatorContent() {
+  const searchParams = useSearchParams();
+  const queryProject = searchParams.get("project");
 
-export default function CalculatorsPage() {
   const [activeTab, setActiveTab] = useState<"investment" | "cost">("investment");
 
-  // Project Pre-fill State
-  const [selectedProject, setSelectedProject] = useState("");
+  // Project Pre-fill State (default to "vedha-bhoomi" as requested)
+  const initialPreset = useMemo(() => {
+    if (queryProject) {
+      const found = DEFAULT_PROJECT_CALCULATOR_PRESETS.find((p) => p.id === queryProject);
+      if (found) return found;
+    }
+    return DEFAULT_PROJECT_CALCULATOR_PRESETS[0]; // Vedha Bhoomi
+  }, [queryProject]);
 
+  const [selectedProject, setSelectedProject] = useState<string>(initialPreset.id);
+  const [pricePerSqft, setPricePerSqft] = useState<number>(initialPreset.pricePerSqft); // ₹250 / sqft
+
+  // Investment Calculator Inputs State — pre-filled for Vedha Bhoomi (25L capital -> 10,000 sqft -> 18% returns)
+  const [initialInvestment, setInitialInvestment] = useState<number>(initialPreset.defaultInvestment); // ₹25 Lakhs
+  const [sqft, setSqft] = useState<number>(() =>
+    calculateSqftFromInvestment(initialPreset.defaultInvestment, initialPreset.pricePerSqft)
+  ); // 10,000 sqft
+  const [expectedAppreciationRate, setExpectedAppreciationRate] = useState<number>(
+    initialPreset.expectedAppreciationRate
+  ); // 18% p.a.
+  const [holdingPeriodYears, setHoldingPeriodYears] = useState<number>(initialPreset.holdingPeriodYears); // 5 Yrs
+  const [monthlyRentalIncome, setMonthlyRentalIncome] = useState<number>(initialPreset.monthlyRentalIncome); // ₹10,000 / mo
+
+  // Custom rate editing state
+  const [isCustomRate, setIsCustomRate] = useState<boolean>(false);
+  const [isEditingAmount, setIsEditingAmount] = useState<boolean>(false);
+
+  // Cost Estimator Inputs State
+  const [basePrice, setBasePrice] = useState<number>(initialPreset.defaultInvestment);
+  const [platformFeePercent, setPlatformFeePercent] = useState<number>(1.0);
+  const [registrationPercent, setRegistrationPercent] = useState<number>(
+    initialPreset.stampDutyPercent ?? 7.5
+  );
+  const [taxPercent, setTaxPercent] = useState<number>(initialPreset.taxPercent ?? 0);
+  const [stampDutyNote, setStampDutyNote] = useState<string>(
+    initialPreset.stampDutyNote ?? "Statutory stamp duty & registration for Lepakshi Corridor is 7.5%"
+  );
+  const [taxNote, setTaxNote] = useState<string>(
+    initialPreset.taxNote ?? "Agricultural farmland is 100% exempt from GST & purchase tax (0%)"
+  );
+
+  // Handler: Selecting a project preset
   const handleProjectSelect = (projectId: string) => {
     setSelectedProject(projectId);
-    const found = PROJECT_PRESETS.find((p) => p.id === projectId);
+    if (projectId === "custom") {
+      setIsCustomRate(true);
+      return;
+    }
+    setIsCustomRate(false);
+    const found = DEFAULT_PROJECT_CALCULATOR_PRESETS.find((p) => p.id === projectId);
     if (found) {
-      setInitialInvestment(found.initialInvestment);
-      setSqft(found.sqft);
+      setPricePerSqft(found.pricePerSqft);
+      setInitialInvestment(found.defaultInvestment);
+      setBasePrice(found.defaultInvestment);
+      const autoSqft = calculateSqftFromInvestment(found.defaultInvestment, found.pricePerSqft);
+      setSqft(autoSqft);
       setExpectedAppreciationRate(found.expectedAppreciationRate);
       setHoldingPeriodYears(found.holdingPeriodYears);
       setMonthlyRentalIncome(found.monthlyRentalIncome);
-      setBasePrice(found.initialInvestment);
+      setRegistrationPercent(found.stampDutyPercent ?? 5.6);
+      setTaxPercent(found.taxPercent ?? 5.0);
+      setStampDutyNote(
+        found.stampDutyNote ?? `Standard stamp duty is ${found.stampDutyPercent ?? 5.6}%`
+      );
+      setTaxNote(
+        found.taxNote ??
+          (found.taxPercent === 0
+            ? "Agricultural farmland is exempt from GST (0%)"
+            : "Standard statutory taxes & GST (5%)")
+      );
     }
   };
 
-  // Investment Calculator Inputs State
-  const [initialInvestment, setInitialInvestment] = useState(10000000); // 1 Cr
-  const [sqft, setSqft] = useState(1500);
-  const [expectedAppreciationRate, setExpectedAppreciationRate] = useState(12); // 12%
-  const [holdingPeriodYears, setHoldingPeriodYears] = useState(5); // 5 Yrs
-  const [monthlyRentalIncome, setMonthlyRentalIncome] = useState(50000); // 50k / mo
+  // Handler: Customer adjusts Initial Investment Capital -> Plot Area (SQFT) is automatically calculated
+  const handleInvestmentChange = (amount: number) => {
+    const clamped = Math.max(100000, Math.round(amount));
+    setInitialInvestment(clamped);
+    setBasePrice(clamped);
+    if (pricePerSqft > 0) {
+      const autoSqft = calculateSqftFromInvestment(clamped, pricePerSqft);
+      setSqft(autoSqft);
+    }
+  };
 
-  // Cost Estimator Inputs State
-  const [basePrice, setBasePrice] = useState(10000000); // 1 Cr
-  const [platformFeePercent, setPlatformFeePercent] = useState(1.0);
-  const registrationPercent = 5.6; // Fixed Karnataka statutory rate
-  const taxPercent = 5.0; // Standard statutory taxes & GST
+  // Handler: Customer adjusts Plot Area (SQFT) -> Investment Capital is automatically calculated
+  const handleSqftChange = (newSqft: number) => {
+    const clamped = Math.max(100, Math.round(newSqft));
+    setSqft(clamped);
+    if (pricePerSqft > 0) {
+      const autoInvestment = calculateInvestmentFromSqft(clamped, pricePerSqft);
+      setInitialInvestment(autoInvestment);
+      setBasePrice(autoInvestment);
+    }
+  };
+
+  // Handler: Custom Price per SQFT change
+  const handlePricePerSqftChange = (rate: number) => {
+    const clamped = Math.max(1, Math.round(rate));
+    setPricePerSqft(clamped);
+    if (clamped > 0) {
+      const autoSqft = calculateSqftFromInvestment(initialInvestment, clamped);
+      setSqft(autoSqft);
+    }
+  };
+
+  // Reset to Vedha Bhoomi Benchmark
+  const handleReset = () => {
+    const preset = DEFAULT_PROJECT_CALCULATOR_PRESETS[0];
+    setSelectedProject(preset.id);
+    setIsCustomRate(false);
+    setIsEditingAmount(false);
+    setPricePerSqft(preset.pricePerSqft);
+    setInitialInvestment(preset.defaultInvestment);
+    setBasePrice(preset.defaultInvestment);
+    setSqft(calculateSqftFromInvestment(preset.defaultInvestment, preset.pricePerSqft));
+    setExpectedAppreciationRate(preset.expectedAppreciationRate);
+    setHoldingPeriodYears(preset.holdingPeriodYears);
+    setMonthlyRentalIncome(preset.monthlyRentalIncome);
+    setRegistrationPercent(preset.stampDutyPercent ?? 7.5);
+    setTaxPercent(preset.taxPercent ?? 0);
+    setStampDutyNote(
+      preset.stampDutyNote ?? "Statutory stamp duty & registration for Lepakshi Corridor is 7.5%"
+    );
+    setTaxNote(
+      preset.taxNote ?? "Agricultural farmland is 100% exempt from GST & purchase tax (0%)"
+    );
+  };
 
   // Compute Results dynamically
   const investmentResult = calculateInvestmentReturn({
@@ -138,6 +184,27 @@ export default function CalculatorsPage() {
   const appreciationShare = Math.min(100, Math.max(0, (investmentResult.totalAppreciation / totalVal) * 100));
   const rentalShare = Math.min(100, Math.max(0, (investmentResult.totalRentalIncome / totalVal) * 100));
 
+  const currentPreset = DEFAULT_PROJECT_CALCULATOR_PRESETS.find((p) => p.id === selectedProject);
+
+  // Common quick investment options
+  const quickInvestments = [
+    { label: "₹15 L", value: 1500000 },
+    { label: "₹25 L", value: 2500000, highlight: selectedProject === "vedha-bhoomi", tag: "Popular" },
+    { label: "₹35 L", value: 3500000 },
+    { label: "₹50 L", value: 5000000 },
+    { label: "₹1 Cr", value: 10000000 },
+    { label: "₹2 Cr", value: 20000000 },
+  ];
+
+  // Common quick sqft options
+  const quickSqfts = [
+    { label: "5,000 sqft", value: 5000 },
+    { label: "10,000 sqft", value: 10000 },
+    { label: "15,000 sqft", value: 15000 },
+    { label: "20,000 sqft", value: 20000 },
+    { label: "43,560 sqft (1 Acre)", value: 43560 },
+  ];
+
   return (
     <div className="flex flex-col min-h-screen bg-[#faf7f2] font-sans antialiased text-slate-900 selection:bg-[#0b4eb7] selection:text-white">
       <Navbar />
@@ -145,47 +212,48 @@ export default function CalculatorsPage() {
       {/* Main Content */}
       <main className="flex-1">
         {/* Page Hero Header Banner */}
-        <section className="bg-gradient-to-br from-[#0b4eb7] via-[#0a45a5] to-[#062d7a] py-12 sm:py-16 px-4 sm:px-6 lg:px-8 text-center text-white relative overflow-hidden">
-          {/* Subtle background glow circle */}
+        <section className="bg-gradient-to-br from-[#0b4eb7] via-[#0a45a5] to-[#062d7a] py-10 sm:py-14 px-4 sm:px-6 lg:px-8 text-center text-white relative overflow-hidden">
           <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl pointer-events-none" />
 
           <div className="max-w-4xl mx-auto space-y-4 relative z-10">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 text-blue-100 text-xs font-bold uppercase tracking-wider border border-white/15 backdrop-blur-md">
               <Sparkles size={14} className="text-amber-300" />
-              <span>Institutional Financial Analytics</span>
+              <span>Dynamic Real Estate Financial Modeler</span>
             </div>
             <h1 className="font-serif text-3xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight">
-              Real Estate Calculators
+              Investment &amp; Area Calculator
             </h1>
             <p className="text-blue-100/90 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-              Model your returns, forecast capital appreciation, and calculate total property acquisition costs with institutional precision.
+              Model property acquisitions dynamically. Choose your investment capital to automatically calculate plot area in SQFT based on verified project benchmarks.
             </p>
 
             {/* Tab Switcher inside Hero */}
-            <div className="pt-4 flex justify-center">
-              <div className="bg-white/10 backdrop-blur-md p-1.5 rounded-2xl border border-white/20 flex flex-col sm:flex-row gap-2 max-w-lg w-full">
+            <div className="pt-3 flex justify-center">
+              <div className="bg-white/10 backdrop-blur-md p-1.5 rounded-2xl border border-white/20 grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-lg w-full">
                 <button
+                  type="button"
                   onClick={() => setActiveTab("investment")}
-                  className={`flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                  className={`w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                     activeTab === "investment"
                       ? "bg-white text-[#0b4eb7] shadow-lg"
                       : "text-white/90 hover:text-white hover:bg-white/10"
                   }`}
                 >
                   <Calculator className="h-4 w-4 shrink-0" />
-                  <span>Investment Return Calculator</span>
+                  <span>Investment &amp; Returns</span>
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => setActiveTab("cost")}
-                  className={`flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                  className={`w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                     activeTab === "cost"
                       ? "bg-white text-[#0b4eb7] shadow-lg"
                       : "text-white/90 hover:text-white hover:bg-white/10"
                   }`}
                 >
                   <Receipt className="h-4 w-4 shrink-0" />
-                  <span>Acquisition Cost Estimator</span>
+                  <span>Acquisition Costs</span>
                 </button>
               </div>
             </div>
@@ -194,118 +262,287 @@ export default function CalculatorsPage() {
 
         {/* Content Container */}
         <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-          {/* TAB 1: Investment Return Calculator */}
+          {/* TAB 1: Investment Return & Dynamic Area Calculator */}
           {activeTab === "investment" && (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-              {/* Left Column: Inputs & Controls */}
-              <div className="lg:col-span-6 bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/90 shadow-sm space-y-6">
+              {/* Left Column: Inputs & Interactive Controls */}
+              <div className="lg:col-span-6 bg-white rounded-2xl p-5 sm:p-8 border border-slate-200/90 shadow-sm space-y-6">
                 <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                   <div className="space-y-1">
-                    <h2 className="font-serif text-xl font-bold text-[#0b4eb7]">
-                      Investment Parameters
-                    </h2>
-                    <p className="text-xs text-slate-500">
-                      Adjust sliders or select a project layout to calculate expected yields.
-                    </p>
+                    <div className="flex items-center gap-2">
+                      <h2 className="font-serif text-xl font-bold text-[#0b4eb7]">
+                        Investment Parameters
+                      </h2>
+                    </div>
                   </div>
                   <button
-                    onClick={() => {
-                      setSelectedProject("");
-                      setInitialInvestment(10000000);
-                      setSqft(1500);
-                      setExpectedAppreciationRate(12);
-                      setHoldingPeriodYears(5);
-                      setMonthlyRentalIncome(50000);
-                    }}
-                    className="p-2 rounded-lg text-slate-400 hover:text-[#0b4eb7] hover:bg-blue-50 transition"
-                    title="Reset to defaults"
+                    onClick={handleReset}
+                    className="flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-lg text-slate-500 hover:text-[#0b4eb7] hover:bg-blue-50 border border-slate-200 transition cursor-pointer"
+                    title="Reset to Vedha Bhoomi benchmark"
                   >
-                    <RotateCcw size={16} />
+                    <RotateCcw size={14} />
+                    <span className="hidden sm:inline">Reset</span>
                   </button>
                 </div>
 
-                {/* Project Pre-fill Dropdown */}
+                {/* 1. Project Preset Selector */}
                 <div className="space-y-2">
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                    Select Project Preset (Optional)
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                      Select Project Preset
+                    </label>
+                    {selectedProject === "vedha-bhoomi" && (
+                      <Link
+                        href="/vedhabhoomi"
+                        className="inline-flex items-center gap-1 text-[11px] font-bold text-[#0b4eb7] hover:underline"
+                      >
+                        <span>View Project Page</span>
+                        <ExternalLink size={12} />
+                      </Link>
+                    )}
+                  </div>
                   <div className="relative">
                     <select
                       value={selectedProject}
                       onChange={(e) => handleProjectSelect(e.target.value)}
-                      className="w-full px-4 py-3 bg-slate-50/80 border border-slate-200 rounded-xl text-sm font-semibold text-slate-800 appearance-none focus:outline-none focus:border-[#0b4eb7] focus:bg-white transition pr-10 cursor-pointer"
+                      className="w-full px-4 py-3 bg-slate-50/90 border border-slate-200 rounded-xl text-sm font-semibold text-slate-800 appearance-none focus:outline-none focus:border-[#0b4eb7] focus:bg-white transition pr-10 cursor-pointer shadow-xs"
                     >
-                      <option value="">Choose a curated Bengaluru project...</option>
-                      {PROJECT_PRESETS.map((p) => (
+                      {DEFAULT_PROJECT_CALCULATOR_PRESETS.map((p) => (
                         <option key={p.id} value={p.id}>
-                          {p.title}
+                          {p.title} — ₹{p.pricePerSqft.toLocaleString()}/sqft
                         </option>
                       ))}
+                      <option value="custom">Custom Property / Enter Custom Rate</option>
                     </select>
                     <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
                   </div>
+
+                  {/* Active Rate / Custom Rate Input */}
+                  <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+                    <div className="flex items-center gap-1.5 text-xs text-slate-600">
+                      <Lock size={12} className="text-slate-400" />
+                      <span>Project Benchmark Rate:</span>
+                      <span className="font-extrabold text-[#0b4eb7]">
+                        ₹{pricePerSqft.toLocaleString()} / sqft
+                      </span>
+                    </div>
+
+                    {!isCustomRate ? (
+                      <button
+                        type="button"
+                        onClick={() => setIsCustomRate(true)}
+                        className="text-[11px] font-bold text-[#0b4eb7] hover:underline cursor-pointer"
+                      >
+                        Edit Rate
+                      </button>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-slate-500">₹</span>
+                        <input
+                          type="number"
+                          min={1}
+                          max={50000}
+                          value={pricePerSqft}
+                          onChange={(e) => handlePricePerSqftChange(Number(e.target.value))}
+                          className="w-24 px-2 py-1 text-xs font-bold border border-slate-300 rounded-md text-slate-800 focus:outline-none focus:border-[#0b4eb7]"
+                          placeholder="Rate/sqft"
+                        />
+                        <span className="text-xs text-slate-500">/sqft</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                {/* Input 1: Initial Investment */}
-                <div className="space-y-3 bg-slate-50/60 p-4 rounded-xl border border-slate-100">
+                {/* 2. AUTOMATIC CALCULATION FORMULA BANNER */}
+                <div className="bg-gradient-to-r from-blue-50 via-indigo-50/60 to-emerald-50/60 rounded-xl p-3.5 border border-blue-200/80 shadow-xs space-y-2">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-bold text-slate-700">
-                      Initial Investment Capital
-                    </label>
-                    <span className="text-[#0b4eb7] text-base font-sans font-extrabold bg-blue-50 px-3 py-1 rounded-lg border border-blue-100">
-                      {formatCurrencyINR(initialInvestment)}
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#0b4eb7] flex items-center gap-1.5">
+                      <Sparkles size={13} className="text-amber-500" />
+                      SQFT Calculation
+                    </span>
+                    <span className="text-[11px] font-bold text-slate-500">
+                      Rate: ₹{pricePerSqft.toLocaleString()}/sqft
                     </span>
                   </div>
-                  <input
-                    type="range"
-                    min={1000000} // 10 L
-                    max={100000000} // 10 Cr
-                    step={100000}
-                    value={initialInvestment}
-                    onChange={(e) => setInitialInvestment(Number(e.target.value))}
-                    className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#0b4eb7]"
-                  />
-                  <div className="flex justify-between text-[11px] text-slate-400 font-semibold">
-                    <span>₹10 Lakhs</span>
-                    <span>₹10 Crores</span>
-                  </div>
-                </div>
-
-                {/* Input 2: Property Size (SQFT) */}
-                <div className="space-y-3 bg-slate-50/60 p-4 rounded-xl border border-slate-100">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-bold text-slate-700">
-                      Plot / Area Size
-                    </label>
-                    <span className="text-slate-900 text-sm font-bold bg-white px-3 py-1 rounded-lg border border-slate-200">
+                  <div className="font-mono text-xs sm:text-sm font-extrabold text-slate-800 flex flex-wrap items-center justify-between gap-1 bg-white/90 p-2.5 rounded-lg border border-blue-100">
+                    <span className="text-[#0b4eb7]">{formatCurrencyINR(initialInvestment)}</span>
+                    <span className="text-slate-400">÷</span>
+                    <span className="text-slate-700">₹{pricePerSqft}/sqft</span>
+                    <span className="text-slate-400">=</span>
+                    <span className="text-emerald-700 font-sans font-extrabold text-base">
                       {sqft.toLocaleString()} sqft
                     </span>
                   </div>
+                </div>
+
+                {/* 3. Input: Initial Investment Capital (Customer Choice) */}
+                <div className="space-y-3 bg-slate-50/70 p-4 sm:p-5 rounded-xl border border-slate-200/80">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <label className="text-xs font-bold text-slate-800 uppercase tracking-wider block">
+                        Investment Capital
+                      </label>
+                    </div>
+
+                    {!isEditingAmount ? (
+                      <button
+                        type="button"
+                        onClick={() => setIsEditingAmount(true)}
+                        className="text-right group cursor-pointer"
+                        title="Click to type exact rupees"
+                      >
+                        <span className="text-[#0b4eb7] text-base sm:text-lg font-sans font-extrabold bg-blue-50 group-hover:bg-blue-100 px-3 py-1 rounded-lg border border-blue-200 transition inline-block">
+                          {formatCurrencyINR(initialInvestment)}
+                        </span>
+                      </button>
+                    ) : (
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-bold text-slate-500">₹</span>
+                        <input
+                          type="number"
+                          step={50000}
+                          min={100000}
+                          max={200000000}
+                          value={initialInvestment}
+                          onChange={(e) => handleInvestmentChange(Number(e.target.value))}
+                          onBlur={() => setIsEditingAmount(false)}
+                          autoFocus
+                          className="w-32 sm:w-36 px-2.5 py-1 text-sm font-bold bg-white border border-[#0b4eb7] rounded-lg text-slate-900 focus:outline-none"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setIsEditingAmount(false)}
+                          className="p-1 text-xs font-bold bg-[#0b4eb7] text-white rounded-md"
+                        >
+                          <Check size={14} />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Slider */}
                   <input
                     type="range"
-                    min={500}
-                    max={20000}
-                    step={100}
-                    value={sqft}
-                    onChange={(e) => setSqft(Number(e.target.value))}
+                    min={500000} // 5 L
+                    max={100000000} // 10 Cr
+                    step={50000} // 50k steps
+                    value={initialInvestment}
+                    onChange={(e) => handleInvestmentChange(Number(e.target.value))}
                     className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#0b4eb7]"
                   />
+
                   <div className="flex justify-between text-[11px] text-slate-400 font-semibold">
-                    <span>500 sqft</span>
-                    <span>20,000 sqft</span>
+                    <span>₹5 Lakhs</span>
+                    <span>₹10 Crores</span>
+                  </div>
+
+                  {/* Quick Investment Capital Preset Pills */}
+                  <div className="space-y-1.5 pt-1">
+                    <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                      {quickInvestments.map((chip) => {
+                        const isSelected = initialInvestment === chip.value;
+                        return (
+                          <button
+                            key={chip.value}
+                            type="button"
+                            onClick={() => handleInvestmentChange(chip.value)}
+                            className={`text-xs font-bold px-3 py-1.5 rounded-lg border transition cursor-pointer flex items-center gap-1 ${
+                              isSelected
+                                ? "bg-[#0b4eb7] text-white border-[#0b4eb7] shadow-sm"
+                                : "bg-white text-slate-700 border-slate-200 hover:bg-slate-100"
+                            }`}
+                          >
+                            <span>{chip.label}</span>
+                            {chip.tag && (
+                              <span
+                                className={`text-[9px] px-1.5 py-0.2 rounded-full uppercase tracking-tight ${
+                                  isSelected ? "bg-white/20 text-white" : "bg-blue-100 text-[#0b4eb7]"
+                                }`}
+                              >
+                                {chip.tag}
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
 
-                {/* Input 3: Expected Appreciation Rate */}
-                <div className="space-y-3 bg-slate-50/60 p-4 rounded-xl border border-slate-100">
+                {/* 4. Input: Plot / Area Size (SQFT) (Bi-directional auto-sync) */}
+                <div className="space-y-3 bg-slate-50/70 p-4 sm:p-5 rounded-xl border border-slate-200/80">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs w-3/5 font-bold text-slate-700">
-                      Est. Annual Land Appreciation (% p.a.)
-                    </label>
-                    <span className="text-emerald-700 text-sm font-bold bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200">
+                    <div>
+                      <label className="text-xs font-bold text-slate-800 uppercase tracking-wider block">
+                        Plot / Area Size
+                      </label>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-slate-900 text-sm sm:text-base font-bold bg-white px-3 py-1 rounded-lg border border-slate-200 inline-block">
+                        {sqft.toLocaleString()} sqft
+                      </span>
+                      <span className="block text-[10px] text-slate-500 font-semibold pt-0.5">
+                        ≈ {(sqft / 43560).toFixed(2)} Acres
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Slider */}
+                  <input
+                    type="range"
+                    min={500}
+                    max={100000} // Up to 100k sqft
+                    step={100}
+                    value={sqft}
+                    onChange={(e) => handleSqftChange(Number(e.target.value))}
+                    className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#0b4eb7]"
+                  />
+
+                  <div className="flex justify-between text-[11px] text-slate-400 font-semibold">
+                    <span>500 sqft</span>
+                    <span>1,00,000 sqft (~2.3 Acres)</span>
+                  </div>
+
+                  {/* Quick SQFT Preset Pills */}
+                  <div className="space-y-1.5 pt-1">
+                    <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                      {quickSqfts.map((chip) => {
+                        const isSelected = sqft === chip.value;
+                        return (
+                          <button
+                            key={chip.value}
+                            type="button"
+                            onClick={() => handleSqftChange(chip.value)}
+                            className={`text-xs font-bold px-3 py-1.5 rounded-lg border transition cursor-pointer flex items-center gap-1 ${
+                              isSelected
+                                ? "bg-[#0b4eb7] text-white border-[#0b4eb7] shadow-sm"
+                                : "bg-white text-slate-700 border-slate-200 hover:bg-slate-100"
+                            }`}
+                          >
+                            <span>{chip.label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 5. Input: Expected Appreciation Rate (% p.a.) */}
+                <div className="space-y-3 bg-slate-50/70 p-4 sm:p-5 rounded-xl border border-slate-200/80">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <label className="text-xs font-bold text-slate-800 uppercase tracking-wider block">
+                        Est. Annual Returns / Appreciation
+                      </label>
+                      <span className="text-[11px] text-emerald-700 font-semibold">
+                        Project Growth Projection
+                      </span>
+                    </div>
+                    <span className="text-emerald-700 text-sm sm:text-base font-extrabold bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200">
                       {expectedAppreciationRate}% p.a.
                     </span>
                   </div>
+
                   <input
                     type="range"
                     min={3}
@@ -315,15 +552,16 @@ export default function CalculatorsPage() {
                     onChange={(e) => setExpectedAppreciationRate(Number(e.target.value))}
                     className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600"
                   />
+
                   {/* Appreciation Quick Preset Pills */}
-                  <div className="flex items-center gap-2 pt-1">
-                    <span className="text-[11px] font-bold text-slate-400">Presets:</span>
-                    {[8, 12, 14.5, 18].map((rate) => (
+                  <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                    <span className="text-[11px] font-bold text-slate-400">Options:</span>
+                    {[8, 12, 14.5, 18, 20].map((rate) => (
                       <button
                         key={rate}
                         type="button"
                         onClick={() => setExpectedAppreciationRate(rate)}
-                        className={`text-[11px] font-bold px-2.5 py-1 rounded-md transition ${
+                        className={`text-xs font-bold px-2.5 py-1 rounded-md transition cursor-pointer ${
                           expectedAppreciationRate === rate
                             ? "bg-[#0b4eb7] text-white"
                             : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-100"
@@ -335,72 +573,94 @@ export default function CalculatorsPage() {
                   </div>
                 </div>
 
-                {/* Input 4: Holding Period */}
-                <div className="space-y-3 bg-slate-50/60 p-4 rounded-xl border border-slate-100">
+                {/* 6. REMAINING OPTIONS: Holding Period & Monthly Rental Yield */}
+                <div className="pt-2 border-t border-slate-100 space-y-4">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs w-3/5 font-bold text-slate-700">
-                      Investment Horizon / Holding Period
-                    </label>
-                    <span className="text-[#0b4eb7] text-sm font-bold bg-blue-50 px-3 py-1 rounded-lg border border-blue-100">
-                      {holdingPeriodYears} {holdingPeriodYears === 1 ? "Year" : "Years"}
+                    <span className="text-xs font-extrabold uppercase tracking-wider text-slate-600">
+                      Additional Holding &amp; Yield Options
                     </span>
+                    <span className="text-[11px] text-slate-400">Configurable</span>
                   </div>
-                  <input
-                    type="range"
-                    min={1}
-                    max={15}
-                    step={1}
-                    value={holdingPeriodYears}
-                    onChange={(e) => setHoldingPeriodYears(Number(e.target.value))}
-                    className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#0b4eb7]"
-                  />
-                  {/* Holding Period Quick Preset Pills */}
-                  <div className="flex items-center gap-2 pt-1">
-                    <span className="text-[11px] font-bold text-slate-400">Presets:</span>
-                    {[3, 5, 7, 10].map((yrs) => (
-                      <button
-                        key={yrs}
-                        type="button"
-                        onClick={() => setHoldingPeriodYears(yrs)}
-                        className={`text-[11px] font-bold px-2.5 py-1 rounded-md transition ${
-                          holdingPeriodYears === yrs
-                            ? "bg-[#0b4eb7] text-white"
-                            : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-100"
-                        }`}
-                      >
-                        {yrs} Yrs
-                      </button>
-                    ))}
-                  </div>
-                </div>
 
-                {/* Input 5: Monthly Rental Income */}
-                <div className="space-y-3 bg-slate-50/60 p-4 rounded-xl border border-slate-100">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs w-1/2 font-bold text-slate-700">
-                      Expected Monthly Rental Yield
-                    </label>
-                    <span className="text-slate-900 text-sm font-semibold bg-white px-3 py-1 rounded-lg border border-slate-200">
-                      {formatCurrencyINR(monthlyRentalIncome)}/mo
-                    </span>
+                  {/* Holding Period */}
+                  <div className="space-y-3 bg-slate-50/50 p-4 rounded-xl border border-slate-100">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold text-slate-700">
+                        Investment Horizon / Holding Period
+                      </label>
+                      <span className="text-[#0b4eb7] text-sm font-bold bg-blue-50 px-3 py-1 rounded-lg border border-blue-100">
+                        {holdingPeriodYears} {holdingPeriodYears === 1 ? "Year" : "Years"}
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min={1}
+                      max={15}
+                      step={1}
+                      value={holdingPeriodYears}
+                      onChange={(e) => setHoldingPeriodYears(Number(e.target.value))}
+                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#0b4eb7]"
+                    />
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[11px] font-bold text-slate-400">Horizon:</span>
+                      {[3, 5, 7, 10].map((yrs) => (
+                        <button
+                          key={yrs}
+                          type="button"
+                          onClick={() => setHoldingPeriodYears(yrs)}
+                          className={`text-xs font-bold px-2.5 py-1 rounded-md transition cursor-pointer ${
+                            holdingPeriodYears === yrs
+                              ? "bg-[#0b4eb7] text-white"
+                              : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-100"
+                          }`}
+                        >
+                          {yrs} Yrs {yrs === 5 && "(Recommended)"}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                  <input
-                    type="range"
-                    min={0}
-                    max={500000}
-                    step={5000}
-                    value={monthlyRentalIncome}
-                    onChange={(e) => setMonthlyRentalIncome(Number(e.target.value))}
-                    className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#0b4eb7]"
-                  />
-                  <div className="flex justify-between text-[11px] text-slate-400 font-semibold">
-                    <span>₹0</span>
-                    <span>₹5 Lakhs/mo</span>
+
+                  {/* Monthly Rental Yield */}
+                  <div className="space-y-3 bg-slate-50/50 p-4 rounded-xl border border-slate-100">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold text-slate-700">
+                        Expected Monthly Rental / Agro Yield
+                      </label>
+                      <span className="text-slate-900 text-sm font-semibold bg-white px-3 py-1 rounded-lg border border-slate-200">
+                        {formatCurrencyINR(monthlyRentalIncome)}/mo
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min={0}
+                      max={200000}
+                      step={2500}
+                      value={monthlyRentalIncome}
+                      onChange={(e) => setMonthlyRentalIncome(Number(e.target.value))}
+                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#0b4eb7]"
+                    />
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="text-[11px] font-bold text-slate-400">Yield:</span>
+                      {[0, 10000, 25000, 50000].map((val) => (
+                        <button
+                          key={val}
+                          type="button"
+                          onClick={() => setMonthlyRentalIncome(val)}
+                          className={`text-xs font-bold px-2.5 py-1 rounded-md transition cursor-pointer ${
+                            monthlyRentalIncome === val
+                              ? "bg-[#0b4eb7] text-white"
+                              : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-100"
+                          }`}
+                        >
+                          {val === 0 ? "₹0 (Land Only)" : `${formatCurrencyINR(val)}/mo`}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Right Column: Output Results & Breakdown */}
+              {/* Right Column: Output Results & Strategic Financial Breakdown */}
               <div className="lg:col-span-6 space-y-6">
                 {/* Hero Highlight Card */}
                 <div className="bg-gradient-to-br from-[#0b4eb7] via-[#09429e] to-[#062f73] text-white rounded-2xl p-6 sm:p-8 shadow-xl relative overflow-hidden space-y-6 border border-blue-600/30">
@@ -410,11 +670,14 @@ export default function CalculatorsPage() {
                         Total Projected Portfolio Value
                       </span>
                       <span className="bg-emerald-500/20 text-center text-emerald-300 text-[11px] font-extrabold px-3 py-1 rounded-full border border-emerald-400/30">
-                        {holdingPeriodYears} Yr Horizon
+                        {holdingPeriodYears} Yr Horizon @ {expectedAppreciationRate}% p.a.
                       </span>
                     </div>
                     <span className="block font-sans text-3xl sm:text-5xl font-extrabold tracking-tight pt-1">
                       {formatCurrencyINR(investmentResult.totalProjectedValue)}
+                    </span>
+                    <span className="block text-xs text-blue-200/90 pt-1">
+                      Based on {sqft.toLocaleString()} sqft plot area @ ₹{pricePerSqft.toLocaleString()}/sqft
                     </span>
                   </div>
 
@@ -442,9 +705,14 @@ export default function CalculatorsPage() {
                 {/* Return Breakdown Summary Card */}
                 <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/90 shadow-sm space-y-6">
                   <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                    <h3 className="font-serif text-lg font-bold text-slate-900">
-                      Return Breakdown Summary
-                    </h3>
+                    <div>
+                      <h3 className="font-serif text-lg font-bold text-slate-900">
+                        Return Breakdown Summary
+                      </h3>
+                      <p className="text-xs text-slate-500">
+                        {currentPreset ? currentPreset.title : "Custom Scenario"}
+                      </p>
+                    </div>
                     <span className="text-xs font-semibold text-[#0b4eb7] bg-blue-50 px-2.5 py-1 rounded-md">
                       Institutional Projection
                     </span>
@@ -481,7 +749,7 @@ export default function CalculatorsPage() {
                         <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" /> Appreciation
                       </span>
                       <span className="flex items-center gap-1">
-                        <span className="w-2 h-2 rounded-full bg-[#0b4eb7] inline-block" /> Rental Income
+                        <span className="w-2 h-2 rounded-full bg-[#0b4eb7] inline-block" /> Rental Yield
                       </span>
                     </div>
                   </div>
@@ -489,46 +757,75 @@ export default function CalculatorsPage() {
                   {/* Itemized Values Table */}
                   <div className="space-y-3 pt-2 text-sm">
                     <div className="flex justify-between items-center text-slate-600 p-2.5 rounded-lg bg-slate-50/70">
-                      <span>Initial Capital Outlay</span>
-                      <span className="font-bold text-slate-900">
+                      <div>
+                        <span className="block font-medium">Initial Capital Outlay</span>
+                        <span className="text-[11px] text-slate-400">
+                          {sqft.toLocaleString()} sqft @ ₹{pricePerSqft.toLocaleString()}/sqft
+                        </span>
+                      </div>
+                      <span className="font-bold text-slate-900 font-sans">
                         {formatCurrencyINR(initialInvestment)}
                       </span>
                     </div>
 
                     <div className="flex justify-between items-center text-slate-600 p-2.5 rounded-lg bg-emerald-50/50 border border-emerald-100/60">
-                      <span>Projected Property Appreciation</span>
-                      <span className="font-bold text-emerald-700">
+                      <div>
+                        <span className="block font-medium">Projected Land Appreciation</span>
+                        <span className="text-[11px] text-emerald-600">
+                          Compound growth @ {expectedAppreciationRate}% p.a. ({holdingPeriodYears} Yrs)
+                        </span>
+                      </div>
+                      <span className="font-bold text-emerald-700 font-sans">
                         +{formatCurrencyINR(investmentResult.totalAppreciation)}
                       </span>
                     </div>
 
                     <div className="flex justify-between items-center text-slate-600 p-2.5 rounded-lg bg-blue-50/50 border border-blue-100/60">
-                      <span>Cumulative Rental Earnings</span>
-                      <span className="font-bold text-[#0b4eb7]">
+                      <div>
+                        <span className="block font-medium">Cumulative Rental / Farm Earnings</span>
+                        <span className="text-[11px] text-blue-600">
+                          {formatCurrencyINR(monthlyRentalIncome)}/mo × {holdingPeriodYears * 12} mos
+                        </span>
+                      </div>
+                      <span className="font-bold text-[#0b4eb7] font-sans">
                         +{formatCurrencyINR(investmentResult.totalRentalIncome)}
                       </span>
                     </div>
 
                     <div className="flex justify-between items-center text-slate-900 pt-3 border-t border-slate-200">
-                      <span className="font-bold text-slate-800">
-                        Estimated Property Asset Value
-                      </span>
+                      <div>
+                        <span className="font-bold text-slate-800 block">
+                          Estimated Property Asset Value
+                        </span>
+                        <span className="text-[11px] text-slate-500">
+                          Terminal land value excluding rental distributions
+                        </span>
+                      </div>
                       <span className="font-sans font-extrabold text-xl text-[#0b4eb7]">
                         {formatCurrencyINR(investmentResult.projectedPropertyValue)}
                       </span>
                     </div>
-
                   </div>
 
                   {/* Call to Action */}
-                  <div className="pt-2">
+                  <div className="pt-2 space-y-2">
                     <Link
                       href="/contact"
-                      className="w-full bg-[#0b4eb7] hover:bg-[#083c91] text-white py-3.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 shadow-sm transition transform hover:-translate-y-0.5"
+                      className="w-full bg-[#0b4eb7] hover:bg-[#083c91] text-white py-3.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 shadow-sm transition transform hover:-translate-y-0.5 cursor-pointer"
                     >
-                      <span>Discuss Strategy with an Advisor</span>
+                      <span>Lock In This Investment Plan with an Advisor</span>
                       <ArrowRight className="h-4 w-4" />
                     </Link>
+
+                    {selectedProject === "vedha-bhoomi" && (
+                      <Link
+                        href="/vedhabhoomi"
+                        className="w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 py-3 rounded-xl font-semibold text-xs flex items-center justify-center gap-1.5 border border-emerald-200 transition cursor-pointer"
+                      >
+                        <Building2 size={14} />
+                        <span>Explore Vedha Bhoomi Farmland Details &amp; Brochure</span>
+                      </Link>
+                    )}
                   </div>
                 </div>
               </div>
@@ -546,7 +843,7 @@ export default function CalculatorsPage() {
                       Acquisition Cost Parameters
                     </h2>
                     <p className="text-xs text-slate-500">
-                      Estimate full transaction costs including stamp duty, registration & taxes.
+                      Estimate full transaction costs including stamp duty, registration &amp; statutory taxes.
                     </p>
                   </div>
                 </div>
@@ -562,12 +859,12 @@ export default function CalculatorsPage() {
                       onChange={(e) => handleProjectSelect(e.target.value)}
                       className="w-full px-4 py-3 bg-slate-50/80 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 appearance-none focus:outline-none focus:border-[#0b4eb7] focus:bg-white transition pr-10 cursor-pointer"
                     >
-                      <option value="">Choose a project to pre-fill...</option>
-                      {PROJECT_PRESETS.map((p) => (
+                      {DEFAULT_PROJECT_CALCULATOR_PRESETS.map((p) => (
                         <option key={p.id} value={p.id}>
                           {p.title}
                         </option>
                       ))}
+                      <option value="custom">Custom Property</option>
                     </select>
                     <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
                   </div>
@@ -585,15 +882,22 @@ export default function CalculatorsPage() {
                   </div>
                   <input
                     type="range"
-                    min={1000000}
+                    min={500000}
                     max={100000000}
                     step={100000}
                     value={basePrice}
-                    onChange={(e) => setBasePrice(Number(e.target.value))}
+                    onChange={(e) => {
+                      const val = Number(e.target.value);
+                      setBasePrice(val);
+                      setInitialInvestment(val);
+                      if (pricePerSqft > 0) {
+                        setSqft(calculateSqftFromInvestment(val, pricePerSqft));
+                      }
+                    }}
                     className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#0b4eb7]"
                   />
                   <div className="flex justify-between text-[11px] text-slate-400 font-semibold">
-                    <span>₹10 Lakhs</span>
+                    <span>₹5 Lakhs</span>
                     <span>₹10 Crores</span>
                   </div>
                 </div>
@@ -602,7 +906,7 @@ export default function CalculatorsPage() {
                 <div className="space-y-3 bg-slate-50/60 p-4 rounded-xl border border-slate-100">
                   <div className="flex items-center justify-between">
                     <label className="text-xs font-bold text-slate-700">
-                      Advisory & Platform Charge (%)
+                      Advisory &amp; Platform Charge (%)
                     </label>
                     <span className="text-slate-900 font-bold text-sm bg-white px-3 py-1 rounded-lg border border-slate-200">
                       {platformFeePercent}%
@@ -619,18 +923,17 @@ export default function CalculatorsPage() {
                   />
                 </div>
 
-                {/* Registration & Stamp Duty % (Fixed Statutory) */}
+                {/* Registration & Stamp Duty % */}
                 <div className="flex items-center justify-between bg-slate-50/60 p-4 rounded-xl border border-slate-100">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <label className="text-xs font-bold text-slate-700">
                         Stamp Duty &amp; Registration
                       </label>
-              
                     </div>
                     <p className="text-[11px] text-slate-500 flex items-center gap-1">
                       <Info size={13} className="text-[#0b4eb7] shrink-0" />
-                      Karnataka standard stamp duty is 5.6%
+                      {stampDutyNote}
                     </p>
                   </div>
                   <span className="text-slate-900 font-extrabold text-sm bg-white px-3 py-1.5 rounded-lg border border-slate-200 shrink-0">
@@ -638,16 +941,21 @@ export default function CalculatorsPage() {
                   </span>
                 </div>
 
-                {/* Tax / GST % (Fixed Statutory) */}
+                {/* Tax / GST % */}
                 <div className="flex items-center justify-between bg-slate-50/60 p-4 rounded-xl border border-slate-100">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <label className="text-xs font-bold text-slate-700">
                         Taxes &amp; GST
                       </label>
+                      {taxPercent === 0 && (
+                        <span className="text-[10px] uppercase font-extrabold tracking-wider bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full border border-emerald-300">
+                          Exempt
+                        </span>
+                      )}
                     </div>
                     <p className="text-[11px] text-slate-500">
-                      Standard applicable statutory tax (5%)
+                      {taxNote}
                     </p>
                   </div>
                   <span className="text-slate-900 font-extrabold text-sm bg-white px-3 py-1.5 rounded-lg border border-slate-200 shrink-0">
@@ -683,23 +991,30 @@ export default function CalculatorsPage() {
                     </div>
 
                     <div className="flex justify-between items-center text-slate-600 p-2.5 rounded-lg bg-slate-50/70">
-                      <span>Platform & Advisory Fee ({platformFeePercent}%)</span>
+                      <span>Platform &amp; Advisory Fee ({platformFeePercent}%)</span>
                       <span className="font-bold text-slate-900">
                         {formatCurrencyINR(costResult.platformCharges)}
                       </span>
                     </div>
 
                     <div className="flex justify-between items-center text-slate-600 p-2.5 rounded-lg bg-slate-50/70">
-                      <span>Stamp Duty & Registration ({registrationPercent}%)</span>
+                      <span>Stamp Duty &amp; Registration ({registrationPercent}%)</span>
                       <span className="font-bold text-slate-900">
                         {formatCurrencyINR(costResult.registrationCharges)}
                       </span>
                     </div>
 
                     <div className="flex justify-between items-center text-slate-600 p-2.5 rounded-lg bg-slate-50/70">
-                      <span>Taxes & Duties ({taxPercent}%)</span>
+                      <div>
+                        <span className="block font-medium">Taxes &amp; Duties ({taxPercent}%)</span>
+                        {taxPercent === 0 && (
+                          <span className="text-[11px] text-emerald-600 font-semibold">
+                            0% GST on Farmland Acquisition
+                          </span>
+                        )}
+                      </div>
                       <span className="font-bold text-slate-900">
-                        {formatCurrencyINR(costResult.taxes)}
+                        {costResult.taxes === 0 ? "₹0 (Exempt)" : formatCurrencyINR(costResult.taxes)}
                       </span>
                     </div>
 
@@ -709,13 +1024,12 @@ export default function CalculatorsPage() {
                         {formatCurrencyINR(costResult.totalEstimatedInvestment)}
                       </span>
                     </div>
-
                   </div>
 
                   <div className="pt-2">
                     <Link
                       href="/contact"
-                      className="w-full bg-[#0b4eb7] hover:bg-[#083c91] text-white py-3.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 shadow-sm transition transform hover:-translate-y-0.5"
+                      className="w-full bg-[#0b4eb7] hover:bg-[#083c91] text-white py-3.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 shadow-sm transition transform hover:-translate-y-0.5 cursor-pointer"
                     >
                       <span>Consult with Property Advisor</span>
                       <ArrowRight className="h-4 w-4" />
@@ -731,5 +1045,13 @@ export default function CalculatorsPage() {
       {/* Footer */}
       <Footer />
     </div>
+  );
+}
+
+export default function CalculatorsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#faf7f2] flex items-center justify-center text-slate-400">Loading calculator...</div>}>
+      <CalculatorContent />
+    </Suspense>
   );
 }
