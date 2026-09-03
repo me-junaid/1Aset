@@ -25,9 +25,9 @@ const TIMELINE = [
   },
   {
     year: "2018",
-    title: "Gully Associates",
+    title: "Good Life Associates",
     description:
-      "We continued our journey under Gully Associates, expanding our presence and building strong relationships with landowners, investors, and property buyers.",
+      "We continued our journey under Good Life Associates, expanding our presence and building strong relationships with landowners, investors, and property buyers.",
   },
   {
     year: "2024",
@@ -37,7 +37,7 @@ const TIMELINE = [
   },
   {
     year: "Today",
-    title: "1ASET",
+    title: "1Aset.com",
     description:
       "One Asset. One Vision. One Trusted Journey. Connecting investors with high-yield farmland, residential, and commercial growth parcels.",
   },
