@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { Footer } from "@/components/layout/footer";
 import { Navbar } from "@/components/layout/navbar";
+import { AntiGravityTagCloud } from "@/components/features/anti-gravity-tag-cloud";
 import { PROJECTS_DATA } from "@/lib/projects-data";
 import { MOCK_BLOG_POSTS } from "@/lib/blog-data";
 
@@ -129,6 +130,9 @@ export default function Home() {
 
           </div>
         </section>
+
+        {/* ─── ANTI-GRAVITY MARQUEE TAG CLOUD ─── */}
+        <AntiGravityTagCloud />
 
         {/* ─── FOUNDER SPOTLIGHT SECTION ─── */}
         <section className="bg-gradient-to-b from-[#faf7f2] via-white to-[#faf7f2] py-16 sm:py-24 border-y border-slate-200/80">

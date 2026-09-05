@@ -119,3 +119,72 @@ body {
   color: #0f172a;
   font-weight: 700;
 }
+
+/* ─── Anti-Gravity Marquee Animations ─── */
+@keyframes marquee-scroll-left {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes marquee-scroll-right {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Calibrated slow speeds for calm, floating anti-gravity feel */
+.animate-marquee-left-slow {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll-left 70s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee-right-slow {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll-right 80s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee-right-slower {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll-right 95s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee-left-fast {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll-left 45s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee-right-medium {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll-right 55s linear infinite;
+  will-change: transform;
+}
+
+.marquee-row:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee-left-slow,
+  .animate-marquee-right-slow,
+  .animate-marquee-right-slower,
+  .animate-marquee-left-fast,
+  .animate-marquee-right-medium {
+    animation-play-state: paused !important;
+  }
+}
