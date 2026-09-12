@@ -1167,10 +1167,6 @@ export default function VedhaBhoomiPage() {
                     <span>Book Free Site Visit</span>
                   </button>
 
-                  {/* Trust line */}
-                  <p className="text-center text-[10px] text-slate-400 font-medium">
-                    🔒 Your data is 100% confidential. No spam, ever.
-                  </p>
                 </form>
               )}
             </div>
