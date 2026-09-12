@@ -87,6 +87,8 @@ export default function VedhaBhoomiPage() {
   const [submitted, setSubmitted] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [selectedImg, setSelectedImg] = useState<{ src: string; title: string } | null>(null);
+  const [showFloatingForm, setShowFloatingForm] = useState(false);
+  const [floatingSubmitted, setFloatingSubmitted] = useState(false);
 
   // Track ViewContent when the project page mounts
   useEffect(() => {
@@ -150,6 +152,38 @@ export default function VedhaBhoomiPage() {
   const handleOtpSuccess = () => {
     setShowOtpModal(false);
     setSubmitted(true);
+  };
+
+  const handleFloatingSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.fullName.trim() || !form.phoneNumber.trim()) return;
+
+    submitLeadToNeoDove({
+      fullName: form.fullName,
+      phoneNumber: normalizePhone(form.phoneNumber),
+      emailAddress: form.email,
+      language: form.language,
+      budget: form.budgetRange,
+      siteVisit: form.siteVisit,
+      interestedIn: "Vedha Bhoomi — Luxury Farmland Plots",
+      preferredLocation: "Near Lepakshi, North Bengaluru",
+      source: "Vedha Bhoomi Floating Form",
+    }).catch((err) => console.error("NeoDove CRM submission error:", err));
+
+    submitLeadToWebhook({
+      fullName: form.fullName,
+      phoneNumber: normalizePhone(form.phoneNumber),
+      emailAddress: form.email,
+      language: form.language,
+      budget: form.budgetRange,
+      siteVisit: form.siteVisit,
+      interestedIn: "Vedha Bhoomi — Luxury Farmland Plots",
+      preferredLocation: "Near Lepakshi, North Bengaluru",
+      source: "Vedha Bhoomi Floating Form",
+    }).catch((err) => console.error("Webhook submission error:", err));
+
+    trackEvent('Lead', { content_name: 'Vedha Bhoomi Floating Enquiry' });
+    setFloatingSubmitted(true);
   };
 
   return (
@@ -972,6 +1006,177 @@ export default function VedhaBhoomiPage() {
 
         </div>
       </main>
+
+      {/* ── Floating Enquiry Bubble ── */}
+      <button
+        onClick={() => {
+          setShowFloatingForm(true);
+          setFloatingSubmitted(false);
+        }}
+        className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-40 bg-emerald-500 hover:bg-emerald-600 text-white w-14 h-14 rounded-full shadow-xl hover:shadow-2xl flex items-center justify-center transition-all duration-300 transform hover:scale-110 cursor-pointer group"
+        aria-label="Open enquiry form"
+      >
+        {/* Pulse ring */}
+        <span className="absolute inset-0 rounded-full bg-emerald-400 animate-ping opacity-30" />
+        <Sparkles className="h-6 w-6 relative z-10" />
+      </button>
+
+      {/* ── Floating Enquiry Modal ── */}
+      {showFloatingForm && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-end">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => setShowFloatingForm(false)}
+          />
+
+          {/* Panel — slides in from right */}
+          <div className="relative w-full sm:w-[420px] max-h-[100dvh] sm:max-h-[90vh] bg-white sm:rounded-2xl shadow-2xl overflow-y-auto sm:mr-6 animate-in slide-in-from-right duration-300">
+            {/* Header */}
+            <div className="sticky top-0 z-10 bg-gradient-to-br from-emerald-600 via-emerald-700 to-[#0b4eb7] px-6 py-5 text-white">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center backdrop-blur-sm border border-white/20">
+                    <Sparkles className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-serif text-lg font-bold">Vedha Bhoomi</h3>
+                    <p className="text-emerald-200 text-xs">Book a Free Site Visit</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowFloatingForm(false)}
+                  className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition cursor-pointer"
+                  aria-label="Close"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              {/* Quick highlights */}
+              <div className="flex flex-wrap gap-2 mt-4">
+                {[
+                  "🌿 63 Luxury Plots",
+                  "₹22L Onwards",
+                  "🆓 Free Site Visit",
+                ].map((tag, i) => (
+                  <span key={i} className="bg-white/10 border border-white/15 text-white/90 text-[10px] font-bold px-2.5 py-1 rounded-full">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Form Body */}
+            <div className="p-6">
+              {floatingSubmitted ? (
+                <div className="text-center space-y-4 py-8">
+                  <div className="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center mx-auto">
+                    <Check className="h-8 w-8 text-emerald-600" />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="font-serif text-xl font-bold text-slate-900">Enquiry Submitted!</h3>
+                    <p className="text-slate-600 text-sm leading-relaxed max-w-xs mx-auto">
+                      A dedicated 1ASET advisor will reach out within 24 hours to schedule your free site visit.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setFloatingSubmitted(false);
+                      setShowFloatingForm(false);
+                    }}
+                    className="inline-flex items-center gap-2 text-emerald-700 font-bold text-sm hover:underline cursor-pointer"
+                  >
+                    Close
+                    <ArrowRight className="h-4 w-4" />
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleFloatingSubmit} className="space-y-4">
+                  {/* Name */}
+                  <div className="space-y-1.5">
+                    <label className="text-slate-700 text-xs font-bold uppercase tracking-wider">
+                      Full Name <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Your full name"
+                      value={form.fullName}
+                      required
+                      onChange={(e) => setForm({ ...form, fullName: e.target.value })}
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:bg-white focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/10 transition font-medium"
+                    />
+                  </div>
+
+                  {/* Phone */}
+                  <div className="space-y-1.5">
+                    <label className="text-slate-700 text-xs font-bold uppercase tracking-wider">
+                      WhatsApp Number <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm font-semibold select-none">
+                        🇮🇳 +91
+                      </span>
+                      <input
+                        type="tel"
+                        placeholder="XXXXX XXXXX"
+                        value={form.phoneNumber}
+                        required
+                        onChange={(e) => setForm({ ...form, phoneNumber: e.target.value })}
+                        className="w-full pl-[72px] pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:bg-white focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/10 transition font-medium"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Budget & Site Visit */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <label className="text-slate-700 text-xs font-bold uppercase tracking-wider">Budget</label>
+                      <select
+                        value={form.budgetRange}
+                        onChange={(e) => setForm({ ...form, budgetRange: e.target.value })}
+                        className="w-full px-3.5 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 text-sm font-medium focus:outline-none focus:bg-white focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/10 transition cursor-pointer"
+                      >
+                        <option value="25L">Under ₹25L</option>
+                        <option value="50L">₹25L – ₹50L</option>
+                        <option value="1Cr">₹50L – ₹1Cr</option>
+                        <option value="1Cr+">Above ₹1Cr</option>
+                      </select>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-slate-700 text-xs font-bold uppercase tracking-wider">Site Visit</label>
+                      <select
+                        value={form.siteVisit}
+                        onChange={(e) => setForm({ ...form, siteVisit: e.target.value })}
+                        className="w-full px-3.5 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 text-sm font-medium focus:outline-none focus:bg-white focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/10 transition cursor-pointer"
+                      >
+                        <option value="Not decided">Not decided</option>
+                        <option value="This week">This week</option>
+                        <option value="This month">This month</option>
+                        <option value="Just exploring">Just exploring</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Submit */}
+                  <button
+                    type="submit"
+                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2.5 shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 cursor-pointer"
+                  >
+                    <ShieldCheck className="h-4 w-4" />
+                    <span>Book Free Site Visit</span>
+                  </button>
+
+                  {/* Trust line */}
+                  <p className="text-center text-[10px] text-slate-400 font-medium">
+                    🔒 Your data is 100% confidential. No spam, ever.
+                  </p>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       <Footer />
     </div>
