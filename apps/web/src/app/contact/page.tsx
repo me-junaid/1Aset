@@ -27,6 +27,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { OtpVerificationModal } from "@/components/features/otp-verification-modal";
 import { submitLeadToNeoDove, submitLeadToWebhook } from "@/lib/webhook";
+import { trackEvent } from "@/lib/meta-pixel";
 import type { LeadSubmitPayload } from "@repo/types";
 
 export default function ContactPage() {
@@ -79,6 +80,7 @@ export default function ContactPage() {
     }).catch((err) => console.error("Webhook submission error:", err));
 
     // OTP verification temporarily bypassed until production number is live
+    trackEvent('Lead', { content_name: '1ASET Contact Enquiry' });
     setSubmitted(true);
   };
 
@@ -183,7 +185,7 @@ export default function ContactPage() {
                       Bengaluru, India
                     </p>
                     <p className="text-xs text-slate-500 leading-relaxed">
-                      Level 45, The Architectural Spire, UB City, MG Road, Bengaluru - 560001
+                      2nd Floor, GoPizza Line, Unit No 852, 8th Main Rd, Sahakar Nagar, Bengaluru, Karnataka 560092
                     </p>
                   </div>
                 </div>

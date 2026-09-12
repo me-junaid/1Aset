@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import { use, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -20,6 +20,7 @@ import { Footer } from "@/components/layout/footer";
 import { Navbar } from "@/components/layout/navbar";
 import { OtpVerificationModal } from "@/components/features/otp-verification-modal";
 import { submitLeadToNeoDove, submitLeadToWebhook } from "@/lib/webhook";
+import { trackEvent } from "@/lib/meta-pixel";
 import { PROJECTS_DATA } from "@/lib/projects-data";
 import type { LeadSubmitPayload } from "@repo/types";
 
@@ -40,6 +41,14 @@ export default function ProjectDetailClient({
     budgetRange: "25L",
     siteVisit: "Not decided",
   });
+
+  // Track ViewContent when a project page mounts
+  useEffect(() => {
+    trackEvent('ViewContent', {
+      content_name: project?.title || slug,
+      content_category: 'Project',
+    });
+  }, [project?.title, slug]);
 
   const normalizePhone = (phone: string): string => {
     const digits = phone.replace(/[\s\-\(\)]/g, "");
@@ -77,6 +86,7 @@ export default function ProjectDetailClient({
     }).catch((err) => console.error("Webhook submission error:", err));
 
     // OTP verification temporarily bypassed until production number is live
+    trackEvent('Lead', { content_name: `${project?.title || 'Project'} Enquiry` });
     setSubmitted(true);
   };
 

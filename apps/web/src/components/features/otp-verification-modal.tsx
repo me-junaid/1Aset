@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { requestWhatsAppOtp, verifyWhatsAppOtp, submitLead } from "@/lib/api";
 import { submitLeadToNeoDove } from "@/lib/webhook";
+import { trackEvent } from "@/lib/meta-pixel";
 import type { LeadSubmitPayload } from "@repo/types";
 
 type OtpStep =
@@ -119,6 +120,7 @@ export function OtpVerificationModal({
               ...leadPayload,
               whatsappVerificationId: response.data.verificationId,
             });
+            trackEvent('Lead', { content_name: '1ASET Verified Enquiry' });
             setStep("ENQUIRY_SUBMITTED");
             setTimeout(() => onSuccess(), 2000);
           } catch (submitError: any) {

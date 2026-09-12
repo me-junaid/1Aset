@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -31,6 +31,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { OtpVerificationModal } from "@/components/features/otp-verification-modal";
 import { submitLeadToNeoDove, submitLeadToWebhook } from "@/lib/webhook";
+import { trackEvent } from "@/lib/meta-pixel";
 import type { LeadSubmitPayload } from "@repo/types";
 
 const AMENITIES = [
@@ -87,6 +88,11 @@ export default function VedhaBhoomiPage() {
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [selectedImg, setSelectedImg] = useState<{ src: string; title: string } | null>(null);
 
+  // Track ViewContent when the project page mounts
+  useEffect(() => {
+    trackEvent('ViewContent', { content_name: 'Vedha Bhoomi', content_category: 'Project' });
+  }, []);
+
   const normalizePhone = (phone: string): string => {
     const digits = phone.replace(/[\s\-\(\)]/g, "");
     if (digits.startsWith("+")) return digits;
@@ -125,6 +131,7 @@ export default function VedhaBhoomiPage() {
     }).catch((err) => console.error("Webhook submission error:", err));
 
     // OTP verification temporarily bypassed until production number is live
+    trackEvent('Lead', { content_name: 'Vedha Bhoomi Enquiry' });
     setSubmitted(true);
   };
 

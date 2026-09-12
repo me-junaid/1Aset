@@ -26,6 +26,7 @@ import { Footer } from "@/components/layout/footer";
 import { Navbar } from "@/components/layout/navbar";
 import { getBlogPostBySlug, getRelatedPosts } from "@/lib/blog-data";
 import { submitLeadToWebhook } from "@/lib/webhook";
+import { trackEvent } from "@/lib/meta-pixel";
 
 interface BlogDetailParams {
   params: Promise<{ slug: string }>;
@@ -85,6 +86,7 @@ export default function BlogDetailClient({ params }: BlogDetailParams) {
       } catch (err) {
         console.error(err);
       } finally {
+        trackEvent('Lead', { content_name: `Blog Inquiry - ${post.title}` });
         setInquirySubmitted(true);
         setTimeout(() => {
           setInquiryName("");
