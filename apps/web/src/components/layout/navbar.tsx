@@ -133,7 +133,7 @@ export function Navbar() {
               <Link
                 key={href}
                 href={href}
-                className={`flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all min-w-[52px] ${
+                className={`relative flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all min-w-[52px] ${
                   active
                     ? "text-[#0b4eb7]"
                     : "text-slate-400 hover:text-slate-600"
@@ -144,7 +144,7 @@ export function Navbar() {
                   {label}
                 </span>
                 {active && (
-                  <span className="absolute -top-px left-1/2 -translate-x-1/2 w-6 h-0.5 bg-[#0b4eb7] rounded-full" />
+                  <span className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-[#0b4eb7] rounded-full" />
                 )}
               </Link>
             );

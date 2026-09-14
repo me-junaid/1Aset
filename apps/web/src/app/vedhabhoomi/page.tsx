@@ -26,6 +26,8 @@ import {
   Maximize2,
   X,
   Sparkles,
+  Download,
+  FileText,
 } from "lucide-react";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
@@ -253,7 +255,7 @@ export default function VedhaBhoomiPage() {
           {/* Hero Content */}
           <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10 sm:pb-16 pt-24">
             <div className="max-w-3xl space-y-4 sm:space-y-5">
-              
+
               {/* Unified Luxury Pill Badges */}
               <div className="flex flex-wrap items-center gap-2">
                 <div className="inline-flex items-center gap-2 bg-emerald-500/20 backdrop-blur-md border border-emerald-400/30 text-emerald-200 text-[11px] sm:text-xs font-semibold px-3.5 py-1.5 rounded-full shadow-lg shadow-emerald-950/30">
@@ -277,11 +279,11 @@ export default function VedhaBhoomiPage() {
                   <span className="text-white/30 hidden sm:inline">•</span>
                   <span className="text-emerald-200/80 font-medium normal-case sm:uppercase">Dev: Vedha Sree Parivar</span>
                 </p>
-                
+
                 <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.1] tracking-tight drop-shadow-md">
                   Vedha Bhoomi
                 </h1>
-                
+
                 <p className="text-blue-100/90 text-base sm:text-xl font-normal leading-relaxed max-w-2xl pt-0.5">
                   Luxury Gated Farmland Plots &amp; Weekend Home Destination
                 </p>
@@ -611,7 +613,7 @@ export default function VedhaBhoomiPage() {
                     </div>
                     <div className="flex items-baseline justify-between pt-1 border-t border-white/15">
                       <span className="text-xs text-emerald-200 font-medium">Price / sqft:</span>
-                      <span className="font-sans text-lg font-extrabold text-white">₹210 – ₹250</span>
+                      <span className="font-sans text-lg font-extrabold text-white">Up To ₹400</span>
                     </div>
                   </div>
 
@@ -783,12 +785,83 @@ export default function VedhaBhoomiPage() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {LEGAL_CHECKS.map((item, i) => (
-                <div key={i} className="flex items-center gap-2.5">
-                  <Check className="h-4 w-4 text-emerald-400 shrink-0" />
-                  <span className="text-slate-300 text-sm font-medium">{item}</span>
+                <div key={i} className="flex items-center justify-between gap-2.5">
+                  <div className="flex items-center gap-2.5">
+                    <Check className="h-4 w-4 text-emerald-400 shrink-0" />
+                    <span className="text-slate-300 text-sm font-medium">{item}</span>
+                  </div>
+                  {(item.includes("Water Test") || item.includes("Soil Test")) && (
+                    <a
+                      href="/vedhabhoomi/soil-and-water-test-report.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-300 hover:text-emerald-200 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/30 px-2 py-0.5 rounded-md transition shrink-0 ml-2"
+                      title="Download Soil & Water Test Report (PDF)"
+                    >
+                      <span>
+
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-eye" viewBox="0 0 16 16">
+                          <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z" />
+                          <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0" />
+                        </svg>
+
+                      </span>
+                    </a>
+                  )}
                 </div>
               ))}
             </div>
+
+            {/* Downloadable Official Reports Card */}
+            <div className="bg-gradient-to-r from-emerald-950/40 to-slate-900/60 border border-emerald-500/30 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center shrink-0 text-emerald-300">
+                  <FileText className="h-5 w-5" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-white">Soil &amp; Water Test Report</h4>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    Certified laboratory test reports verifying soil fertility and water quality.
+                  </p>
+                </div>
+              </div>
+              <a
+                href="/vedhabhoomi/soil-and-water-test-report.pdf"
+                download="VedhaBhoomi-Soil-and-Water-Test-Report.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs px-4 py-2.5 rounded-lg shadow-md hover:shadow-emerald-900/40 transition shrink-0 w-full sm:w-auto justify-center"
+              >
+                <Download className="h-3.5 w-3.5" />
+                <span>Download Report</span>
+              </a>
+            </div>
+
+            {/* Revenue Jurisdiction Badges / Cards */}
+            <div className="border-t border-white/10 pt-4">
+              <p className="text-xs font-extrabold uppercase tracking-wider text-emerald-400 mb-3">
+                Revenue Jurisdiction &amp; Administrative Records
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
+                <div className="bg-white/5 border border-white/10 rounded-xl p-3">
+                  <span className="block text-[11px] text-slate-400 font-medium">Revenue Village</span>
+                  <span className="text-sm font-bold text-white">Chilamathur</span>
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-xl p-3">
+                  <span className="block text-[11px] text-slate-400 font-medium">Revenue Mandal</span>
+                  <span className="text-sm font-bold text-white">Chilamathur</span>
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-xl p-3">
+                  <span className="block text-[11px] text-slate-400 font-medium">Revenue Division</span>
+                  <span className="text-sm font-bold text-white">Penukonda</span>
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-xl p-3">
+                  <span className="block text-[11px] text-slate-400 font-medium">District</span>
+                  <span className="text-sm font-bold text-white">Sri Sathya Sai</span>
+                </div>
+              </div>
+            </div>
+
             <p className="text-slate-500 text-xs leading-relaxed border-t border-white/10 pt-4">
               * We recommend all buyers independently verify title deeds, RTC records, and approvals with a local legal advisor before completing any purchase. 1ASET provides full document access and site visit facilitation.
             </p>
@@ -1057,7 +1130,7 @@ export default function VedhaBhoomiPage() {
 
           {/* Modal Content — Bottom sheet on mobile, slide card on desktop */}
           <div className="relative w-full sm:w-[440px] max-h-[92dvh] sm:max-h-[90vh] bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-y-auto z-10 animate-in slide-in-from-bottom sm:slide-in-from-right duration-300 flex flex-col">
-            
+
             {/* Mobile Drag Indicator */}
             <div className="sm:hidden pt-3 pb-1 bg-gradient-to-r from-emerald-700 to-[#0b4eb7] flex justify-center">
               <div className="w-12 h-1.5 bg-white/30 rounded-full" />
