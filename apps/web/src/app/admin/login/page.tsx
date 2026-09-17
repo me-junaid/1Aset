@@ -161,10 +161,8 @@ function AdminLoginForm() {
 
           <div className="mt-6 pt-5 border-t border-slate-800/80 text-center">
             <p className="text-[11px] text-slate-500">
-              Default credentials in development: <br />
-              <code className="text-slate-400 font-mono">admin@1aset.com</code> /{" "}
-              <code className="text-slate-400 font-mono">Admin@1aset2026</code>
-            </p>
+              1Aset.com <br />
+               </p>
           </div>
         </div>
 
