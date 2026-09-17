@@ -1,9 +1,8 @@
 "use client";
 
-import { use, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import {
   Clock,
   Calendar,
@@ -24,27 +23,31 @@ import {
 } from "lucide-react";
 import { Footer } from "@/components/layout/footer";
 import { Navbar } from "@/components/layout/navbar";
-import { getBlogPostBySlug, getRelatedPosts } from "@/lib/blog-data";
+import type { BlogPost } from "@repo/types";
 import { submitLeadToWebhook } from "@/lib/webhook";
 import { trackEvent } from "@/lib/meta-pixel";
 
-interface BlogDetailParams {
-  params: Promise<{ slug: string }>;
+function formatBlogDate(dateStr?: string) {
+  if (!dateStr) return "";
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return dateStr;
+  const months = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+  ];
+  return `${months[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()}`;
 }
 
-export default function BlogDetailClient({ params }: BlogDetailParams) {
-  const resolvedParams = use(params);
-  const post = getBlogPostBySlug(resolvedParams.slug);
+interface BlogDetailClientProps {
+  post: BlogPost;
+  relatedPosts?: BlogPost[];
+}
+
+export default function BlogDetailClient({ post, relatedPosts = [] }: BlogDetailClientProps) {
   const [copied, setCopied] = useState(false);
   const [inquiryName, setInquiryName] = useState("");
   const [inquiryPhone, setInquiryPhone] = useState("");
   const [inquirySubmitted, setInquirySubmitted] = useState(false);
-
-  if (!post) {
-    notFound();
-  }
-
-  const relatedPosts = getRelatedPosts(post.slug, 3);
 
   const handleCopyLink = () => {
     if (typeof window !== "undefined") {
@@ -132,9 +135,9 @@ export default function BlogDetailClient({ params }: BlogDetailParams) {
                 <Clock size={13} />
                 {post.readTime}
               </span>
-              <span className="flex items-center gap-1 text-xs text-slate-500">
+              <span className="flex items-center gap-1 text-xs text-slate-500" suppressHydrationWarning>
                 <Calendar size={13} />
-                {post.publishedAt}
+                {formatBlogDate(post.publishedAt)}
               </span>
             </div>
 
@@ -255,7 +258,8 @@ export default function BlogDetailClient({ params }: BlogDetailParams) {
                 {post.author.role} at 1ASET
               </p>
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                Specializing in Bengaluru real estate market analysis, land layout verification, and structured wealth deployment strategies for retail and institutional investors.
+                {post.author.bio ||
+                  "Specializing in Bengaluru real estate market analysis, land layout verification, and structured wealth deployment strategies for retail and institutional investors."}
               </p>
             </div>
           </div>

@@ -4,11 +4,13 @@ import { LeadsController } from './leads.controller';
 import { LeadsService } from './leads.service';
 import { Lead, LeadSchema } from './schemas/lead.schema';
 import { WhatsappOtpModule } from '../whatsapp-otp/whatsapp-otp.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Lead.name, schema: LeadSchema }]),
     WhatsappOtpModule,
+    AuthModule,
   ],
   controllers: [LeadsController],
   providers: [LeadsService],

@@ -6,6 +6,9 @@ import { AppService } from './app.service';
 import { BlogsModule } from './modules/blogs/blogs.module';
 import { WhatsappOtpModule } from './modules/whatsapp-otp/whatsapp-otp.module';
 import { LeadsModule } from './modules/leads/leads.module';
+import { UsersModule } from './modules/users/users.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { ProjectsModule } from './modules/projects/projects.module';
 
 @Module({
   imports: [
@@ -21,6 +24,9 @@ import { LeadsModule } from './modules/leads/leads.module';
           'mongodb+srv://jdasjunaid_db_user:HmTzw1c0PimVriqA@cluster0.6prs2au.mongodb.net/1aset?appName=Cluster0',
       }),
     }),
+    UsersModule,
+    AuthModule,
+    ProjectsModule,
     BlogsModule,
     WhatsappOtpModule,
     LeadsModule,

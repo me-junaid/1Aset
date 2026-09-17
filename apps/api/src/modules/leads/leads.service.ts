@@ -165,4 +165,125 @@ export class LeadsService {
       this.logger.warn('NeoDove CRM forwarding error', error?.message || error);
     }
   }
+
+  // ── Admin Query Methods ──────────────────────────────────────────
+
+  async findAll(query: {
+    status?: string;
+    source?: string;
+    search?: string;
+    page?: number;
+    limit?: number;
+  }) {
+    const filter: Record<string, any> = {};
+
+    if (query.status && query.status !== 'ALL') {
+      filter.status = query.status;
+    }
+
+    if (query.source && query.source !== 'ALL') {
+      filter.source = query.source;
+    }
+
+    if (query.search) {
+      filter.$or = [
+        { name: { $regex: query.search, $options: 'i' } },
+        { phone: { $regex: query.search, $options: 'i' } },
+        { email: { $regex: query.search, $options: 'i' } },
+      ];
+    }
+
+    const page = Number(query.page) || 1;
+    const limit = Number(query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    const [leads, total] = await Promise.all([
+      this.leadModel
+        .find(filter)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .exec(),
+      this.leadModel.countDocuments(filter).exec(),
+    ]);
+
+    return {
+      leads,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  async getStats() {
+    const [total, newCount, contacted, qualified, converted, lost] =
+      await Promise.all([
+        this.leadModel.countDocuments().exec(),
+        this.leadModel.countDocuments({ status: 'NEW' }).exec(),
+        this.leadModel.countDocuments({ status: 'CONTACTED' }).exec(),
+        this.leadModel.countDocuments({ status: 'QUALIFIED' }).exec(),
+        this.leadModel.countDocuments({ status: 'CONVERTED' }).exec(),
+        this.leadModel.countDocuments({ status: 'LOST' }).exec(),
+      ]);
+
+    return {
+      total,
+      new: newCount,
+      contacted,
+      qualified,
+      converted,
+      lost,
+    };
+  }
+
+  async updateStatus(id: string, status: string) {
+    const validStatuses = [
+      'NEW',
+      'CONTACTED',
+      'QUALIFIED',
+      'FOLLOW_UP',
+      'CONVERTED',
+      'LOST',
+    ];
+    if (!validStatuses.includes(status)) {
+      throw new BadRequestException(
+        `Invalid status. Must be one of: ${validStatuses.join(', ')}`,
+      );
+    }
+
+    const lead = await this.leadModel
+      .findByIdAndUpdate(id, { status }, { new: true })
+      .exec();
+
+    if (!lead) {
+      throw new BadRequestException(`Lead with ID "${id}" not found`);
+    }
+
+    return lead;
+  }
+
+  async addNote(id: string, text: string, addedBy: string = 'Admin') {
+    const lead = await this.leadModel
+      .findByIdAndUpdate(
+        id,
+        {
+          $push: {
+            notes: {
+              text,
+              addedAt: new Date(),
+              addedBy,
+            },
+          },
+        },
+        { new: true },
+      )
+      .exec();
+
+    if (!lead) {
+      throw new BadRequestException(`Lead with ID "${id}" not found`);
+    }
+
+    return lead;
+  }
 }
+

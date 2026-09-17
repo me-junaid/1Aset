@@ -21,17 +21,25 @@ import { Navbar } from "@/components/layout/navbar";
 import { OtpVerificationModal } from "@/components/features/otp-verification-modal";
 import { submitLeadToNeoDove, submitLeadToWebhook } from "@/lib/webhook";
 import { trackEvent } from "@/lib/meta-pixel";
-import { PROJECTS_DATA } from "@/lib/projects-data";
-import type { LeadSubmitPayload } from "@repo/types";
+import { FALLBACK_PROJECTS, getFallbackProject } from "@/lib/projects-data";
+import type { LeadSubmitPayload, Project } from "@repo/types";
+
+interface ProjectDetailClientProps {
+  project?: Project;
+  params?: Promise<{ slug: string }>;
+}
 
 export default function ProjectDetailClient({
-  params
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const resolvedParams = use(params);
-  const slug = resolvedParams.slug;
-  const project = PROJECTS_DATA[slug] || PROJECTS_DATA["marina-crown"];
+  project: initialProject,
+  params,
+}: ProjectDetailClientProps) {
+  const resolvedParams = params ? use(params) : null;
+  const slug = initialProject?.slug || resolvedParams?.slug || "vedha-bhoomi";
+  const project =
+    initialProject ||
+    getFallbackProject(slug) ||
+    FALLBACK_PROJECTS[0];
+
   const [submitted, setSubmitted] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
   const [form, setForm] = useState({
@@ -111,6 +119,18 @@ export default function ProjectDetailClient({
     if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
   };
 
+  const heroImg = project.heroImage || project.featuredImage || "/property-1.jpg";
+  const startingPrice = project.priceDisplay || "Price on Request";
+  const appreciation = project.expectedAppreciation || project.expectedRoi || "14.5% p.a.";
+  const rentalYield = project.rentalYield || "6.5%";
+  const horizon = project.horizon || "3-5 Yrs";
+  const overview = project.fullDescription || project.shortDescription || "";
+  const galleryMain = project.galleryImages?.[0]?.src || heroImg;
+  const gallerySub1 = project.galleryImages?.[1]?.src || heroImg;
+  const gallerySub2 = project.galleryImages?.[2]?.src || galleryMain;
+  const developerName = project.developerName || "1ASET Curated Developer";
+  const developerDesc = project.developerDesc || "A premier real estate developer specializing in institutional-grade land and residential developments.";
+
   return (
     <div className="flex flex-col min-h-screen bg-[#faf7f2] font-sans antialiased text-slate-900 selection:bg-[#0b4eb7] selection:text-white">
       <Navbar />
@@ -129,7 +149,7 @@ export default function ProjectDetailClient({
         {/* Project Hero Header */}
         <section className="relative w-full h-[400px] sm:h-[480px] lg:h-[540px] overflow-hidden">
           <Image
-            src={project.heroImage}
+            src={heroImg}
             alt={project.title}
             fill
             priority
@@ -143,8 +163,10 @@ export default function ProjectDetailClient({
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
               {/* Left Details */}
               <div className="space-y-2">
-                <span className="bg-[#b47b1c] text-white text-[10px] sm:text-xs font-extrabold tracking-wider px-3 py-1 rounded-sm uppercase inline-block">
-                  {project.badge}
+                <span className={`text-white text-[10px] sm:text-xs font-extrabold tracking-wider px-3 py-1 rounded-sm uppercase inline-block ${
+                  project.slug === "vedha-bhoomi" || project.isFlagship ? "bg-emerald-600" : "bg-[#b47b1c]"
+                }`}>
+                  {project.badge || (project.isFlagship ? "FLAGSHIP PROJECT" : "FEATURED")}
                 </span>
                 <h1 className="font-serif text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
                   {project.title}
@@ -194,7 +216,7 @@ export default function ProjectDetailClient({
                       Starting Investment
                     </span>
                     <span className="block font-sans text-xl sm:text-2xl font-bold text-[#0b4eb7]">
-                      {project.startingPrice}
+                      {startingPrice}
                     </span>
                   </div>
 
@@ -205,7 +227,7 @@ export default function ProjectDetailClient({
                     </span>
                     <div className="flex items-center gap-1">
                       <span className="font-sans text-xl sm:text-2xl font-bold text-emerald-600">
-                        {project.appreciation}
+                        {appreciation}
                       </span>
                       <TrendingUp className="h-4 w-4 text-emerald-500" />
                     </div>
@@ -217,7 +239,7 @@ export default function ProjectDetailClient({
                       Expected Rental Yield
                     </span>
                     <span className="block font-sans text-xl sm:text-2xl font-bold text-[#0b4eb7]">
-                      {project.rentalYield}
+                      {rentalYield}
                     </span>
                   </div>
 
@@ -227,10 +249,9 @@ export default function ProjectDetailClient({
                       Investment Horizon
                     </span>
                     <span className="block font-sans text-xl sm:text-2xl font-bold text-[#0b4eb7]">
-                      {project.horizon}
+                      {horizon}
                     </span>
                   </div>
-
                 </div>
               </div>
 
@@ -240,7 +261,7 @@ export default function ProjectDetailClient({
                   Project Overview
                 </h2>
                 <div className="text-slate-600 text-sm sm:text-base leading-relaxed space-y-4 whitespace-pre-line">
-                  {project.overview}
+                  {overview}
                 </div>
               </div>
 
@@ -250,15 +271,12 @@ export default function ProjectDetailClient({
                   <h2 className="font-serif text-2xl font-bold text-[#0b4eb7]">
                     Gallery
                   </h2>
-                  <button className="text-xs font-semibold text-[#0b4eb7] hover:underline">
-                    View All →
-                  </button>
                 </div>
 
                 {/* Main Large Image */}
                 <div className="relative h-72 sm:h-96 w-full rounded-2xl overflow-hidden shadow-sm bg-slate-100">
                   <Image
-                    src={project.galleryMain}
+                    src={galleryMain}
                     alt="Gallery Main"
                     fill
                     className="object-cover"
@@ -269,7 +287,7 @@ export default function ProjectDetailClient({
                 <div className="grid grid-cols-2 gap-4">
                   <div className="relative h-44 sm:h-52 w-full rounded-xl overflow-hidden shadow-sm bg-slate-100">
                     <Image
-                      src={project.gallerySub1}
+                      src={gallerySub1}
                       alt="Gallery Sub 1"
                       fill
                       className="object-cover"
@@ -277,7 +295,7 @@ export default function ProjectDetailClient({
                   </div>
                   <div className="relative h-44 sm:h-52 w-full rounded-xl overflow-hidden shadow-sm bg-slate-100">
                     <Image
-                      src={project.gallerySub2}
+                      src={gallerySub2}
                       alt="Gallery Sub 2"
                       fill
                       className="object-cover"
@@ -292,60 +310,78 @@ export default function ProjectDetailClient({
                   Highlights & Amenities
                 </h2>
 
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-                  {/* Amenity 1 */}
-                  <div className="space-y-2">
-                    <div className="w-10 h-10 rounded-lg bg-blue-100/70 text-[#0b4eb7] flex items-center justify-center">
-                      <Waves className="h-5 w-5" />
-                    </div>
-                    <h3 className="font-semibold text-sm text-slate-800">
-                      Infinity Pool
-                    </h3>
-                    <p className="text-xs text-slate-500 leading-relaxed">
-                      Panoramic ocean views.
-                    </p>
+                {project.amenities && project.amenities.length > 0 ? (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {project.amenities.map((amenity, idx) => (
+                      <div
+                        key={idx}
+                        className="bg-white rounded-xl p-3.5 border border-slate-200/80 shadow-xs flex items-center gap-2.5"
+                      >
+                        <div className="w-7 h-7 rounded-lg bg-blue-50 text-[#0b4eb7] flex items-center justify-center shrink-0">
+                          <Check className="h-4 w-4" />
+                        </div>
+                        <span className="font-semibold text-xs sm:text-sm text-slate-800">
+                          {amenity.label}
+                        </span>
+                      </div>
+                    ))}
                   </div>
-
-                  {/* Amenity 2 */}
-                  <div className="space-y-2">
-                    <div className="w-10 h-10 rounded-lg bg-blue-100/70 text-[#0b4eb7] flex items-center justify-center">
-                      <Film className="h-5 w-5" />
+                ) : (
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+                    <div className="space-y-2">
+                      <div className="w-10 h-10 rounded-lg bg-blue-100/70 text-[#0b4eb7] flex items-center justify-center">
+                        <Waves className="h-5 w-5" />
+                      </div>
+                      <h3 className="font-semibold text-sm text-slate-800">Clubhouse Retreat</h3>
+                      <p className="text-xs text-slate-500 leading-relaxed">Curated lifestyle amenities.</p>
                     </div>
-                    <h3 className="font-semibold text-sm text-slate-800">
-                      Private Cinema
-                    </h3>
-                    <p className="text-xs text-slate-500 leading-relaxed">
-                      Exclusive screenings for residents.
-                    </p>
+                    <div className="space-y-2">
+                      <div className="w-10 h-10 rounded-lg bg-blue-100/70 text-[#0b4eb7] flex items-center justify-center">
+                        <Car className="h-5 w-5" />
+                      </div>
+                      <h3 className="font-semibold text-sm text-slate-800">Wide Asphalt Roads</h3>
+                      <p className="text-xs text-slate-500 leading-relaxed">Direct layout connectivity.</p>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="w-10 h-10 rounded-lg bg-blue-100/70 text-[#0b4eb7] flex items-center justify-center">
+                        <ShieldCheck className="h-5 w-5" />
+                      </div>
+                      <h3 className="font-semibold text-sm text-slate-800">24/7 Security</h3>
+                      <p className="text-xs text-slate-500 leading-relaxed">Gated layout boundary.</p>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="w-10 h-10 rounded-lg bg-blue-100/70 text-[#0b4eb7] flex items-center justify-center">
+                        <Cpu className="h-5 w-5" />
+                      </div>
+                      <h3 className="font-semibold text-sm text-slate-800">Modern Infrastructure</h3>
+                      <p className="text-xs text-slate-500 leading-relaxed">Water & power provisions.</p>
+                    </div>
                   </div>
+                )}
+              </div>
 
-                  {/* Amenity 3 */}
-                  <div className="space-y-2">
-                    <div className="w-10 h-10 rounded-lg bg-blue-100/70 text-[#0b4eb7] flex items-center justify-center">
-                      <Car className="h-5 w-5" />
-                    </div>
-                    <h3 className="font-semibold text-sm text-slate-800">
-                      Valet Parking
-                    </h3>
-                    <p className="text-xs text-slate-500 leading-relaxed">
-                      24/7 dedicated service.
-                    </p>
+              {/* Section 4.5: Verified Legal Checks */}
+              {project.legalChecks && project.legalChecks.length > 0 && (
+                <div className="space-y-4 border-t border-slate-200/70 pt-10">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="h-6 w-6 text-emerald-600" />
+                    <h2 className="font-serif text-2xl font-bold text-[#0b4eb7]">
+                      100% Verified Legal Due Diligence
+                    </h2>
                   </div>
-
-                  {/* Amenity 4 */}
-                  <div className="space-y-2">
-                    <div className="w-10 h-10 rounded-lg bg-blue-100/70 text-[#0b4eb7] flex items-center justify-center">
-                      <Cpu className="h-5 w-5" />
-                    </div>
-                    <h3 className="font-semibold text-sm text-slate-800">
-                      Smart Home
-                    </h3>
-                    <p className="text-xs text-slate-500 leading-relaxed">
-                      Fully integrated automation.
-                    </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {project.legalChecks.map((check, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center gap-2.5 p-3 rounded-xl bg-emerald-50/70 border border-emerald-200/80 text-emerald-950 text-xs sm:text-sm font-semibold"
+                      >
+                        <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+                        <span>{check}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </div>
+              )}
 
               {/* Section 5: Location & Developer */}
               <div className="space-y-6 border-t border-slate-200/70 pt-10">
@@ -372,23 +408,23 @@ export default function ProjectDetailClient({
                   {/* Developer Details */}
                   <div className="space-y-3 flex flex-col justify-center">
                     <h3 className="font-serif text-xl font-bold text-[#0b4eb7]">
-                      Developed by {project.developerName}
+                      Developed by {developerName}
                     </h3>
                     <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                      {project.developerDesc}
+                      {developerDesc}
                     </p>
                     <ul className="space-y-2 pt-1 text-xs text-slate-700 font-medium">
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0" />
-                        <span>Award-winning developer</span>
+                        <span>Institutional-grade title due diligence</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0" />
-                        <span>Over 50 successful luxury projects</span>
+                        <span>Curated high-growth Bengaluru corridor</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0" />
-                        <span>Commitment to sustainability & innovation</span>
+                        <span>Commitment to transparent documentation</span>
                       </li>
                     </ul>
                   </div>

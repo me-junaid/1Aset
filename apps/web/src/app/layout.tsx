@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import { MetaPixelProvider } from "@/components/features/meta-pixel-provider";
@@ -42,7 +43,9 @@ export default function RootLayout({
       className={`${playfair.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans bg-[#faf7f2] text-slate-900 pb-[62px] md:pb-0">
-        <MetaPixelProvider />
+        <Suspense fallback={null}>
+          <MetaPixelProvider />
+        </Suspense>
         {children}
       </body>
     </html>

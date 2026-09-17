@@ -1,5 +1,3 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -22,12 +20,13 @@ import {
 import { Footer } from "@/components/layout/footer";
 import { Navbar } from "@/components/layout/navbar";
 import { AntiGravityTagCloud } from "@/components/features/anti-gravity-tag-cloud";
-import { PROJECTS_DATA } from "@/lib/projects-data";
-import { MOCK_BLOG_POSTS } from "@/lib/blog-data";
+import { getFeaturedProjects, getFeaturedBlogs } from "@/lib/api";
 
-export default function Home() {
-  const featuredProjects = Object.values(PROJECTS_DATA).slice(0, 3);
-  const featuredBlogs = MOCK_BLOG_POSTS.slice(0, 3);
+export default async function Home() {
+  const [featuredProjects, featuredBlogs] = await Promise.all([
+    getFeaturedProjects(),
+    getFeaturedBlogs(),
+  ]);
 
   return (
     <div className="flex flex-col min-h-screen bg-[#faf7f2] font-sans antialiased text-slate-900 selection:bg-[#0b4eb7] selection:text-white">
@@ -361,7 +360,7 @@ export default function Home() {
 
           {/* Project Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {featuredProjects.map((project) => (
+            {featuredProjects.slice(0, 3).map((project) => (
               <div
                 key={project.slug}
                 className="bg-white rounded-2xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group"
@@ -369,7 +368,7 @@ export default function Home() {
                 {/* Card Header Image */}
                 <div className="relative h-56 w-full overflow-hidden bg-slate-100">
                   <Image
-                    src={project.slug === "vedha-bhoomi" ? "/vedhabhoomi/vedhabhoomi1.jpg" : project.heroImage}
+                    src={project.heroImage || project.featuredImage || (project.slug === "vedha-bhoomi" ? "/vedhabhoomi/vedhabhoomi1.jpg" : "/property-1.jpg")}
                     alt={project.title}
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
@@ -378,15 +377,16 @@ export default function Home() {
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent" />
 
                   {/* Badge */}
-                  <span className={`absolute top-4 left-4 text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md ${project.slug === "vedha-bhoomi" ? "bg-emerald-600" : "bg-[#0b4eb7]"
-                    }`}>
-                    {project.badge}
+                  <span className={`absolute top-4 left-4 text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-md ${
+                    project.slug === "vedha-bhoomi" || project.isFlagship ? "bg-emerald-600" : "bg-[#0b4eb7]"
+                  }`}>
+                    {project.badge || (project.isFlagship ? "FLAGSHIP PROJECT" : "FEATURED")}
                   </span>
 
                   {/* Price */}
                   <div className="absolute bottom-4 left-4 text-white">
                     <span className="block text-xs font-medium text-slate-200">Starting from</span>
-                    <span className="font-sans text-xl sm:text-2xl font-extrabold tracking-tight">{project.startingPrice}</span>
+                    <span className="font-sans text-xl sm:text-2xl font-extrabold tracking-tight">{project.priceDisplay}</span>
                   </div>
                 </div>
 
@@ -406,20 +406,21 @@ export default function Home() {
                   <div className="grid grid-cols-2 gap-2 bg-[#faf7f2] p-3 rounded-xl border border-slate-200/60 text-center">
                     <div>
                       <span className="block text-[10px] font-semibold text-slate-500 uppercase">Appreciation</span>
-                      <span className="font-sans text-sm font-bold text-emerald-600">{project.appreciation}</span>
+                      <span className="font-sans text-sm font-bold text-emerald-600">{project.expectedAppreciation || project.expectedRoi || "14.5% p.a."}</span>
                     </div>
                     <div>
                       <span className="block text-[10px] font-semibold text-slate-500 uppercase">Rental Yield</span>
-                      <span className="font-sans text-sm font-bold text-[#0b4eb7]">{project.rentalYield}</span>
+                      <span className="font-sans text-sm font-bold text-[#0b4eb7]">{project.rentalYield || "6.5%"}</span>
                     </div>
                   </div>
 
                   <Link
                     href={project.slug === "vedha-bhoomi" ? "/vedhabhoomi" : `/projects/${project.slug}`}
-                    className={`w-full inline-flex items-center justify-center text-white py-2.5 rounded-xl text-sm font-semibold transition-colors gap-1.5 ${project.slug === "vedha-bhoomi"
+                    className={`w-full inline-flex items-center justify-center text-white py-2.5 rounded-xl text-sm font-semibold transition-colors gap-1.5 ${
+                      project.slug === "vedha-bhoomi" || project.isFlagship
                         ? "bg-emerald-600 hover:bg-emerald-700"
                         : "bg-[#0b4eb7] hover:bg-slate-900"
-                      }`}
+                    }`}
                   >
                     <span>View Project Details</span>
                     <ChevronRight size={16} />
