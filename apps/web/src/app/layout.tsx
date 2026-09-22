@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import { MetaPixelProvider } from "@/components/features/meta-pixel-provider";
+import { GoogleAdsProvider } from "@/components/features/google-ads-provider";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -45,6 +46,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col font-sans bg-[#faf7f2] text-slate-900 pb-[62px] md:pb-0">
         <Suspense fallback={null}>
           <MetaPixelProvider />
+          <GoogleAdsProvider />
         </Suspense>
         {children}
       </body>

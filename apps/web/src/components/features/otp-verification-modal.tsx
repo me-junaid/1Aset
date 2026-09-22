@@ -13,6 +13,7 @@ import {
 import { requestWhatsAppOtp, verifyWhatsAppOtp, submitLead } from "@/lib/api";
 import { submitLeadToNeoDove } from "@/lib/webhook";
 import { trackEvent } from "@/lib/meta-pixel";
+import { trackGoogleAdsConversion } from "@/lib/google-ads";
 import type { LeadSubmitPayload } from "@repo/types";
 
 type OtpStep =
@@ -121,6 +122,7 @@ export function OtpVerificationModal({
               whatsappVerificationId: response.data.verificationId,
             });
             trackEvent('Lead', { content_name: '1ASET Verified Enquiry' });
+            trackGoogleAdsConversion();
             setStep("ENQUIRY_SUBMITTED");
             setTimeout(() => onSuccess(), 2000);
           } catch (submitError: any) {

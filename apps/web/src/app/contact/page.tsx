@@ -28,6 +28,7 @@ import { Footer } from "@/components/layout/footer";
 import { OtpVerificationModal } from "@/components/features/otp-verification-modal";
 import { submitLeadToNeoDove, submitLeadToWebhook } from "@/lib/webhook";
 import { trackEvent } from "@/lib/meta-pixel";
+import { trackGoogleAdsConversion } from "@/lib/google-ads";
 import type { LeadSubmitPayload } from "@repo/types";
 
 export default function ContactPage() {
@@ -81,6 +82,7 @@ export default function ContactPage() {
 
     // OTP verification temporarily bypassed until production number is live
     trackEvent('Lead', { content_name: '1ASET Contact Enquiry' });
+    trackGoogleAdsConversion();
     setSubmitted(true);
   };
 

@@ -34,6 +34,7 @@ import { Footer } from "@/components/layout/footer";
 import { OtpVerificationModal } from "@/components/features/otp-verification-modal";
 import { submitLeadToNeoDove, submitLeadToWebhook } from "@/lib/webhook";
 import { trackEvent } from "@/lib/meta-pixel";
+import { trackGoogleAdsConversion } from "@/lib/google-ads";
 import type { LeadSubmitPayload } from "@repo/types";
 
 const AMENITIES = [
@@ -136,6 +137,7 @@ export default function VedhaBhoomiPage() {
 
     // OTP verification temporarily bypassed until production number is live
     trackEvent('Lead', { content_name: 'Vedha Bhoomi Enquiry' });
+    trackGoogleAdsConversion();
     setSubmitted(true);
   };
 
@@ -185,6 +187,7 @@ export default function VedhaBhoomiPage() {
     }).catch((err) => console.error("Webhook submission error:", err));
 
     trackEvent('Lead', { content_name: 'Vedha Bhoomi Floating Enquiry' });
+    trackGoogleAdsConversion();
     setFloatingSubmitted(true);
   };
 
