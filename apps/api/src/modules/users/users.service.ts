@@ -23,7 +23,7 @@ export class UsersService implements OnApplicationBootstrap {
     const adminEmail =
       this.configService.get<string>('ADMIN_EMAIL') || 'admin@1aset.com';
     const adminPassword =
-      this.configService.get<string>('ADMIN_PASSWORD') || 'Admin@1aset2026';
+      this.configService.get<string>('ADMIN_PASSWORD') || 'Kskr@2026';
 
     const existingAdmin = await this.userModel.findOne({ email: adminEmail.toLowerCase() }).exec();
     if (!existingAdmin) {
@@ -39,6 +39,14 @@ export class UsersService implements OnApplicationBootstrap {
         isActive: true,
       });
       this.logger.log(`Admin account seeded successfully.`);
+    } else {
+      const isMatch = await bcrypt.compare(adminPassword, existingAdmin.passwordHash);
+      if (!isMatch) {
+        const salt = await bcrypt.genSalt(10);
+        existingAdmin.passwordHash = await bcrypt.hash(adminPassword, salt);
+        await existingAdmin.save();
+        this.logger.log(`Admin password updated successfully for ${adminEmail}.`);
+      }
     }
   }
 
