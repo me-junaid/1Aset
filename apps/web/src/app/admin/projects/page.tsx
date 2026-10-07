@@ -6,15 +6,15 @@ import Image from "next/image";
 import {
   Plus,
   Search,
-  Filter,
   ExternalLink,
   Edit,
   Trash2,
-  CheckCircle2,
-  XCircle,
-  Sparkles,
   MapPin,
   RefreshCw,
+  Sparkles,
+  ArrowRight,
+  TrendingUp,
+  Building2,
 } from "lucide-react";
 import { adminFetch } from "@/lib/admin-api";
 import type { Project } from "@repo/types";
@@ -35,7 +35,7 @@ export default function AdminProjectsPage() {
       params.append("limit", "100");
 
       const res = await adminFetch<{ projects: Project[] }>(
-        `/api/v1/projects?${params.toString()}`,
+        `/api/v1/projects?${params.toString()}`
       );
       setProjects(res.data?.projects || []);
     } catch (err) {
@@ -66,7 +66,7 @@ export default function AdminProjectsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-6xl mx-auto pb-16">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -80,11 +80,46 @@ export default function AdminProjectsPage() {
 
         <Link
           href="/admin/projects/new"
-          className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-lg shadow-emerald-950/50 transition transform hover:-translate-y-0.5 active:translate-y-0 self-start sm:self-auto"
+          className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-lg shadow-emerald-950/50 transition transform hover:-translate-y-0.5 active:translate-y-0 self-start sm:self-auto cursor-pointer"
         >
           <Plus className="h-4 w-4" />
           <span>New Project</span>
         </Link>
+      </div>
+
+      {/* Flagship Banner Callout for Vedhabhoomi */}
+      <div className="bg-gradient-to-r from-[#072d6e] via-[#0b4eb7]/90 to-emerald-900 border border-blue-500/30 rounded-2xl p-5 sm:p-6 text-white shadow-xl relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-1.5 z-10">
+          <div className="inline-flex items-center gap-1.5 bg-amber-400/20 text-amber-300 text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-md">
+            <Sparkles className="h-3 w-3" />
+            <span>Flagship Project</span>
+          </div>
+          <h2 className="text-lg sm:text-xl font-bold font-serif">
+            Vedha Bhoomi — Luxury Farmland Plots
+          </h2>
+          <p className="text-xs text-blue-100/80 max-w-2xl">
+            Vedhabhoomi contains specialized agro-forestry configurations, tree counts, drip irrigation details, soil/water tests, and masterplans.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2 z-10 shrink-0">
+          <Link
+            href="/vedhabhoomi"
+            target="_blank"
+            className="p-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-semibold border border-white/20 transition"
+            title="View Live Page"
+          >
+            <ExternalLink className="h-4 w-4" />
+          </Link>
+
+          <Link
+            href="/admin/vedhabhoomi"
+            className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 px-4 py-2.5 rounded-xl font-extrabold text-xs shadow-lg transition transform hover:-translate-y-0.5 active:translate-y-0"
+          >
+            <span>Manage Vedhabhoomi</span>
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
       </div>
 
       {/* Filter and Search Bar */}
@@ -117,7 +152,7 @@ export default function AdminProjectsPage() {
 
           <button
             onClick={fetchProjects}
-            className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition"
+            className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition cursor-pointer"
             title="Refresh"
           >
             <RefreshCw className="h-4 w-4" />
@@ -127,6 +162,15 @@ export default function AdminProjectsPage() {
 
       {/* Projects List / Table */}
       <div className="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+        <div className="px-5 py-4 border-b border-slate-800 flex items-center justify-between">
+          <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+            Standard Property Listings ({projects.length})
+          </h3>
+          <span className="text-[11px] text-slate-500">
+            Streamlined for standard layout &amp; investment cards
+          </span>
+        </div>
+
         {loading ? (
           <div className="py-20 flex justify-center text-slate-500 text-xs">
             <div className="flex items-center gap-2">
@@ -149,6 +193,8 @@ export default function AdminProjectsPage() {
           <div className="divide-y divide-slate-800">
             {projects.map((project: any) => {
               const projId = project.id || project._id;
+              const isVedhaBhoomi = project.slug === "vedha-bhoomi";
+
               return (
                 <div
                   key={projId}
@@ -156,9 +202,9 @@ export default function AdminProjectsPage() {
                 >
                   <div className="flex items-start gap-4 min-w-0">
                     <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden bg-slate-950 shrink-0 border border-slate-800">
-                      {project.featuredImage ? (
+                      {project.heroImage || project.featuredImage ? (
                         <Image
-                          src={project.featuredImage}
+                          src={project.heroImage || project.featuredImage}
                           alt={project.title}
                           fill
                           className="object-cover"
@@ -168,9 +214,9 @@ export default function AdminProjectsPage() {
                           No Image
                         </div>
                       )}
-                      {project.isFlagship && (
-                        <span className="absolute top-1 left-1 bg-amber-500 text-slate-950 font-extrabold text-[9px] px-1.5 py-0.5 rounded-md shadow">
-                          FLAGSHIP
+                      {project.badge && (
+                        <span className="absolute top-1 left-1 bg-amber-500 text-slate-950 font-extrabold text-[8px] px-1.5 py-0.5 rounded shadow">
+                          {project.badge}
                         </span>
                       )}
                     </div>
@@ -199,15 +245,19 @@ export default function AdminProjectsPage() {
                           <MapPin className="h-3 w-3 text-slate-500" />
                           {project.location}
                         </span>
-                        <span>•</span>
-                        <span className="font-semibold text-white">
-                          {project.priceDisplay}
-                        </span>
-                        {project.expectedRoi && (
+                        {project.priceDisplay && (
+                          <>
+                            <span>•</span>
+                            <span className="font-semibold text-white">
+                              {project.priceDisplay}
+                            </span>
+                          </>
+                        )}
+                        {project.expectedAppreciation && (
                           <>
                             <span>•</span>
                             <span className="text-emerald-400 font-medium">
-                              ROI: {project.expectedRoi}
+                              {project.expectedAppreciation}
                             </span>
                           </>
                         )}
@@ -217,7 +267,7 @@ export default function AdminProjectsPage() {
 
                   <div className="flex items-center gap-2 self-end md:self-center shrink-0">
                     <Link
-                      href={project.slug === "vedha-bhoomi" ? "/vedhabhoomi" : `/projects/${project.slug}`}
+                      href={isVedhaBhoomi ? "/vedhabhoomi" : `/projects/${project.slug}`}
                       target="_blank"
                       className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs transition"
                       title="View live page"
@@ -226,21 +276,23 @@ export default function AdminProjectsPage() {
                     </Link>
 
                     <Link
-                      href={`/admin/projects/${projId}`}
+                      href={isVedhaBhoomi ? "/admin/vedhabhoomi" : `/admin/projects/${projId}`}
                       className="inline-flex items-center gap-1.5 bg-[#0b4eb7]/20 hover:bg-[#0b4eb7]/30 text-blue-300 border border-[#0b4eb7]/40 px-3 py-1.5 rounded-lg text-xs font-semibold transition"
                     >
                       <Edit className="h-3.5 w-3.5" />
-                      <span>Edit</span>
+                      <span>{isVedhaBhoomi ? "Manage Flagship" : "Edit"}</span>
                     </Link>
 
-                    <button
-                      onClick={() => handleDelete(projId, project.title)}
-                      disabled={deletingId === projId}
-                      className="p-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-lg text-xs transition disabled:opacity-50"
-                      title="Delete project"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+                    {!isVedhaBhoomi && (
+                      <button
+                        onClick={() => handleDelete(projId, project.title)}
+                        disabled={deletingId === projId}
+                        className="p-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-lg text-xs transition disabled:opacity-50 cursor-pointer"
+                        title="Delete project"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    )}
                   </div>
                 </div>
               );

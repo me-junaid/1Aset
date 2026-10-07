@@ -544,7 +544,7 @@ export default async function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {featuredBlogs.map((blog) => (
                 <article
-                  key={blog.id}
+                  key={blog._id || blog.id || blog.slug}
                   className="bg-white rounded-2xl overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between"
                 >
                   <div className="p-6 space-y-3">

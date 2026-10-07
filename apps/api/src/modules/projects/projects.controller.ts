@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Put,
+  Patch,
   Delete,
   Body,
   Param,
@@ -49,6 +50,7 @@ export class ProjectsController {
     return {
       status: 200,
       message: 'Initial platform projects seeded successfully',
+      data: { seeded: true },
     };
   }
 
@@ -76,6 +78,17 @@ export class ProjectsController {
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
+  async updatePut(
+    @Param('id') id: string,
+    @Body() updateProjectDto: Partial<CreateProjectDto>,
+  ) {
+    return this.update(id, updateProjectDto);
+  }
+
+  @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))

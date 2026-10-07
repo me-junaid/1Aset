@@ -334,7 +334,7 @@ export default function BlogDetailClient({ post, relatedPosts = [] }: BlogDetail
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {relatedPosts.map((rel) => (
                   <div
-                    key={rel.id}
+                    key={rel._id || rel.id || rel.slug}
                     className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-md transition flex flex-col justify-between"
                   >
                     <div>

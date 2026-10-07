@@ -11,7 +11,23 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 60 * 60 * 24 * 30, // 30-day CDN cache for images
-    remotePatterns: [],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "kommodo.ai",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "**.kommodo.ai",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        pathname: "/**",
+      },
+    ],
   },
 
   // HTTP response headers for caching

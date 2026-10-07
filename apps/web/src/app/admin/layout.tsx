@@ -15,6 +15,7 @@ import {
   X,
   ShieldCheck,
   ChevronRight,
+  Sparkles,
 } from "lucide-react";
 import { adminAuth } from "@/lib/admin-api";
 
@@ -23,6 +24,11 @@ const NAV_ITEMS = [
     href: "/admin/dashboard",
     label: "Dashboard",
     icon: LayoutDashboard,
+  },
+  {
+    href: "/admin/vedhabhoomi",
+    label: "Vedhabhoomi (Flagship)",
+    icon: Sparkles,
   },
   {
     href: "/admin/projects",
