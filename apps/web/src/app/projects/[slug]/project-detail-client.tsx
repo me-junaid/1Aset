@@ -22,6 +22,7 @@ import { OtpVerificationModal } from "@/components/features/otp-verification-mod
 import { submitLeadToNeoDove, submitLeadToWebhook } from "@/lib/webhook";
 import { submitLead } from "@/lib/api";
 import { trackEvent } from "@/lib/meta-pixel";
+import { trackGoogleAdsConversion } from "@/lib/google-ads";
 import { FALLBACK_PROJECTS, getFallbackProject } from "@/lib/projects-data";
 import type { LeadSubmitPayload, Project } from "@repo/types";
 
@@ -110,6 +111,7 @@ export default function ProjectDetailClient({
 
     // OTP verification temporarily bypassed until production number is live
     trackEvent('Lead', { content_name: `${project?.title || 'Project'} Enquiry` });
+    trackGoogleAdsConversion();
     setSubmitted(true);
   };
 
