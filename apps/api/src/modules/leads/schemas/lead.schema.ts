@@ -48,14 +48,6 @@ export class Lead {
 
   @Prop({
     required: true,
-    enum: [
-      '1ASET Contact Form',
-      'Project Page',
-      'Landing Page',
-      'WhatsApp',
-      'Referral',
-      'Other',
-    ],
     default: '1ASET Contact Form',
     index: true,
   })

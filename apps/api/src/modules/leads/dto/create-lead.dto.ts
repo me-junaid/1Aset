@@ -49,18 +49,10 @@ export class CreateLeadDto {
 
   @IsString()
   @IsOptional()
-  @IsIn([
-    '1ASET Contact Form',
-    'Project Page',
-    'Landing Page',
-    'WhatsApp',
-    'Referral',
-    'Other',
-  ])
   source?: string;
 
-  /** Required: the verification ID returned from the OTP verify endpoint */
+  /** Optional: the verification ID returned from the OTP verify endpoint if verified */
   @IsString()
-  @IsNotEmpty({ message: 'WhatsApp verification is required to submit an enquiry' })
-  whatsappVerificationId: string;
+  @IsOptional()
+  whatsappVerificationId?: string;
 }

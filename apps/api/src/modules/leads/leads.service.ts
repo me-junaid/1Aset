@@ -37,19 +37,28 @@ export class LeadsService {
    * 5. Forward to NeoDove CRM webhook
    */
   async createLead(dto: CreateLeadDto) {
-    // ── Step 1: Validate verification ──
-    const isValid = await this.whatsappOtpService.validateVerification(
-      dto.phoneNumber,
-      dto.whatsappVerificationId,
-    );
+    let otpVerified = false;
 
-    if (!isValid) {
-      throw new BadRequestException(
-        'Invalid or expired WhatsApp verification. Please verify your phone number again.',
+    // ── Step 1: Validate verification if provided ──
+    if (dto.whatsappVerificationId) {
+      const isValid = await this.whatsappOtpService.validateVerification(
+        dto.phoneNumber,
+        dto.whatsappVerificationId,
       );
+
+      if (isValid) {
+        otpVerified = true;
+        await this.whatsappOtpService.consumeVerification(
+          dto.whatsappVerificationId,
+        );
+      } else {
+        this.logger.warn(
+          `Invalid or expired WhatsApp verification passed for phone: ${dto.phoneNumber}`,
+        );
+      }
     }
 
-    // ── Step 2: Create lead ──
+    // ── Step 2: Create lead in MongoDB ──
     const lead = await this.leadModel.create({
       name: dto.name,
       phone: dto.phoneNumber,
@@ -62,20 +71,15 @@ export class LeadsService {
       message: dto.message || '',
       source: dto.source || '1ASET Contact Form',
       status: 'NEW',
-      otpVerified: true,
-      otpVerifiedAt: new Date(),
+      otpVerified,
+      otpVerifiedAt: otpVerified ? new Date() : undefined,
     });
 
     this.logger.log(
-      `Lead created: id=${lead._id}, phone=${dto.phoneNumber.slice(0, -4)}****`,
+      `Lead created: id=${lead._id}, phone=${dto.phoneNumber.slice(0, -4)}****, verified=${otpVerified}`,
     );
 
-    // ── Step 3: Consume verification ──
-    await this.whatsappOtpService.consumeVerification(
-      dto.whatsappVerificationId,
-    );
-
-    // ── Step 4: Forward to Google Sheets (non-blocking) ──
+    // ── Step 3: Forward to Google Sheets (non-blocking) ──
     this.forwardToGoogleSheets(dto).catch((err) => {
       this.logger.warn('Google Sheets webhook forwarding failed', err?.message);
     });

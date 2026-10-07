@@ -27,6 +27,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { OtpVerificationModal } from "@/components/features/otp-verification-modal";
 import { submitLeadToNeoDove, submitLeadToWebhook } from "@/lib/webhook";
+import { submitLead } from "@/lib/api";
 import { trackEvent } from "@/lib/meta-pixel";
 import { trackGoogleAdsConversion } from "@/lib/google-ads";
 import type { LeadSubmitPayload } from "@repo/types";
@@ -61,10 +62,22 @@ export default function ContactPage() {
       return;
     }
 
+    const normalizedPhone = normalizePhone(formData.phoneNumber);
+
+    // Persist lead in 1ASET Backend database
+    submitLead({
+      name: formData.fullName,
+      phoneNumber: normalizedPhone,
+      language: formData.language,
+      budgetRange: formData.budgetRange,
+      siteVisit: formData.siteVisit,
+      source: "1ASET Contact Form",
+    }).catch((err) => console.error("1ASET Backend lead submission error:", err));
+
     // Immediately dispatch lead to NeoDove CRM and Google Sheets
     submitLeadToNeoDove({
       fullName: formData.fullName,
-      phoneNumber: normalizePhone(formData.phoneNumber),
+      phoneNumber: normalizedPhone,
       language: formData.language,
       budget: formData.budgetRange,
       siteVisit: formData.siteVisit,
@@ -73,7 +86,7 @@ export default function ContactPage() {
 
     submitLeadToWebhook({
       fullName: formData.fullName,
-      phoneNumber: normalizePhone(formData.phoneNumber),
+      phoneNumber: normalizedPhone,
       language: formData.language,
       budget: formData.budgetRange,
       siteVisit: formData.siteVisit,

@@ -117,8 +117,8 @@ export interface LeadSubmitPayload {
   interestedIn?: string;
   preferredLocation?: string;
   message?: string;
-  source?: LeadSource;
-  whatsappVerificationId: string;
+  source?: string;
+  whatsappVerificationId?: string;
 }
 
 export interface LeadSubmitResponse {
