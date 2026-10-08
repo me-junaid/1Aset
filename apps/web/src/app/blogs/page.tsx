@@ -3,6 +3,8 @@ import { Footer } from "@/components/layout/footer";
 import { getBlogs } from "@/lib/api";
 import { BlogsExplorerClient } from "./blogs-explorer-client";
 
+export const dynamic = 'force-static';
+
 export default async function BlogsPage() {
   const blogs = await getBlogs();
 

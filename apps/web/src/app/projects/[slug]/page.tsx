@@ -2,6 +2,9 @@ import { notFound } from "next/navigation";
 import { getProjects, getProjectBySlug } from "@/lib/api";
 import ProjectDetailClient from "./project-detail-client";
 
+export const dynamic = 'force-static';
+export const dynamicParams = true;
+
 // Tell Next.js to pre-build project pages with fallback ISR
 export async function generateStaticParams() {
   const { projects } = await getProjects();

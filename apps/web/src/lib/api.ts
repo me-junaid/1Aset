@@ -26,6 +26,24 @@ function getApiBaseUrl(): string {
 const API_BASE = getApiBaseUrl();
 
 /**
+ * Checks whether the API endpoint is reachable or should be queried.
+ * During production SSG/build on CI/CD (e.g. Vercel), if NEXT_PUBLIC_API_URL
+ * is not set to a remote URL, attempting to connect to localhost:3001 will
+ * throw ECONNREFUSED and trigger Next.js prerender errors.
+ */
+function shouldFetchApi(): boolean {
+  const envUrl = process.env.NEXT_PUBLIC_API_URL?.trim();
+  if (envUrl && !envUrl.includes('localhost') && !envUrl.includes('127.0.0.1')) {
+    return true;
+  }
+  // During server-side rendering or build in production, do not hit localhost
+  if (typeof window === 'undefined' && process.env.NODE_ENV === 'production') {
+    return false;
+  }
+  return true;
+}
+
+/**
  * Generic API fetcher with typed responses.
  * Throws an error with the server's message on non-2xx responses.
  */
@@ -90,6 +108,9 @@ export async function submitLead(
 export async function getProjects(
   query?: ProjectQuery,
 ): Promise<{ projects: Project[]; total: number }> {
+  if (!shouldFetchApi()) {
+    return { projects: FALLBACK_PROJECTS, total: FALLBACK_PROJECTS.length };
+  }
   try {
     const params = new URLSearchParams();
     if (query?.category && query.category !== 'All') {
@@ -127,6 +148,9 @@ export async function getProjects(
 }
 
 export async function getFeaturedProjects(): Promise<Project[]> {
+  if (!shouldFetchApi()) {
+    return FALLBACK_PROJECTS.filter((p) => p.featured);
+  }
   try {
     const res = await apiFetch<Project[]>('api/v1/projects/featured', {
       next: { revalidate: 60 },
@@ -143,6 +167,9 @@ export async function getFeaturedProjects(): Promise<Project[]> {
 }
 
 export async function getProjectBySlug(slug: string): Promise<Project | null> {
+  if (!shouldFetchApi()) {
+    return getFallbackProject(slug) || null;
+  }
   try {
     const res = await apiFetch<Project>(`api/v1/projects/${encodeURIComponent(slug)}`, {
       next: { revalidate: 60 },
@@ -163,6 +190,9 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
 export async function getBlogs(
   query?: BlogQuery,
 ): Promise<BlogPost[]> {
+  if (!shouldFetchApi()) {
+    return MOCK_BLOG_POSTS;
+  }
   try {
     const params = new URLSearchParams();
     if (query?.category && query.category !== 'All') {
@@ -203,6 +233,9 @@ export async function getBlogs(
 }
 
 export async function getFeaturedBlogs(): Promise<BlogPost[]> {
+  if (!shouldFetchApi()) {
+    return MOCK_BLOG_POSTS.filter((b) => b.featured);
+  }
   try {
     const res = await apiFetch<BlogPost[]>('api/v1/blogs/featured', {
       next: { revalidate: 60 },
@@ -219,6 +252,9 @@ export async function getFeaturedBlogs(): Promise<BlogPost[]> {
 }
 
 export async function getBlogBySlug(slug: string): Promise<BlogPost | null> {
+  if (!shouldFetchApi()) {
+    return getFallbackBlogPost(slug) || null;
+  }
   try {
     const res = await apiFetch<BlogPost>(`api/v1/blogs/${encodeURIComponent(slug)}`, {
       next: { revalidate: 60 },

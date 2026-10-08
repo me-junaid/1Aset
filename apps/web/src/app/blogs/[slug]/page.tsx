@@ -3,6 +3,9 @@ import { notFound } from "next/navigation";
 import { getBlogs, getBlogBySlug } from "@/lib/api";
 import BlogDetailClient from "./blog-detail-client";
 
+export const dynamic = 'force-static';
+export const dynamicParams = true;
+
 // Build pre-rendered static HTML for existing blogs at build time
 export async function generateStaticParams() {
   const blogs = await getBlogs();

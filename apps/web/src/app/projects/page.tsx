@@ -3,6 +3,8 @@ import { Footer } from "@/components/layout/footer";
 import { getProjects } from "@/lib/api";
 import { ProjectsExplorerClient } from "./projects-explorer-client";
 
+export const dynamic = 'force-static';
+
 export default async function ProjectsPage() {
   const { projects } = await getProjects();
 

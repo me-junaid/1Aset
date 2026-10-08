@@ -22,6 +22,8 @@ import { Navbar } from "@/components/layout/navbar";
 import { AntiGravityTagCloud } from "@/components/features/anti-gravity-tag-cloud";
 import { getFeaturedProjects, getFeaturedBlogs } from "@/lib/api";
 
+export const dynamic = 'force-static';
+
 export default async function Home() {
   const [featuredProjects, featuredBlogs] = await Promise.all([
     getFeaturedProjects(),
