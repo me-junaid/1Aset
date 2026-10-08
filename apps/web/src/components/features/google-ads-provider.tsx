@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { Suspense, useEffect, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import Script from "next/script";
 import { GOOGLE_ADS_ID, pageview } from "@/lib/google-ads";
@@ -39,7 +39,9 @@ export function GoogleAdsProvider() {
 
   return (
     <>
-      <GoogleAdsRouteTracker />
+      <Suspense fallback={null}>
+        <GoogleAdsRouteTracker />
+      </Suspense>
 
       {/* Remote Google Tag (gtag.js) script */}
       <Script
