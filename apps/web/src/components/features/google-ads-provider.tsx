@@ -45,14 +45,14 @@ export function GoogleAdsProvider() {
 
       {/* Remote Google Tag (gtag.js) script */}
       <Script
-        strategy="afterInteractive"
+        strategy="lazyOnload"
         src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
       />
 
       {/* Google Ads Tag configuration and dataLayer initialization */}
       <Script
         id="google-ads-init"
-        strategy="afterInteractive"
+        strategy="lazyOnload"
         dangerouslySetInnerHTML={{
           __html: `
             window.dataLayer = window.dataLayer || [];

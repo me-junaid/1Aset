@@ -37,10 +37,10 @@ export function MetaPixelProvider() {
 
   return (
     <>
-      {/* Meta Pixel base code — loaded once, non-blocking */}
+      {/* Meta Pixel base code — loaded on idle, non-blocking */}
       <Script
         id="meta-pixel-init"
-        strategy="afterInteractive"
+        strategy="lazyOnload"
         dangerouslySetInnerHTML={{
           __html: `
             !function(f,b,e,v,n,t,s)
