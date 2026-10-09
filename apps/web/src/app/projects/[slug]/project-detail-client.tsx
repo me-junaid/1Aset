@@ -142,9 +142,30 @@ export default function ProjectDetailClient({
   const rentalYield = project.rentalYield || "6.5%";
   const horizon = project.horizon || "3-5 Yrs";
   const overview = project.fullDescription || project.shortDescription || "";
-  const galleryMain = project.galleryImages?.[0]?.src || heroImg;
-  const gallerySub1 = project.galleryImages?.[1]?.src || heroImg;
-  const gallerySub2 = project.galleryImages?.[2]?.src || galleryMain;
+
+  // Normalize gallery images whether they are strings or { src: string } objects
+  const rawGallery: any[] = (project.galleryImages && project.galleryImages.length > 0)
+    ? project.galleryImages
+    : (project.heroImage ? [project.heroImage] : ["/property-1.jpg"]);
+
+  const galleryList: { src: string; title: string }[] = rawGallery
+    .map((img, idx) => {
+      if (!img) return null;
+      if (typeof img === "string") {
+        return { src: img, title: `${project.title} - Photo ${idx + 1}` };
+      }
+      if (typeof img === "object" && img.src) {
+        return { src: img.src, title: img.title || `${project.title} - Photo ${idx + 1}` };
+      }
+      return null;
+    })
+    .filter(Boolean) as { src: string; title: string }[];
+
+  if (galleryList.length === 0) {
+    galleryList.push({ src: heroImg, title: project.title });
+  }
+
+  const [selectedGalleryIdx, setSelectedGalleryIdx] = useState(0);
   const developerName = project.developerName || "1ASET Curated Developer";
   const developerDesc = project.developerDesc || "A premier real estate developer specializing in institutional-grade land and residential developments.";
 
@@ -288,37 +309,53 @@ export default function ProjectDetailClient({
                   <h2 className="font-serif text-2xl font-bold text-[#0b4eb7]">
                     Gallery
                   </h2>
+                  {galleryList.length > 1 && (
+                    <span className="text-xs font-semibold text-slate-500">
+                      {selectedGalleryIdx + 1} of {galleryList.length} photos
+                    </span>
+                  )}
                 </div>
 
-                {/* Main Large Image */}
-                <div className="relative h-72 sm:h-96 w-full rounded-2xl overflow-hidden shadow-sm bg-slate-100">
+                {/* Main Large Showcase Image */}
+                <div className="relative h-72 sm:h-96 w-full rounded-2xl overflow-hidden shadow-sm bg-slate-100 border border-slate-200/80">
                   <Image
-                    src={galleryMain}
-                    alt="Gallery Main"
+                    src={galleryList[selectedGalleryIdx]?.src || galleryList[0].src}
+                    alt={galleryList[selectedGalleryIdx]?.title || "Gallery Showcase"}
                     fill
-                    className="object-cover"
+                    className="object-cover transition-all duration-300"
                   />
                 </div>
 
-                {/* Sub Thumbnails Grid */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="relative h-44 sm:h-52 w-full rounded-xl overflow-hidden shadow-sm bg-slate-100">
-                    <Image
-                      src={gallerySub1}
-                      alt="Gallery Sub 1"
-                      fill
-                      className="object-cover"
-                    />
+                {/* Thumbnails Grid (Only shown if 2+ photos exist) */}
+                {galleryList.length > 1 && (
+                  <div className={`grid gap-3 ${
+                    galleryList.length === 2
+                      ? "grid-cols-2"
+                      : galleryList.length === 3
+                      ? "grid-cols-3"
+                      : "grid-cols-3 sm:grid-cols-4"
+                  }`}>
+                    {galleryList.map((item, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setSelectedGalleryIdx(idx)}
+                        className={`relative h-24 sm:h-32 rounded-xl overflow-hidden shadow-xs bg-slate-100 cursor-pointer transition-all border-2 ${
+                          selectedGalleryIdx === idx
+                            ? "border-[#0b4eb7] ring-2 ring-[#0b4eb7]/20 scale-[1.02]"
+                            : "border-transparent opacity-75 hover:opacity-100 hover:border-slate-300"
+                        }`}
+                      >
+                        <Image
+                          src={item.src}
+                          alt={item.title}
+                          fill
+                          className="object-cover"
+                        />
+                      </button>
+                    ))}
                   </div>
-                  <div className="relative h-44 sm:h-52 w-full rounded-xl overflow-hidden shadow-sm bg-slate-100">
-                    <Image
-                      src={gallerySub2}
-                      alt="Gallery Sub 2"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                </div>
+                )}
               </div>
 
               {/* Section 4: Highlights & Amenities */}
