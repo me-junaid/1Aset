@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import { adminFetch } from "@/lib/admin-api";
 import type { BlogPost, BlogStatus, BlogCategory } from "@repo/types";
+import { ImageUploader } from "@/components/ui/image-uploader";
 
 interface BlogFormProps {
   initialData?: Partial<BlogPost>;
@@ -376,16 +377,13 @@ export function BlogForm({ initialData, isEdit = false }: BlogFormProps) {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-400 mb-1">
-              Cover Image URL *
-            </label>
-            <input
-              type="text"
+            <ImageUploader
+              label="Cover Image"
               required
               value={coverImage}
-              onChange={(e) => setCoverImage(e.target.value)}
-              placeholder="e.g. /hero-skyscraper.jpg or https://images.unsplash.com/..."
-              className="w-full bg-slate-950/60 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500"
+              onChange={setCoverImage}
+              placeholder="Paste Cloudinary URL or upload a photo…"
+              hint="Displayed as the article hero banner and in blog listing cards."
             />
           </div>
 
@@ -647,15 +645,12 @@ export function BlogForm({ initialData, isEdit = false }: BlogFormProps) {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-400 mb-1">
-              Avatar Image URL
-            </label>
-            <input
-              type="text"
+            <ImageUploader
+              label="Avatar Image"
               value={authorAvatar}
-              onChange={(e) => setAuthorAvatar(e.target.value)}
-              placeholder="https://images.unsplash.com/..."
-              className="w-full bg-slate-950/60 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-500"
+              onChange={setAuthorAvatar}
+              placeholder="Paste avatar URL or upload a photo…"
+              hint="Small circular author photo shown at the bottom of the article."
             />
           </div>
 

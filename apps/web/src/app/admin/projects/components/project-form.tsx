@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { adminFetch } from "@/lib/admin-api";
 import type { Project } from "@repo/types";
+import { ImageUploader } from "@/components/ui/image-uploader";
 
 interface ProjectFormProps {
   initialData?: Partial<Project> & { _id?: string };
@@ -454,30 +455,14 @@ export function ProjectForm({ initialData, isEditing = false }: ProjectFormProps
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-xs font-semibold text-slate-400 mb-1">
-                  Main Hero / Cover Image URL *
-                </label>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    required
-                    name="heroImage"
-                    value={form.heroImage}
-                    onChange={handleChange}
-                    placeholder="e.g. /property-1.jpg or https://images.unsplash.com/..."
-                    className="w-full bg-slate-950/60 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500"
-                  />
-                  {form.heroImage && (
-                    <div className="relative w-10 h-10 rounded-xl overflow-hidden bg-slate-950 border border-slate-800 shrink-0">
-                      <Image
-                        src={form.heroImage}
-                        alt="Hero preview"
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  )}
-                </div>
+                <ImageUploader
+                  label="Main Hero / Cover Image"
+                  required
+                  value={form.heroImage}
+                  onChange={(url) => setForm((prev) => ({ ...prev, heroImage: url }))}
+                  placeholder="Paste Cloudinary URL or upload a photo…"
+                  hint="This is the full-bleed banner image on the project detail page."
+                />
               </div>
             </div>
           </div>
@@ -591,7 +576,7 @@ export function ProjectForm({ initialData, isEditing = false }: ProjectFormProps
                   <span>4. Project Gallery</span>
                 </h2>
                 <p className="text-[11px] text-slate-400 mt-0.5">
-                  Main showcase image + additional gallery photos.
+                  Upload multiple photos. The first image is the main showcase.
                 </p>
               </div>
               <span className="text-xs text-slate-400">
@@ -599,31 +584,32 @@ export function ProjectForm({ initialData, isEditing = false }: ProjectFormProps
               </span>
             </div>
 
-            {/* List of current images */}
+            {/* Existing gallery thumbnails */}
             {form.galleryImages.length > 0 && (
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {form.galleryImages.map((imgUrl, idx) => (
                   <div
                     key={idx}
-                    className="relative group rounded-xl overflow-hidden border border-slate-800 bg-slate-950 h-32 flex items-center justify-center"
+                    className="relative group rounded-xl overflow-hidden border border-slate-800 bg-slate-950 h-24"
                   >
                     <Image
                       src={imgUrl}
                       alt={`Gallery ${idx + 1}`}
                       fill
                       className="object-cover"
+                      unoptimized={imgUrl.startsWith("http")}
                     />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-between p-3">
-                      <span className="text-[10px] font-bold text-white bg-black/60 px-2 py-0.5 rounded">
-                        #{idx + 1} {idx === 0 ? "(Main)" : ""}
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-between p-2">
+                      <span className="text-[10px] font-bold text-white bg-black/60 px-1.5 py-0.5 rounded">
+                        #{idx + 1}{idx === 0 ? " Main" : ""}
                       </span>
                       <button
                         type="button"
                         onClick={() => removeGalleryImage(idx)}
-                        className="p-1.5 rounded-lg bg-rose-500/80 hover:bg-rose-500 text-white transition cursor-pointer"
+                        className="p-1 rounded-lg bg-rose-500/80 hover:bg-rose-500 text-white transition cursor-pointer"
                         title="Remove image"
                       >
-                        <Trash2 className="h-3.5 w-3.5" />
+                        <Trash2 className="h-3 w-3" />
                       </button>
                     </div>
                   </div>
@@ -631,30 +617,24 @@ export function ProjectForm({ initialData, isEditing = false }: ProjectFormProps
               </div>
             )}
 
-            {/* Add Image Input */}
-            <div className="flex gap-2 pt-2">
-              <input
-                type="text"
+            {/* Add new gallery image via upload or URL */}
+            <div className="pt-1">
+              <ImageUploader
                 value={newGalleryUrl}
-                onChange={(e) => setNewGalleryUrl(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    addGalleryImage();
-                  }
-                }}
-                placeholder="Paste image URL (e.g. /property-2.jpg or https://...)"
-                className="flex-1 bg-slate-950/60 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500"
+                onChange={(url) => setNewGalleryUrl(url)}
+                placeholder="Paste image URL to add to gallery…"
+                hint="Upload or paste a URL, then click Add to Gallery."
               />
-              <button
-                type="button"
-                onClick={addGalleryImage}
-                className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
-              >
-                <Plus className="h-3.5 w-3.5" />
-                <span>Add Image</span>
-              </button>
             </div>
+            <button
+              type="button"
+              onClick={addGalleryImage}
+              disabled={!newGalleryUrl.trim()}
+              className="flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl text-xs font-bold transition cursor-pointer"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              <span>Add to Gallery</span>
+            </button>
           </div>
 
           {/* Section 5: Highlights & Amenities */}

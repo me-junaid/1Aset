@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { adminFetch } from "@/lib/admin-api";
 import type { Project } from "@repo/types";
+import { ImageUploader } from "@/components/ui/image-uploader";
 
 export default function AdminVedhaBhoomiPage() {
   const [loading, setLoading] = useState(true);
@@ -454,15 +455,12 @@ export default function AdminVedhaBhoomiPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-400 mb-1">
-                Hero Background Image URL
-              </label>
-              <input
-                type="text"
-                name="heroImage"
+              <ImageUploader
+                label="Hero Background Image"
                 value={form.heroImage}
-                onChange={handleChange}
-                className="w-full bg-slate-950/60 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-amber-500"
+                onChange={(url) => setForm((prev) => ({ ...prev, heroImage: url }))}
+                placeholder="Paste Cloudinary URL or upload a photo…"
+                hint="Full-bleed aerial or landscape photo displayed as the hero banner on the Vedhabhoomi page."
               />
             </div>
 
@@ -704,22 +702,25 @@ export default function AdminVedhaBhoomiPage() {
           </div>
 
           {/* Add Gallery Item */}
-          <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-3 pt-3">
+          <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-3">
             <span className="text-xs font-bold text-white block">Add New Gallery Image</span>
+
+            {/* Image upload / URL */}
+            <ImageUploader
+              value={newGallerySrc}
+              onChange={(url) => setNewGallerySrc(url)}
+              placeholder="Paste image URL or upload a farmland photo…"
+              hint="Upload or paste, then fill in the title and badge below and click Add."
+            />
+
+            {/* Title + Badge + Add button */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              <input
-                type="text"
-                placeholder="Image URL (e.g. /vedhabhoomi/vedhabhoomi1.jpg)"
-                value={newGallerySrc}
-                onChange={(e) => setNewGallerySrc(e.target.value)}
-                className="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
-              />
               <input
                 type="text"
                 placeholder="Title (e.g. Luxury Farm Plot Demarcation)"
                 value={newGalleryTitle}
                 onChange={(e) => setNewGalleryTitle(e.target.value)}
-                className="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+                className="sm:col-span-2 bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
               />
               <div className="flex gap-2">
                 <input
@@ -732,7 +733,8 @@ export default function AdminVedhaBhoomiPage() {
                 <button
                   type="button"
                   onClick={handleAddGallery}
-                  className="px-3.5 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs transition shrink-0 cursor-pointer"
+                  disabled={!newGallerySrc.trim()}
+                  className="px-3.5 py-2 bg-amber-500 hover:bg-amber-400 disabled:opacity-40 disabled:cursor-not-allowed text-slate-950 font-bold rounded-xl text-xs transition shrink-0 cursor-pointer"
                 >
                   Add
                 </button>
