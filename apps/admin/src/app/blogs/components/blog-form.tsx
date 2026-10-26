@@ -218,7 +218,7 @@ export function BlogForm({ initialData, isEdit = false }: BlogFormProps) {
       }
       setStatus(publishStatus);
       setTimeout(() => {
-        router.push("/admin/blogs");
+        router.push("/blogs");
       }, 1200);
     } catch (err: any) {
       setError(err.message || "Failed to save blog post");
@@ -233,7 +233,7 @@ export function BlogForm({ initialData, isEdit = false }: BlogFormProps) {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <Link
-            href="/admin/blogs"
+            href="/blogs"
             className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -759,7 +759,7 @@ export function BlogForm({ initialData, isEdit = false }: BlogFormProps) {
       {/* ─── Bottom Action Bar ─── */}
       <div className="flex items-center justify-between bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sticky bottom-4 shadow-2xl backdrop-blur-md">
         <Link
-          href="/admin/blogs"
+          href="/blogs"
           className="text-xs text-slate-400 hover:text-white transition"
         >
           Cancel

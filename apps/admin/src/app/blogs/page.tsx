@@ -107,7 +107,7 @@ export default function AdminBlogsPage() {
         </div>
 
         <Link
-          href="/admin/blogs/new"
+          href="/blogs/new"
           className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-lg shadow-emerald-950/50 transition transform hover:-translate-y-0.5 active:translate-y-0 self-start sm:self-auto"
         >
           <Plus className="h-4 w-4" />
@@ -209,7 +209,7 @@ export default function AdminBlogsPage() {
               No blog articles found matching your criteria.
             </p>
             <Link
-              href="/admin/blogs/new"
+              href="/blogs/new"
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 text-xs font-semibold hover:bg-emerald-600/30 transition"
             >
               <Plus className="h-3.5 w-3.5" />
@@ -266,7 +266,7 @@ export default function AdminBlogsPage() {
                     </div>
 
                     <h3 className="text-base font-bold text-white hover:text-emerald-400 transition">
-                      <Link href={`/admin/blogs/${blogId}`}>{blog.title}</Link>
+                      <Link href={`/blogs/${blogId}`}>{blog.title}</Link>
                     </h3>
 
                     <p className="text-xs text-slate-400 line-clamp-1">
@@ -311,7 +311,7 @@ export default function AdminBlogsPage() {
 
                     {/* Edit Article */}
                     <Link
-                      href={`/admin/blogs/${blogId}`}
+                      href={`/blogs/${blogId}`}
                       className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs transition flex items-center gap-1"
                       title="Edit article"
                     >
@@ -319,14 +319,15 @@ export default function AdminBlogsPage() {
                     </Link>
 
                     {/* View Live Article (only if published or preview) */}
-                    <Link
-                      href={`/blogs/${blog.slug}`}
+                    <a
+                      href={`${process.env.NEXT_PUBLIC_WEB_URL || "https://1aset.com"}/blogs/${blog.slug}`}
                       target="_blank"
+                      rel="noopener noreferrer"
                       className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg text-xs transition"
                       title="View on public site"
                     >
                       <ExternalLink className="h-4 w-4" />
-                    </Link>
+                    </a>
 
                     {/* Delete */}
                     <button

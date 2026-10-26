@@ -21,7 +21,7 @@ function AdminLoginForm() {
 
   useEffect(() => {
     if (adminAuth.isAuthenticated()) {
-      router.replace("/admin/dashboard");
+      router.replace("/dashboard");
     }
     if (searchParams.get("expired")) {
       setError("Your session has expired. Please sign in again.");
@@ -48,7 +48,7 @@ function AdminLoginForm() {
 
       const loginData = data.data as LoginResponse;
       adminAuth.setSession(loginData.accessToken, loginData.user);
-      router.push("/admin/dashboard");
+      router.push("/dashboard");
     } catch (err: any) {
       setError(err.message || "Failed to sign in. Please try again.");
     } finally {

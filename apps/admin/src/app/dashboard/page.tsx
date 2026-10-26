@@ -88,14 +88,14 @@ export default function AdminDashboardPage() {
 
         <div className="flex items-center gap-3">
           <Link
-            href="/admin/projects/new"
+            href="/projects/new"
             className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-lg shadow-emerald-950/50 transition transform hover:-translate-y-0.5 active:translate-y-0"
           >
             <Plus className="h-4 w-4" />
             <span>Add Project</span>
           </Link>
           <Link
-            href="/admin/leads"
+            href="/leads"
             className="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs border border-slate-700 transition"
           >
             <span>View All Leads</span>
@@ -215,7 +215,7 @@ export default function AdminDashboardPage() {
               </p>
             </div>
             <Link
-              href="/admin/leads"
+              href="/leads"
               className="text-xs font-semibold text-emerald-400 hover:text-emerald-300 flex items-center gap-1"
             >
               <span>Manage</span>
@@ -315,27 +315,28 @@ export default function AdminDashboardPage() {
             <h3 className="text-sm font-bold text-white">Quick Navigation</h3>
             <div className="space-y-2 text-xs">
               <Link
-                href="/admin/projects"
+                href="/projects"
                 className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white transition"
               >
                 <span>Manage Project Listings</span>
                 <ChevronRight className="h-4 w-4 text-slate-400" />
               </Link>
               <Link
-                href="/admin/blogs"
+                href="/blogs"
                 className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white transition"
               >
                 <span>Manage Blog Posts</span>
                 <ChevronRight className="h-4 w-4 text-slate-400" />
               </Link>
-              <Link
-                href="/vedhabhoomi"
+              <a
+                href={`${process.env.NEXT_PUBLIC_WEB_URL || "https://1aset.com"}/vedhabhoomi`}
                 target="_blank"
+                rel="noopener noreferrer"
                 className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-emerald-300 transition"
               >
                 <span>Inspect Vedha Bhoomi Live</span>
                 <ExternalLink className="h-4 w-4" />
-              </Link>
+              </a>
             </div>
           </div>
         </div>

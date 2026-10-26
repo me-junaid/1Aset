@@ -79,7 +79,7 @@ export default function AdminProjectsPage() {
         </div>
 
         <Link
-          href="/admin/projects/new"
+          href="/projects/new"
           className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-lg shadow-emerald-950/50 transition transform hover:-translate-y-0.5 active:translate-y-0 self-start sm:self-auto cursor-pointer"
         >
           <Plus className="h-4 w-4" />
@@ -103,17 +103,18 @@ export default function AdminProjectsPage() {
         </div>
 
         <div className="flex items-center gap-2 z-10 shrink-0">
-          <Link
-            href="/vedhabhoomi"
+          <a
+            href={`${process.env.NEXT_PUBLIC_WEB_URL || "https://1aset.com"}/vedhabhoomi`}
             target="_blank"
+            rel="noopener noreferrer"
             className="p-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-semibold border border-white/20 transition"
             title="View Live Page"
           >
             <ExternalLink className="h-4 w-4" />
-          </Link>
+          </a>
 
           <Link
-            href="/admin/vedhabhoomi"
+            href="/vedhabhoomi"
             className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 px-4 py-2.5 rounded-xl font-extrabold text-xs shadow-lg transition transform hover:-translate-y-0.5 active:translate-y-0"
           >
             <span>Manage Vedhabhoomi</span>
@@ -182,7 +183,7 @@ export default function AdminProjectsPage() {
           <div className="py-20 text-center space-y-3">
             <p className="text-sm text-slate-400">No projects found.</p>
             <Link
-              href="/admin/projects/new"
+              href="/projects/new"
               className="inline-flex items-center gap-2 text-xs font-bold text-emerald-400 hover:text-emerald-300"
             >
               <Plus className="h-4 w-4" />
@@ -266,17 +267,18 @@ export default function AdminProjectsPage() {
                   </div>
 
                   <div className="flex items-center gap-2 self-end md:self-center shrink-0">
-                    <Link
-                      href={isVedhaBhoomi ? "/vedhabhoomi" : `/projects/${project.slug}`}
+                    <a
+                      href={`${process.env.NEXT_PUBLIC_WEB_URL || "https://1aset.com"}${isVedhaBhoomi ? "/vedhabhoomi" : `/projects/${project.slug}`}`}
                       target="_blank"
+                      rel="noopener noreferrer"
                       className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs transition"
                       title="View live page"
                     >
                       <ExternalLink className="h-4 w-4" />
-                    </Link>
+                    </a>
 
                     <Link
-                      href={isVedhaBhoomi ? "/admin/vedhabhoomi" : `/admin/projects/${projId}`}
+                      href={isVedhaBhoomi ? "/vedhabhoomi" : `/projects/${projId}`}
                       className="inline-flex items-center gap-1.5 bg-[#0b4eb7]/20 hover:bg-[#0b4eb7]/30 text-blue-300 border border-[#0b4eb7]/40 px-3 py-1.5 rounded-lg text-xs font-semibold transition"
                     >
                       <Edit className="h-3.5 w-3.5" />

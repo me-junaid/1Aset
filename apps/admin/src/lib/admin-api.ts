@@ -67,8 +67,8 @@ export async function adminFetch<T>(
   if (!response.ok) {
     if (response.status === 401 && typeof window !== "undefined") {
       adminAuth.clearSession();
-      if (!window.location.pathname.startsWith("/admin/login")) {
-        window.location.href = "/admin/login?expired=1";
+      if (!window.location.pathname.startsWith("/login")) {
+        window.location.href = "/login?expired=1";
       }
     }
     throw new Error(data.message || `Request failed with status ${response.status}`);

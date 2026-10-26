@@ -363,14 +363,15 @@ export default function AdminVedhaBhoomiPage() {
           </div>
 
           <div className="flex items-center gap-2 self-start sm:self-auto">
-            <Link
-              href="/vedhabhoomi"
+            <a
+              href={`${process.env.NEXT_PUBLIC_WEB_URL || "https://1aset.com"}/vedhabhoomi`}
               target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold border border-white/20 backdrop-blur transition"
             >
               <ExternalLink className="h-3.5 w-3.5" />
               <span>Live Landing Page</span>
-            </Link>
+            </a>
           </div>
         </div>
       </div>

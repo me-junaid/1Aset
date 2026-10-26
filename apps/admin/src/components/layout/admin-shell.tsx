@@ -13,7 +13,6 @@ import {
   ExternalLink,
   Menu,
   X,
-  ShieldCheck,
   ChevronRight,
   Sparkles,
 } from "lucide-react";
@@ -21,33 +20,33 @@ import { adminAuth } from "@/lib/admin-api";
 
 const NAV_ITEMS = [
   {
-    href: "/admin/dashboard",
+    href: "/dashboard",
     label: "Dashboard",
     icon: LayoutDashboard,
   },
   {
-    href: "/admin/vedhabhoomi",
+    href: "/vedhabhoomi",
     label: "Vedhabhoomi (Flagship)",
     icon: Sparkles,
   },
   {
-    href: "/admin/projects",
+    href: "/projects",
     label: "Projects",
     icon: Building2,
   },
   {
-    href: "/admin/blogs",
+    href: "/blogs",
     label: "Blogs",
     icon: BookOpen,
   },
   {
-    href: "/admin/leads",
+    href: "/leads",
     label: "Leads",
     icon: Users,
   },
 ];
 
-function AdminLayoutShell({
+function AdminLayoutInner({
   children,
 }: {
   children: React.ReactNode;
@@ -60,13 +59,13 @@ function AdminLayoutShell({
 
   useEffect(() => {
     // If on login page, don't wrap with dashboard shell
-    if (pathname === "/admin/login") {
+    if (pathname === "/login") {
       setLoading(false);
       return;
     }
 
     if (!adminAuth.isAuthenticated()) {
-      router.replace("/admin/login");
+      router.replace("/login");
       return;
     }
 
@@ -74,7 +73,7 @@ function AdminLayoutShell({
     setLoading(false);
   }, [pathname, router]);
 
-  if (pathname === "/admin/login") {
+  if (pathname === "/login") {
     return <>{children}</>;
   }
 
@@ -93,8 +92,10 @@ function AdminLayoutShell({
 
   const handleLogout = () => {
     adminAuth.clearSession();
-    router.push("/admin/login");
+    router.push("/login");
   };
+
+  const liveWebsiteUrl = process.env.NEXT_PUBLIC_WEB_URL || "https://1aset.com";
 
   return (
     <div className="min-h-screen bg-[#070d18] text-slate-100 flex flex-col md:flex-row font-sans selection:bg-emerald-500 selection:text-white">
@@ -130,7 +131,7 @@ function AdminLayoutShell({
         <div className="p-5 space-y-6">
           {/* Brand Header */}
           <div className="flex items-center justify-between">
-            <Link href="/admin/dashboard" className="flex items-center gap-2">
+            <Link href="/dashboard" className="flex items-center gap-2">
               <Image
                 src="/1aset-bgr-logo.png"
                 alt="1ASET Admin"
@@ -165,8 +166,7 @@ function AdminLayoutShell({
             {NAV_ITEMS.map((item) => {
               const active =
                 pathname === item.href ||
-                (item.href !== "/admin/dashboard" &&
-                  pathname.startsWith(item.href));
+                (item.href !== "/dashboard" && pathname.startsWith(item.href));
               const Icon = item.icon;
 
               return (
@@ -193,9 +193,10 @@ function AdminLayoutShell({
 
         {/* Sidebar Footer */}
         <div className="p-4 border-t border-slate-800/80 space-y-2">
-          <Link
-            href="/"
+          <a
+            href={liveWebsiteUrl}
             target="_blank"
+            rel="noopener noreferrer"
             className="flex items-center justify-between w-full px-3.5 py-2 text-xs font-medium text-slate-400 hover:text-white rounded-lg hover:bg-slate-800/40 transition"
           >
             <span className="flex items-center gap-2">
@@ -203,7 +204,7 @@ function AdminLayoutShell({
               <span>Live Website</span>
             </span>
             <span className="text-[10px] text-slate-500">Open ↗</span>
-          </Link>
+          </a>
 
           <button
             onClick={handleLogout}
@@ -223,7 +224,7 @@ function AdminLayoutShell({
   );
 }
 
-export default function AdminLayout({
+export function AdminShell({
   children,
 }: {
   children: React.ReactNode;
@@ -236,7 +237,7 @@ export default function AdminLayout({
         </div>
       }
     >
-      <AdminLayoutShell>{children}</AdminLayoutShell>
+      <AdminLayoutInner>{children}</AdminLayoutInner>
     </Suspense>
   );
 }

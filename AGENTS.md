@@ -59,6 +59,7 @@ Project structure:
 
 apps/
   web/
+  admin/
   api/
 
 packages/

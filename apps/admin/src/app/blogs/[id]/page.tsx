@@ -55,7 +55,7 @@ export default function EditBlogPage() {
           <span>{error || "Article could not be loaded."}</span>
         </div>
         <Link
-          href="/admin/blogs"
+          href="/blogs"
           className="inline-block text-xs text-emerald-400 hover:underline"
         >
           &larr; Return to Blog List

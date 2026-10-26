@@ -236,7 +236,7 @@ export function ProjectForm({ initialData, isEditing = false }: ProjectFormProps
         body: JSON.stringify(payload),
       });
 
-      router.push("/admin/projects");
+      router.push("/projects");
       router.refresh();
     } catch (err: any) {
       setError(err.message || "Failed to save project.");
@@ -251,7 +251,7 @@ export function ProjectForm({ initialData, isEditing = false }: ProjectFormProps
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <Link
-            href="/admin/projects"
+            href="/projects"
             className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -850,7 +850,7 @@ export function ProjectForm({ initialData, isEditing = false }: ProjectFormProps
           {/* Bottom Save Bar */}
           <div className="flex items-center justify-end gap-3 pt-4">
             <Link
-              href="/admin/projects"
+              href="/projects"
               className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition"
             >
               Cancel

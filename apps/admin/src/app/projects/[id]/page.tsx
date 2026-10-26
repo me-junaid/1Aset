@@ -48,7 +48,7 @@ export default function EditProjectPage({
           {error || "Project not found"}
         </div>
         <Link
-          href="/admin/projects"
+          href="/projects"
           className="inline-flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white"
         >
           <ArrowLeft className="h-4 w-4" />
