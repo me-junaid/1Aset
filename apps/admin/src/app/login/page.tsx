@@ -8,8 +8,14 @@ import { Lock, Mail, ArrowRight, ShieldCheck, AlertCircle } from "lucide-react";
 import { adminAuth } from "@/lib/admin-api";
 import type { LoginResponse } from "@repo/types";
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+function getApiBaseUrl(): string {
+  let rawUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+  rawUrl = rawUrl.trim();
+  if (rawUrl && !rawUrl.startsWith("http://") && !rawUrl.startsWith("https://")) {
+    rawUrl = `https://${rawUrl}`;
+  }
+  return rawUrl.replace(/\/+$/, "");
+}
 
 function AdminLoginForm() {
   const router = useRouter();
@@ -34,16 +40,24 @@ function AdminLoginForm() {
     setLoading(true);
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/v1/auth/login`, {
+      const baseUrl = getApiBaseUrl();
+      const res = await fetch(`${baseUrl}/api/v1/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
+      const contentType = res.headers.get("content-type") || "";
+      if (!contentType.includes("application/json")) {
+        throw new Error(
+          `Unable to reach backend API (${res.status} ${res.statusText}). Verify that NEXT_PUBLIC_API_URL is configured with your backend API URL in Vercel.`
+        );
+      }
+
+      const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        throw new Error(data.message || "Invalid credentials");
+        throw new Error(data.message || `Sign in failed (${res.status})`);
       }
 
       const loginData = data.data as LoginResponse;

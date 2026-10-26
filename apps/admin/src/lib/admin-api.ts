@@ -1,5 +1,11 @@
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+function getApiBaseUrl(): string {
+  let rawUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+  rawUrl = rawUrl.trim();
+  if (rawUrl && !rawUrl.startsWith("http://") && !rawUrl.startsWith("https://")) {
+    rawUrl = `https://${rawUrl}`;
+  }
+  return rawUrl.replace(/\/+$/, "");
+}
 
 export interface ApiResponse<T> {
   status: number;
@@ -55,7 +61,8 @@ export async function adminFetch<T>(
     headers.set("Authorization", `Bearer ${token}`);
   }
 
-  const url = `${API_BASE_URL}${endpoint.startsWith("/") ? endpoint : `/${endpoint}`}`;
+  const baseUrl = getApiBaseUrl();
+  const url = `${baseUrl}${endpoint.startsWith("/") ? endpoint : `/${endpoint}`}`;
 
   const response = await fetch(url, {
     ...options,
