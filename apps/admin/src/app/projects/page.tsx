@@ -209,6 +209,7 @@ export default function AdminProjectsPage() {
                           alt={project.title}
                           fill
                           className="object-cover"
+                          unoptimized
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-slate-600 text-xs">

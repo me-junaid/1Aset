@@ -317,6 +317,7 @@ export function ProjectForm({ initialData, isEditing = false }: ProjectFormProps
                 alt={form.title}
                 fill
                 className="object-cover opacity-60"
+                unoptimized
               />
             ) : null}
             <div className="relative z-10 space-y-2">
