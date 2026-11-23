@@ -70,8 +70,8 @@ export function Footer() {
             <ul className="space-y-2.5 text-sm font-sans text-blue-100/85">
               {[
                 { href: "/projects", label: "Projects" },
+                { href: "/enquiry", label: "Property Enquiry" },
                 { href: "/calculators", label: "Investment Tools" },
-                { href: "/calculators", label: "Calculators" },
               ].map(({ href, label }) => (
                 <li key={label}>
                   <Link href={href} className="hover:text-white transition leading-relaxed">

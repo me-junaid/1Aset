@@ -70,10 +70,10 @@ export function Navbar() {
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center">
             <Link
-              href="/contact"
+              href="/enquiry"
               className="bg-[#0b4eb7] hover:bg-[#083c91] text-white px-5 py-2.5 rounded-md font-semibold text-sm shadow-sm transition-all transform hover:-translate-y-0.5 active:translate-y-0"
             >
-              Talk to an Expert
+              Enquire Now
             </Link>
           </div>
 
@@ -113,11 +113,11 @@ export function Navbar() {
             </div>
             <div className="mt-4 pt-3 border-t border-slate-100">
               <Link
-                href="/contact"
+                href="/enquiry"
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center justify-center w-full bg-[#0b4eb7] hover:bg-[#083c91] text-white px-5 py-3 rounded-xl font-semibold text-sm transition"
               >
-                Talk to an Expert
+                Enquire Now
               </Link>
             </div>
           </div>
