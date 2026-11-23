@@ -345,10 +345,10 @@ export function EnquiryFormClient() {
         {/* ── SECTION 1: PERSONAL DETAILS ── */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/90 space-y-6">
           <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
-            <span className="w-8 h-8 rounded-full bg-[#0b4eb7] text-white flex items-center justify-center text-xs font-bold">
+            <span className="shrink-0 w-8 h-8 aspect-square rounded-full bg-[#0b4eb7] text-white flex items-center justify-center text-xs font-bold shadow-sm">
               1
             </span>
-            <div>
+            <div className="min-w-0">
               <h2 className="font-serif text-lg sm:text-xl font-bold text-slate-900">
                 Personal Details
               </h2>
@@ -383,7 +383,7 @@ export function EnquiryFormClient() {
                 Mobile Number <span className="text-rose-500">*</span>
               </label>
               <div className="relative">
-                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-600 text-xs font-bold select-none">
+                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-600 text-xs font-bold select-none pointer-events-none">
                   🇮🇳 +91
                 </span>
                 <input
@@ -392,7 +392,7 @@ export function EnquiryFormClient() {
                   placeholder="98765 43210"
                   value={mobileNumber}
                   onChange={(e) => setMobileNumber(e.target.value)}
-                  className="w-full pl-18 pr-4 py-3 bg-slate-50/70 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#0b4eb7] focus:bg-white focus:ring-2 focus:ring-[#0b4eb7]/10 transition"
+                  className="w-full pl-20 pr-4 py-3 bg-slate-50/70 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#0b4eb7] focus:bg-white focus:ring-2 focus:ring-[#0b4eb7]/10 transition"
                 />
               </div>
             </div>
@@ -435,7 +435,7 @@ export function EnquiryFormClient() {
 
               {!sameAsMobile && (
                 <div className="relative pt-1 animate-in fade-in duration-200">
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-600 text-xs font-bold select-none">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-600 text-xs font-bold select-none pointer-events-none">
                     🇮🇳 +91
                   </span>
                   <input
@@ -443,7 +443,7 @@ export function EnquiryFormClient() {
                     placeholder="Enter WhatsApp Number"
                     value={whatsappNumber}
                     onChange={(e) => setWhatsappNumber(e.target.value)}
-                    className="w-full pl-18 pr-4 py-3 bg-slate-50/70 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#0b4eb7] focus:bg-white focus:ring-2 focus:ring-[#0b4eb7]/10 transition"
+                    className="w-full pl-20 pr-4 py-3 bg-slate-50/70 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#0b4eb7] focus:bg-white focus:ring-2 focus:ring-[#0b4eb7]/10 transition"
                   />
                 </div>
               )}
@@ -454,10 +454,10 @@ export function EnquiryFormClient() {
         {/* ── SECTION 2: PROPERTY REQUIREMENTS ── */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/90 space-y-6">
           <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
-            <span className="w-8 h-8 rounded-full bg-[#0b4eb7] text-white flex items-center justify-center text-xs font-bold">
+            <span className="shrink-0 w-8 h-8 aspect-square rounded-full bg-[#0b4eb7] text-white flex items-center justify-center text-xs font-bold shadow-sm">
               2
             </span>
-            <div>
+            <div className="min-w-0">
               <h2 className="font-serif text-lg sm:text-xl font-bold text-slate-900">
                 Property Requirements
               </h2>
@@ -553,10 +553,10 @@ export function EnquiryFormClient() {
         {/* ── SECTION 3: INVESTMENT BUDGET ── */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/90 space-y-6">
           <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
-            <span className="w-8 h-8 rounded-full bg-[#0b4eb7] text-white flex items-center justify-center text-xs font-bold">
+            <span className="shrink-0 w-8 h-8 aspect-square rounded-full bg-[#0b4eb7] text-white flex items-center justify-center text-xs font-bold shadow-sm">
               3
             </span>
-            <div>
+            <div className="min-w-0">
               <h2 className="font-serif text-lg sm:text-xl font-bold text-slate-900">
                 Investment Budget
               </h2>
@@ -608,10 +608,10 @@ export function EnquiryFormClient() {
         {/* ── SECTION 4: PURCHASE DETAILS ── */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/90 space-y-6">
           <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
-            <span className="w-8 h-8 rounded-full bg-[#0b4eb7] text-white flex items-center justify-center text-xs font-bold">
+            <span className="shrink-0 w-8 h-8 aspect-square rounded-full bg-[#0b4eb7] text-white flex items-center justify-center text-xs font-bold shadow-sm">
               4
             </span>
-            <div>
+            <div className="min-w-0">
               <h2 className="font-serif text-lg sm:text-xl font-bold text-slate-900">
                 Purchase Details
               </h2>
@@ -726,23 +726,27 @@ export function EnquiryFormClient() {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full bg-gradient-to-r from-[#0b4eb7] via-[#083c91] to-emerald-700 hover:from-blue-700 hover:to-emerald-600 text-white py-4 rounded-2xl font-bold text-base shadow-xl hover:shadow-blue-900/30 transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
+            className="w-full bg-gradient-to-r from-[#0b4eb7] via-[#083c91] to-emerald-700 hover:from-blue-700 hover:to-emerald-600 text-white py-3.5 sm:py-4 px-4 rounded-2xl font-bold text-sm sm:text-base shadow-xl hover:shadow-blue-900/30 transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed touch-manipulation"
           >
             {submitting ? (
               <>
-                <Loader2 className="h-5 w-5 animate-spin" />
+                <Loader2 className="h-5 w-5 animate-spin shrink-0" />
                 <span>Submitting Your Enquiry...</span>
               </>
             ) : (
               <>
-                <ShieldCheck className="h-5 w-5" />
-                <span>Submit Property Enquiry &amp; Get Curated Options</span>
+                <ShieldCheck className="h-5 w-5 shrink-0 text-white" />
+                <span className="sm:hidden">Submit Property Enquiry</span>
+                <span className="hidden sm:inline">
+                  Submit Property Enquiry &amp; Get Curated Options
+                </span>
               </>
             )}
           </button>
 
-          <p className="text-center text-xs text-slate-500">
-            🔒 100% Confidential. Your data is protected by 1ASET. No third-party spam.
+          <p className="text-center text-xs text-slate-500 flex items-center justify-center gap-1">
+            <span>🔒</span>
+            <span>100% Confidential. Your data is protected by 1ASET.</span>
           </p>
         </div>
       </form>
