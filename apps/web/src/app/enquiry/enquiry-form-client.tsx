@@ -186,6 +186,7 @@ export function EnquiryFormClient() {
         siteVisit: siteVisit,
         interestedIn: propertyType,
         preferredLocation: finalLocation,
+        message: structuredMessage,
         source: "1ASET Property Enquiry Form",
       }).catch((err) => console.warn("NeoDove CRM error:", err));
 

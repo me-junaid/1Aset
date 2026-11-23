@@ -67,7 +67,9 @@ export async function submitLeadToNeoDove(data: LeadFormData): Promise<boolean> 
       detail1: data.interestedIn || "Vedha Bhoomi",
       detail2: `Budget: ${data.budget || "25L"} | Visit: ${data.siteVisit || "Not decided"}`,
       detail3: data.preferredLocation || "North Bengaluru",
-      detail4: `Source: ${data.source || "Website Form"}`,
+      detail4: data.message
+        ? `${data.source || "Website Form"} | ${data.message}`
+        : `Source: ${data.source || "Website Form"}`,
     };
 
     const res = await fetch(NEODOVE_CRM_URL, {

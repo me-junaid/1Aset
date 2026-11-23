@@ -147,7 +147,9 @@ export class LeadsService {
         detail1: dto.interestedIn || 'Vedha Bhoomi',
         detail2: `Budget: ${dto.budgetRange || '25L'} | Visit: ${dto.siteVisit || 'Not decided'}`,
         detail3: dto.preferredLocation || 'North Bengaluru',
-        detail4: `Source: ${dto.source || '1ASET Website'}`,
+        detail4: dto.message
+          ? `${dto.source || '1ASET Website'} | ${dto.message}`
+          : `Source: ${dto.source || '1ASET Website'}`,
       };
 
       const response = await fetch(this.neoDoveCrmWebhookUrl, {

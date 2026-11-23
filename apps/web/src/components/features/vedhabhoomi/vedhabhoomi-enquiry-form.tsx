@@ -5,11 +5,28 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Check, Leaf, ShieldCheck } from "lucide-react";
 import { OtpVerificationModal } from "@/components/features/otp-verification-modal";
+import { CustomSelect, type CustomSelectOption } from "@/components/ui/custom-select";
 import { submitLeadToNeoDove, submitLeadToWebhook } from "@/lib/webhook";
 import { submitLead } from "@/lib/api";
 import { trackEvent } from "@/lib/meta-pixel";
 import { trackGoogleAdsConversion } from "@/lib/google-ads";
 import type { LeadSubmitPayload } from "@repo/types";
+
+const BUDGET_OPTIONS: CustomSelectOption[] = [
+  { value: "25L", label: "Under ₹25L" },
+  { value: "50L", label: "₹25L – ₹50L" },
+  { value: "1Cr", label: "₹50L – ₹1Cr" },
+  { value: "1Cr+", label: "Above ₹1Cr" },
+];
+
+const SITE_VISIT_OPTIONS: CustomSelectOption[] = [
+  { value: "This weekend", label: "This weekend" },
+  { value: "This week", label: "This week" },
+  { value: "Next week", label: "Next week" },
+  { value: "This month", label: "This month" },
+  { value: "Just exploring", label: "Just exploring" },
+  { value: "Not decided", label: "Not decided" },
+];
 
 export function VedhaBhoomiEnquiryForm() {
   const [form, setForm] = useState({
@@ -17,8 +34,8 @@ export function VedhaBhoomiEnquiryForm() {
     phoneNumber: "",
     email: "",
     language: "English",
-    budgetRange: "25L",
-    siteVisit: "Not decided",
+    budgetRange: "",
+    siteVisit: "",
   });
   const [submitted, setSubmitted] = useState(false);
   const [showOtpModal, setShowOtpModal] = useState(false);
@@ -287,33 +304,23 @@ export function VedhaBhoomiEnquiryForm() {
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1.5">
-                      <label className="text-slate-700 text-xs font-bold uppercase tracking-wider">Budget</label>
-                      <select
-                        value={form.budgetRange}
-                        onChange={(e) => setForm({ ...form, budgetRange: e.target.value })}
-                        className="w-full px-3.5 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 text-sm font-medium focus:outline-none focus:bg-white focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/10 transition cursor-pointer"
-                      >
-                        <option value="25L">Under ₹25L</option>
-                        <option value="50L">₹25L – ₹50L</option>
-                        <option value="1Cr">₹50L – ₹1Cr</option>
-                        <option value="1Cr+">Above ₹1Cr</option>
-                      </select>
-                    </div>
+                    <CustomSelect
+                      label="Budget"
+                      value={form.budgetRange}
+                      onChange={(val) => setForm({ ...form, budgetRange: val })}
+                      options={BUDGET_OPTIONS}
+                      placeholder="Select Budget"
+                      direction="up"
+                    />
 
-                    <div className="space-y-1.5">
-                      <label className="text-slate-700 text-xs font-bold uppercase tracking-wider">Site Visit</label>
-                      <select
-                        value={form.siteVisit}
-                        onChange={(e) => setForm({ ...form, siteVisit: e.target.value })}
-                        className="w-full px-3.5 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 text-sm font-medium focus:outline-none focus:bg-white focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/10 transition cursor-pointer"
-                      >
-                        <option value="Not decided">Not decided</option>
-                        <option value="This week">This week</option>
-                        <option value="This month">This month</option>
-                        <option value="Just exploring">Just exploring</option>
-                      </select>
-                    </div>
+                    <CustomSelect
+                      label="Site Visit"
+                      value={form.siteVisit}
+                      onChange={(val) => setForm({ ...form, siteVisit: val })}
+                      options={SITE_VISIT_OPTIONS}
+                      placeholder="Select Option"
+                      direction="up"
+                    />
                   </div>
                 </div>
 
