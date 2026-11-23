@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import { MetaPixelProvider } from "@/components/features/meta-pixel-provider";
 import { GoogleAdsProvider } from "@/components/features/google-ads-provider";
+import { FloatingEnquiryButton } from "@/components/layout/floating-enquiry-button";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -49,6 +50,7 @@ export default function RootLayout({
           <GoogleAdsProvider />
         </Suspense>
         {children}
+        <FloatingEnquiryButton />
       </body>
     </html>
   );

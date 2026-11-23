@@ -728,7 +728,7 @@ export default function VedhaBhoomiPage() {
         </div>
       </main>
 
-      {/* ── Floating Action (Interactive Component) ── */}
+      {/* ── Vedha Bhoomi Dedicated Floating Form Action ── */}
       <VedhaBhoomiFloatingAction />
 
       <Footer />
